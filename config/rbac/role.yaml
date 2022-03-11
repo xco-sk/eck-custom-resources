@@ -1,0 +1,59 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indextemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indextemplates/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indextemplates/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indices
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indices/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indices/status
+  verbs:
+  - get
+  - patch
+  - update

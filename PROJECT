@@ -1,0 +1,25 @@
+domain: github.com
+layout:
+- go.kubebuilder.io/v3
+projectName: eck-custom-resources
+repo: github.com/xco-sk/eck-custom-resources
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: es.eck
+  kind: Index
+  path: github.com/xco-sk/eck-custom-resources/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: es.eck
+  kind: IndexTemplate
+  path: github.com/xco-sk/eck-custom-resources/api/v1alpha1
+  version: v1alpha1
+version: "3"
