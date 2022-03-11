@@ -3,4 +3,14 @@ kind: Index
 metadata:
   name: index-sample
 spec:
-  # TODO(user): Add fields here
+  settings: |
+    {
+      "number_of_shards": 2,
+      "number_of_replicase": 0
+    }
+  targetCluster:
+    authentication:
+      usernamePasswordSecret:
+        secretName: quickstart-es-elastic-user
+    eck:
+      clusterName: quickstart

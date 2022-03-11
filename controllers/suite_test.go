@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1"
+	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 
