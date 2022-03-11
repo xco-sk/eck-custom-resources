@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1"
+	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
 )
 
 // IndexTemplateReconciler reconciles a IndexTemplate object
