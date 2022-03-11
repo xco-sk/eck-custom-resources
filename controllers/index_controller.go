@@ -18,11 +18,8 @@ package controllers
 
 import (
 	"context"
-	b64 "encoding/base64"
-	"github.com/elastic/go-elasticsearch/v8"
 	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
 	esCliUtils "github.com/xco-sk/eck-custom-resources/utils"
-	k8sv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -49,20 +46,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, nil
 	}
 
-	var secret k8sv1.Secret
-	if err := esCliUtils.GetElasticSecret(r.Client, ctx, req.Namespace, &index, &secret); err != nil {
-		logger.Error(err, "unable to fetch elastic-user secret")
-		return ctrl.Result{}, client.IgnoreNotFound(err)
-	}
-
-	decodedSecret, _ := b64.StdEncoding.DecodeString(string(secret.Data["elastic"]))
-
-	config := elasticsearch.Config{
-		Addresses: []string{esCliUtils.GenerateElasticEndpoint(index.Spec.TargetCluster.EckCluster.ClusterName, req.Namespace)},
-		Username:  "elastic",
-		Password:  string(decodedSecret),
-	}
-	esClient, _ := elasticsearch.NewClient(config)
+	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, index.Spec.TargetCluster, req)
 	esClient.Info.WithHuman()
 
 	res, err := esClient.Info()
