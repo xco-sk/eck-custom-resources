@@ -33,9 +33,9 @@ type IndexTemplateReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indextemplates,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indextemplates/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indextemplates/finalizers,verbs=update
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

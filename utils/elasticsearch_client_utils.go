@@ -2,7 +2,6 @@ package utils
 
 import (
 	"context"
-	b64 "encoding/base64"
 	"github.com/elastic/go-elasticsearch/v8"
 	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
 	k8sv1 "k8s.io/api/core/v1"
@@ -11,38 +10,56 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-const EckUserSecretSuffix = "-es-elastic-user"
-const EckHttpServiceSuffix = "-es-http"
+const eckUserSecretSuffix = "-es-elastic-user"
+const eckHttpCertificateSecretSuffix = "-es-http-certs-public"
+const eckHttpCertificateCAKey = "ca.crt"
+const eckHttpServiceSuffix = "-es-http"
 
-func GetElasticSecret(cli client.Client, ctx context.Context, namespace string, esSpec eseckv1.ElasticsearchSpec, secret *k8sv1.Secret) error {
-	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: generateElasticSecretName(esSpec.EckCluster.ClusterName)}, secret); err != nil {
+func GetElasticUserSecret(cli client.Client, ctx context.Context, namespace string, esSpec eseckv1.ElasticsearchSpec, secret *k8sv1.Secret) error {
+	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: generateElasticUserSecretName(esSpec.EckCluster.ClusterName)}, secret); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetHttpCertificateSecret(cli client.Client, ctx context.Context, namespace string, esSpec eseckv1.ElasticsearchSpec, secret *k8sv1.Secret) error {
+	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: generateHttpCertificateSecretName(esSpec.EckCluster.ClusterName)}, secret); err != nil {
 		return err
 	}
 	return nil
 }
 
 func GenerateElasticEndpoint(clusterName string, namespace string) string {
-	return "https://" + clusterName + EckHttpServiceSuffix + "." + namespace + ":9200"
+	return "https://" + clusterName + eckHttpServiceSuffix + ":9200"
+	//return "https://" + clusterName + EckHttpServiceSuffix + "." + namespace + ":9200"
 }
 
-func generateElasticSecretName(clusterName string) string {
-	return clusterName + EckUserSecretSuffix
+func generateElasticUserSecretName(clusterName string) string {
+	return clusterName + eckUserSecretSuffix
+}
+
+func generateHttpCertificateSecretName(clusterName string) string {
+	return clusterName + eckHttpCertificateSecretSuffix
 }
 
 func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec eseckv1.ElasticsearchSpec, req ctrl.Request) (*elasticsearch.Client, error) {
 	logger := log.FromContext(ctx)
 
-	var secret k8sv1.Secret
-	if err := GetElasticSecret(cli, ctx, req.Namespace, esSpec, &secret); err != nil {
+	var userSecret k8sv1.Secret
+	if err := GetElasticUserSecret(cli, ctx, req.Namespace, esSpec, &userSecret); err != nil {
 		logger.Error(err, "unable to fetch elastic-user secret")
 	}
 
-	decodedSecret, _ := b64.StdEncoding.DecodeString(string(secret.Data["elastic"]))
+	var certificateSecret k8sv1.Secret
+	if err := GetHttpCertificateSecret(cli, ctx, req.Namespace, esSpec, &certificateSecret); err != nil {
+		logger.Error(err, "unable to fetch certificate")
+	}
 
 	config := elasticsearch.Config{
 		Addresses: []string{GenerateElasticEndpoint(esSpec.EckCluster.ClusterName, req.Namespace)},
 		Username:  "elastic",
-		Password:  string(decodedSecret),
+		Password:  string(userSecret.Data["elastic"]),
+		CACert:    certificateSecret.Data[eckHttpCertificateCAKey],
 	}
 
 	return elasticsearch.NewClient(config)

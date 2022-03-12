@@ -26,10 +26,8 @@ type IndexSpec struct {
 	TargetCluster ElasticsearchSpec `json:"targetCluster"`
 	// +optional
 	DependsOn Dependencies `json:"dependsOn,omitempty"`
-	// +optional
-	Settings string `json:"settings,omitempty"`
-	// +optional
-	Mapping string `json:"mapping,omitempty"`
+	// +required
+	Body string `json:"body"`
 }
 
 // IndexStatus defines the observed state of Index

@@ -29,12 +29,9 @@ type IndexTemplateSpec struct {
 	TargetCluster ElasticsearchSpec `json:"targetCluster"`
 	// +optional
 	DependsOn Dependencies `json:"dependsOn,omitempty"`
-	//+kubebuilder:validation:MinLength=0
-	Settings string `json:"settings,omitempty"`
-	// +optional
-	Mappings string `json:"mappings,omitempty"`
-	// +optional
-	Aliases string `json:"aliases,omitempty"`
+	// +kubebuilder:validation:MinLength=0
+	// +required
+	Body string `json:"body"`
 }
 
 // IndexTemplateStatus defines the observed state of IndexTemplate

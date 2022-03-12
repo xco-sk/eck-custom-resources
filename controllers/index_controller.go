@@ -33,30 +33,33 @@ type IndexReconciler struct {
 }
 
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indices,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indices/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=es.eck.xco.sk,resources=indices/finalizers,verbs=update
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indices,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indices/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=indices/finalizers,verbs=update
 
 func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, index.Spec.TargetCluster, req)
+	// TODO remove target cluster - it has to be defined on operator level, not resource level.
+
 	var index eseckv1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
 		logger.Info("Index does not exists - deleting", "index", req.Name)
+
 		return ctrl.Result{}, nil
 	}
 
-	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, index.Spec.TargetCluster, req)
-	esClient.Info.WithHuman()
-
-	res, err := esClient.Info()
+	var indicesCreateResponse, err = esClient.Indices.Create("test",
+		esClient.Indices.Create.WithHuman(),
+	)
 	if err != nil {
 		logger.Error(err, "Error querying")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	defer res.Body.Close()
-	logger.Info("Got", "response", res)
+	defer indicesCreateResponse.Body.Close()
+	logger.Info("Got", "response", indicesCreateResponse)
 
 	return ctrl.Result{}, nil
 }
