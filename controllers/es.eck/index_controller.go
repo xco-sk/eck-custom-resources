@@ -20,6 +20,8 @@ import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
+	"strings"
+	"time"
 
 	esCliUtils "github.com/xco-sk/eck-custom-resources/utils"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -44,7 +46,14 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	logger := log.FromContext(ctx)
 
 	// Define esclient as a singleton
-	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	esClient, createCientErr := esCliUtils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	if createCientErr != nil {
+		logger.Error(createCientErr, "Failed to create Elasticsearch client")
+		return ctrl.Result{
+			Requeue:      true,
+			RequeueAfter: time.Duration(time.Duration.Minutes(1)),
+		}, client.IgnoreNotFound(createCientErr)
+	}
 
 	var index eseckv1alpha1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
@@ -53,12 +62,17 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, nil
 	}
 
-	var indicesCreateResponse, err = esClient.Indices.Create("test",
-		esClient.Indices.Create.WithHuman(), //TODO implement body
+	var indicesCreateResponse, createIndexErr = esClient.Indices.Create(index.Name,
+		esClient.Indices.Create.WithHuman(),
+		esClient.Indices.Create.WithBody(strings.NewReader(index.Spec.Body)),
 	)
-	if err != nil {
-		logger.Error(err, "Error querying")
-		return ctrl.Result{}, client.IgnoreNotFound(err)
+
+	if createIndexErr != nil {
+		logger.Error(createIndexErr, "Error creating index")
+		return ctrl.Result{
+			Requeue:      true,
+			RequeueAfter: time.Duration(time.Duration.Minutes(1)),
+		}, client.IgnoreNotFound(createIndexErr)
 	}
 
 	defer indicesCreateResponse.Body.Close()
