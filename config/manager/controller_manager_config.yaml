@@ -9,3 +9,10 @@ webhook:
 leaderElection:
   leaderElect: true
   resourceName: d47cd155.github.com
+
+targetCluster:
+  eck:
+    clusterName: quickstart
+  authentication:
+    usernamePasswordSecret:
+      secretName: quickstart-es-elastic-user

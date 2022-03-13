@@ -14,24 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package v2
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	cfg "sigs.k8s.io/controller-runtime/pkg/config/v1alpha1"
 )
 
-// IndexSpec defines the desired state of Index
-type IndexSpec struct {
-	// +required
-	TargetCluster ElasticsearchSpec `json:"targetCluster"`
-	// +optional
-	DependsOn Dependencies `json:"dependsOn,omitempty"`
-	// +required
-	Body string `json:"body"`
-}
-
-// IndexStatus defines the observed state of Index
-type IndexStatus struct {
+// ProjectConfigStatus defines the observed state of ProjectConfig
+type ProjectConfigStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -39,24 +30,17 @@ type IndexStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Index is the Schema for the indices API
-type Index struct {
-	metav1.TypeMeta   `json:",inline"`
-	metav1.ObjectMeta `json:"metadata,omitempty"`
+type ProjectConfig struct {
+	metav1.TypeMeta `json:",inline"`
 
-	Spec   IndexSpec   `json:"spec,omitempty"`
-	Status IndexStatus `json:"status,omitempty"`
+	// ControllerManagerConfigurationSpec returns the contfigurations for controllers
+	cfg.ControllerManagerConfigurationSpec `json:",inline"`
+
+	TargetCluster ElasticsearchSpec `json:"targetCluster,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// IndexList contains a list of Index
-type IndexList struct {
-	metav1.TypeMeta `json:",inline"`
-	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Index `json:"items"`
-}
-
 func init() {
-	SchemeBuilder.Register(&Index{}, &IndexList{})
+	SchemeBuilder.Register(&ProjectConfig{})
 }

@@ -35,6 +35,8 @@ spec:
           spec:
             description: IndexSpec defines the desired state of Index
             properties:
+              body:
+                type: string
               dependsOn:
                 properties:
                   indexTemplates:
@@ -58,40 +60,8 @@ spec:
                       type: object
                     type: array
                 type: object
-              mapping:
-                type: string
-              settings:
-                type: string
-              targetCluster:
-                description: ElasticsearchSpec Definition of target elasticsearch
-                  cluster
-                properties:
-                  authentication:
-                    description: ElasticsearchAuthentication Definition of Elasticsearch
-                      authentication
-                    properties:
-                      usernamePasswordSecret:
-                        description: UsernamePasswordAuthentication Definition of
-                          Username/Password authentication
-                        properties:
-                          secretName:
-                            minLength: 0
-                            type: string
-                        required:
-                        - secretName
-                        type: object
-                    type: object
-                  eck:
-                    description: EckElasticsearchCluster Definition of ES cluster
-                      deployed using ECK
-                    properties:
-                      clusterName:
-                        minLength: 0
-                        type: string
-                    type: object
-                type: object
             required:
-            - targetCluster
+            - body
             type: object
           status:
             description: IndexStatus defines the observed state of Index

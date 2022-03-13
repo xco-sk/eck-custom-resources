@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controllers
+package es_eck
 
 import (
 	"context"
-	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
+
 	esCliUtils "github.com/xco-sk/eck-custom-resources/utils"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -29,7 +31,8 @@ import (
 // IndexReconciler reconciles a Index object
 type IndexReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme        *runtime.Scheme
+	ProjectConfig configv2.ProjectConfig
 }
 
 //+kubebuilder:rbac:groups=core,resources=secrets,verbs=get
@@ -40,10 +43,10 @@ type IndexReconciler struct {
 func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, index.Spec.TargetCluster, req)
-	// TODO remove target cluster - it has to be defined on operator level, not resource level.
+	// Define esclient as a singleton
+	esClient, _ := esCliUtils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
 
-	var index eseckv1.Index
+	var index eseckv1alpha1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
 		logger.Info("Index does not exists - deleting", "index", req.Name)
 
@@ -51,7 +54,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	var indicesCreateResponse, err = esClient.Indices.Create("test",
-		esClient.Indices.Create.WithHuman(),
+		esClient.Indices.Create.WithHuman(), //TODO implement body
 	)
 	if err != nil {
 		logger.Error(err, "Error querying")
@@ -67,6 +70,6 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 // SetupWithManager sets up the controller with the Manager.
 func (r *IndexReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&eseckv1.Index{}).
+		For(&eseckv1alpha1.Index{}).
 		Complete(r)
 }

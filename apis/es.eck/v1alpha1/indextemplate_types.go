@@ -25,8 +25,6 @@ import (
 
 // IndexTemplateSpec defines the desired state of IndexTemplate
 type IndexTemplateSpec struct {
-	// +required
-	TargetCluster ElasticsearchSpec `json:"targetCluster"`
 	// +optional
 	DependsOn Dependencies `json:"dependsOn,omitempty"`
 	// +kubebuilder:validation:MinLength=0

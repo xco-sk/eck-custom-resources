@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+package v2
 
 // ElasticsearchSpec Definition of target elasticsearch cluster
 type ElasticsearchSpec struct {

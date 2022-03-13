@@ -1,0 +1,24 @@
+# permissions for end users to edit projectconfi2gs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: projectconfi2g-editor-role
+rules:
+- apiGroups:
+  - config.github.com
+  resources:
+  - projectconfi2gs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - config.github.com
+  resources:
+  - projectconfi2gs/status
+  verbs:
+  - get

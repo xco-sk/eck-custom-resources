@@ -3,7 +3,8 @@ package utils
 import (
 	"context"
 	"github.com/elastic/go-elasticsearch/v8"
-	eseckv1 "github.com/xco-sk/eck-custom-resources/api/v1alpha1"
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+
 	k8sv1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -15,14 +16,14 @@ const eckHttpCertificateSecretSuffix = "-es-http-certs-public"
 const eckHttpCertificateCAKey = "ca.crt"
 const eckHttpServiceSuffix = "-es-http"
 
-func GetElasticUserSecret(cli client.Client, ctx context.Context, namespace string, esSpec eseckv1.ElasticsearchSpec, secret *k8sv1.Secret) error {
+func GetElasticUserSecret(cli client.Client, ctx context.Context, namespace string, esSpec configv2.ElasticsearchSpec, secret *k8sv1.Secret) error {
 	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: generateElasticUserSecretName(esSpec.EckCluster.ClusterName)}, secret); err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetHttpCertificateSecret(cli client.Client, ctx context.Context, namespace string, esSpec eseckv1.ElasticsearchSpec, secret *k8sv1.Secret) error {
+func GetHttpCertificateSecret(cli client.Client, ctx context.Context, namespace string, esSpec configv2.ElasticsearchSpec, secret *k8sv1.Secret) error {
 	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: generateHttpCertificateSecretName(esSpec.EckCluster.ClusterName)}, secret); err != nil {
 		return err
 	}
@@ -42,7 +43,7 @@ func generateHttpCertificateSecretName(clusterName string) string {
 	return clusterName + eckHttpCertificateSecretSuffix
 }
 
-func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec eseckv1.ElasticsearchSpec, req ctrl.Request) (*elasticsearch.Client, error) {
+func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec configv2.ElasticsearchSpec, req ctrl.Request) (*elasticsearch.Client, error) {
 	logger := log.FromContext(ctx)
 
 	var userSecret k8sv1.Secret
