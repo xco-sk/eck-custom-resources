@@ -90,6 +90,7 @@ func VerifyIndexEmpty(esClient *elasticsearch.Client, indexName string) (bool, e
 	}
 
 	count, conversionErr := strconv.Atoi(string(docsCount))
+	countResponse.Body.Close()
 	if conversionErr != nil {
 		return false, conversionErr
 	}
@@ -126,4 +127,25 @@ func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.
 		return ctrl.Result{}, nil
 	}
 	return ctrl.Result{}, nil
+}
+
+func RecreateIndexIfEmpty(esClient *elasticsearch.Client, req ctrl.Request) (ctrl.Result, error, bool) {
+	var logger = log.Log
+
+	indexEmpty, indexEmptyErr := VerifyIndexEmpty(esClient, req.Name)
+	if indexEmptyErr != nil {
+		return ctrl.Result{}, indexEmptyErr, true
+	}
+
+	if indexEmpty {
+		_, deleteErr := esClient.Indices.Delete([]string{req.Name})
+		if deleteErr != nil {
+			return ctrl.Result{}, deleteErr, true
+		}
+		logger.Info("Recreating index")
+	} else {
+		logger.Info("Index already exists and is not empty, doing nothing.", "Index name", req.Name)
+		return ctrl.Result{}, nil, true
+	}
+	return ctrl.Result{}, nil, false
 }
