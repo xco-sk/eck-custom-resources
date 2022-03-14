@@ -20,14 +20,12 @@ import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
-	"strings"
-	"time"
-
-	esCliUtils "github.com/xco-sk/eck-custom-resources/utils"
+	utils "github.com/xco-sk/eck-custom-resources/utils"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"strings"
 )
 
 // IndexReconciler reconciles a Index object
@@ -46,20 +44,17 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	logger := log.FromContext(ctx)
 
 	// Define esclient as a singleton
-	esClient, createCientErr := esCliUtils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
-	if createCientErr != nil {
-		logger.Error(createCientErr, "Failed to create Elasticsearch client")
-		return ctrl.Result{
-			Requeue:      true,
-			RequeueAfter: time.Duration(time.Duration.Minutes(1)),
-		}, client.IgnoreNotFound(createCientErr)
+	esClient, createClientErr := utils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	if createClientErr != nil {
+		logger.Error(createClientErr, "Failed to create Elasticsearch client")
+		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
 	}
 
 	var index eseckv1alpha1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
 		logger.Info("Index does not exists - deleting", "index", req.Name)
 
-		return ctrl.Result{}, nil
+		return utils.DeleteIndexIfEmpty(esClient, req.Name)
 	}
 
 	var indicesCreateResponse, createIndexErr = esClient.Indices.Create(index.Name,
@@ -69,10 +64,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	if createIndexErr != nil {
 		logger.Error(createIndexErr, "Error creating index")
-		return ctrl.Result{
-			Requeue:      true,
-			RequeueAfter: time.Duration(time.Duration.Minutes(1)),
-		}, client.IgnoreNotFound(createIndexErr)
+		return utils.GetRequeueResult(), client.IgnoreNotFound(createIndexErr)
 	}
 
 	defer indicesCreateResponse.Body.Close()
