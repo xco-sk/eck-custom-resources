@@ -89,3 +89,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotlifecyclepolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotlifecyclepolicies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotlifecyclepolicies/status
+  verbs:
+  - get
+  - patch
+  - update

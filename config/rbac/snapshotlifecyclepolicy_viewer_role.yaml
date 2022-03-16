@@ -1,0 +1,20 @@
+# permissions for end users to view snapshotlifecyclepolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: snapshotlifecyclepolicy-viewer-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotlifecyclepolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotlifecyclepolicies/status
+  verbs:
+  - get

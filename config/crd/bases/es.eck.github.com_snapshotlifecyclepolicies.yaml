@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: indexlifecyclepolicies.es.eck.github.com
+  name: snapshotlifecyclepolicies.es.eck.github.com
 spec:
   group: es.eck.github.com
   names:
-    kind: IndexLifecyclePolicy
-    listKind: IndexLifecyclePolicyList
-    plural: indexlifecyclepolicies
-    singular: indexlifecyclepolicy
+    kind: SnapshotLifecyclePolicy
+    listKind: SnapshotLifecyclePolicyList
+    plural: snapshotlifecyclepolicies
+    singular: snapshotlifecyclepolicy
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: IndexLifecyclePolicy is the Schema for the indexlifecyclepolicies
+        description: SnapshotLifecyclePolicy is the Schema for the snapshotlifecyclepolicies
           API
         properties:
           apiVersion:
@@ -34,7 +34,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: IndexLifecyclePolicySpec defines the desired state of IndexLifecyclePolicy
+            description: SnapshotLifecyclePolicySpec defines the desired state of
+              SnapshotLifecyclePolicy
             properties:
               body:
                 minLength: 0
@@ -43,8 +44,8 @@ spec:
             - body
             type: object
           status:
-            description: IndexLifecyclePolicyStatus defines the observed state of
-              IndexLifecyclePolicy
+            description: SnapshotLifecyclePolicyStatus defines the observed state
+              of SnapshotLifecyclePolicy
             type: object
         type: object
     served: true

@@ -121,6 +121,14 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexLifecyclePolicy")
 		os.Exit(1)
 	}
+	if err = (&eseckcontrollers.SnapshotLifecyclePolicyReconciler{
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SnapshotLifecyclePolicy")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

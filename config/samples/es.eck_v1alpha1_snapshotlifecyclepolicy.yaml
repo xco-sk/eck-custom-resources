@@ -1,0 +1,6 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: SnapshotLifecyclePolicy
+metadata:
+  name: snapshotlifecyclepolicy-sample
+spec:
+  # TODO(user): Add fields here
