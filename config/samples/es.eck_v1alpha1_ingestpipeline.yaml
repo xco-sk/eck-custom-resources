@@ -1,0 +1,6 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: IngestPipeline
+metadata:
+  name: ingestpipeline-sample
+spec:
+  # TODO(user): Add fields here

@@ -92,6 +92,32 @@ rules:
 - apiGroups:
   - es.eck.github.com
   resources:
+  - ingestpipelines
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - ingestpipelines/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - ingestpipelines/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
   - roles
   verbs:
   - create
@@ -137,6 +163,58 @@ rules:
   - es.eck.github.com
   resources:
   - snapshotlifecyclepolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotrepositories
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotrepositories/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - snapshotrepositories/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - users
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - users/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - users/status
   verbs:
   - get
   - patch
