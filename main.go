@@ -34,7 +34,7 @@ import (
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 
-	controllers "github.com/xco-sk/eck-custom-resources/controllers/es.eck"
+	eseckcontrollers "github.com/xco-sk/eck-custom-resources/controllers/es.eck"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -97,7 +97,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.IndexReconciler{
+	if err = (&eseckcontrollers.IndexReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
@@ -105,12 +105,19 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "Index")
 		os.Exit(1)
 	}
-	if err = (&controllers.IndexTemplateReconciler{
+	if err = (&eseckcontrollers.IndexTemplateReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexTemplate")
+		os.Exit(1)
+	}
+	if err = (&eseckcontrollers.IndexLifecyclePolicyReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "IndexLifecyclePolicy")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

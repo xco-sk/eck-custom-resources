@@ -1,0 +1,20 @@
+# permissions for end users to view indexlifecyclepolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: indexlifecyclepolicy-viewer-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indexlifecyclepolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indexlifecyclepolicies/status
+  verbs:
+  - get

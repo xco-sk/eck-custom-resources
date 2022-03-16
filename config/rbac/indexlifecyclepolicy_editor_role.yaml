@@ -1,0 +1,24 @@
+# permissions for end users to edit indexlifecyclepolicies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: indexlifecyclepolicy-editor-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indexlifecyclepolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - indexlifecyclepolicies/status
+  verbs:
+  - get
