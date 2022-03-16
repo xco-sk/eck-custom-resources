@@ -92,6 +92,32 @@ rules:
 - apiGroups:
   - es.eck.github.com
   resources:
+  - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - roles/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - roles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
   - snapshotlifecyclepolicies
   verbs:
   - create
