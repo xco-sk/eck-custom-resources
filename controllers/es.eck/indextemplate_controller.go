@@ -18,6 +18,8 @@ package es_eck
 
 import (
 	"context"
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -30,28 +32,32 @@ import (
 // IndexTemplateReconciler reconciles a IndexTemplate object
 type IndexTemplateReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme        *runtime.Scheme
+	ProjectConfig configv2.ProjectConfig
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the IndexTemplate object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// Define esclient as a singleton
+	esClient, createClientErr := utils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	if createClientErr != nil {
+		logger.Error(createClientErr, "Failed to create Elasticsearch client")
+		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
+	}
 
-	return ctrl.Result{}, nil
+	var indexTemplate eseckv1alpha1.IndexTemplate
+	if err := r.Get(ctx, req.NamespacedName, &indexTemplate); err != nil {
+		logger.Info("Index template does not exists - deleting", "index template", req.Name)
+		return utils.DeleteIndexTemplate(esClient, req.Name)
+	}
+
+	logger.Info("Creating/Updating index template", "index template", req.Name)
+	return utils.UpsertIndexTemplate(esClient, indexTemplate)
 }
 
 // SetupWithManager sets up the controller with the Manager.

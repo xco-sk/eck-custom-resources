@@ -20,7 +20,7 @@ import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
-	utils "github.com/xco-sk/eck-custom-resources/utils"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -66,6 +66,8 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		result, err, recreated := utils.RecreateIndexIfEmpty(esClient, req)
 		if recreated {
 			return result, err
+		} else {
+			// TODO patch index
 		}
 	}
 

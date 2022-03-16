@@ -106,8 +106,9 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&controllers.IndexTemplateReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexTemplate")
 		os.Exit(1)
