@@ -25,11 +25,9 @@ import (
 
 // IndexLifecyclePolicySpec defines the desired state of IndexLifecyclePolicy
 type IndexLifecyclePolicySpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of IndexLifecyclePolicy. Edit indexlifecyclepolicy_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// +kubebuilder:validation:MinLength=0
+	// +required
+	Body string `json:"body"`
 }
 
 // IndexLifecyclePolicyStatus defines the observed state of IndexLifecyclePolicy
