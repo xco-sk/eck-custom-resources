@@ -15,7 +15,7 @@ func DeleteIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePo
 	return ctrl.Result{}, nil
 }
 
-func UpsertIndesLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePolicy v1alpha1.IndexLifecyclePolicy) (ctrl.Result, error) {
+func UpsertIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePolicy v1alpha1.IndexLifecyclePolicy) (ctrl.Result, error) {
 	_, err := esClient.ILM.PutLifecycle(
 		indexLifecyclePolicy.Name,
 		esClient.ILM.PutLifecycle.WithBody(strings.NewReader(indexLifecyclePolicy.Spec.Body)),

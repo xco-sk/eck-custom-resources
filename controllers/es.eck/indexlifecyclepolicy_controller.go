@@ -57,7 +57,7 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 		return utils.DeleteIndexLifecyclePolicy(esClient, req.Name)
 	}
 
-	return utils.UpsertIndesLifecyclePolicy(esClient, indexLifecyclePolicy)
+	return utils.UpsertIndexLifecyclePolicy(esClient, indexLifecyclePolicy)
 }
 
 // SetupWithManager sets up the controller with the Manager.
