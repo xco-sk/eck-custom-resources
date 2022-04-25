@@ -36,10 +36,10 @@ spec:
           spec:
             description: SnapshotRepositorySpec defines the desired state of SnapshotRepository
             properties:
-              foo:
-                description: Foo is an example field of SnapshotRepository. Edit snapshotrepository_types.go
-                  to remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: SnapshotRepositoryStatus defines the observed state of SnapshotRepository

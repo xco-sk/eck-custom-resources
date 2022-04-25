@@ -35,10 +35,10 @@ spec:
           spec:
             description: IngestPipelineSpec defines the desired state of IngestPipeline
             properties:
-              foo:
-                description: Foo is an example field of IngestPipeline. Edit ingestpipeline_types.go
-                  to remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: IngestPipelineStatus defines the observed state of IngestPipeline

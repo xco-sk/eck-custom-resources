@@ -35,10 +35,10 @@ spec:
           spec:
             description: VisualizationSpec defines the desired state of Visualization
             properties:
-              foo:
-                description: Foo is an example field of Visualization. Edit visualization_types.go
-                  to remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: VisualizationStatus defines the observed state of Visualization

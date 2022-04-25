@@ -35,10 +35,10 @@ spec:
           spec:
             description: SavedSearchSpec defines the desired state of SavedSearch
             properties:
-              foo:
-                description: Foo is an example field of SavedSearch. Edit savedsearch_types.go
-                  to remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: SavedSearchStatus defines the observed state of SavedSearch

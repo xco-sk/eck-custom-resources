@@ -25,11 +25,7 @@ import (
 
 // IngestPipelineSpec defines the desired state of IngestPipeline
 type IngestPipelineSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of IngestPipeline. Edit ingestpipeline_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Body string `json:"body"`
 }
 
 // IngestPipelineStatus defines the observed state of IngestPipeline

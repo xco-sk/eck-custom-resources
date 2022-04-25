@@ -25,11 +25,7 @@ import (
 
 // SavedSearchSpec defines the desired state of SavedSearch
 type SavedSearchSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of SavedSearch. Edit savedsearch_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Body string `json:"body"`
 }
 
 // SavedSearchStatus defines the observed state of SavedSearch

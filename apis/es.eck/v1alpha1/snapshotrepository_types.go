@@ -25,11 +25,7 @@ import (
 
 // SnapshotRepositorySpec defines the desired state of SnapshotRepository
 type SnapshotRepositorySpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of SnapshotRepository. Edit snapshotrepository_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Body string `json:"body"`
 }
 
 // SnapshotRepositoryStatus defines the observed state of SnapshotRepository

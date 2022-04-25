@@ -25,11 +25,7 @@ import (
 
 // DashboardSpec defines the desired state of Dashboard
 type DashboardSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of Dashboard. Edit dashboard_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Body string `json:"body"`
 }
 
 // DashboardStatus defines the observed state of Dashboard

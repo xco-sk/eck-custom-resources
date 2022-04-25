@@ -35,10 +35,10 @@ spec:
           spec:
             description: IndexPatternSpec defines the desired state of IndexPattern
             properties:
-              foo:
-                description: Foo is an example field of IndexPattern. Edit indexpattern_types.go
-                  to remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: IndexPatternStatus defines the observed state of IndexPattern

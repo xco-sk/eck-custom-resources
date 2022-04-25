@@ -35,10 +35,10 @@ spec:
           spec:
             description: UserSpec defines the desired state of User
             properties:
-              foo:
-                description: Foo is an example field of User. Edit user_types.go to
-                  remove/update
+              body:
                 type: string
+            required:
+            - body
             type: object
           status:
             description: UserStatus defines the observed state of User
