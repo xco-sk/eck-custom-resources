@@ -1,0 +1,14 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: Index
+metadata:
+  name: index-base-sample
+spec:
+  dependsOn:
+    indexTemplates:
+      - indexTemplateName: indextemplate-sample
+  body: |
+    {
+      "aliases": {
+          "index-sample-alias": {}
+      }
+    }

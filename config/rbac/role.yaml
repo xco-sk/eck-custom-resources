@@ -219,3 +219,107 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dashboards
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dashboards/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dashboards/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - indexpatterns
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - indexpatterns/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - indexpatterns/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - savedsearches
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - savedsearches/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - savedsearches/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - visualizations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - visualizations/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - visualizations/status
+  verbs:
+  - get
+  - patch
+  - update

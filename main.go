@@ -34,7 +34,9 @@ import (
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 
+	kibanaeckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1"
 	eseckcontrollers "github.com/xco-sk/eck-custom-resources/controllers/es.eck"
+	kibanaeckcontrollers "github.com/xco-sk/eck-custom-resources/controllers/kibana.eck"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -48,6 +50,7 @@ func init() {
 
 	utilruntime.Must(eseckv1alpha1.AddToScheme(scheme))
 	utilruntime.Must(configv2.AddToScheme(scheme))
+	utilruntime.Must(kibanaeckv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -155,6 +158,34 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SnapshotRepository")
+		os.Exit(1)
+	}
+	if err = (&kibanaeckcontrollers.SavedSearchReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "SavedSearch")
+		os.Exit(1)
+	}
+	if err = (&kibanaeckcontrollers.IndexPatternReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "IndexPattern")
+		os.Exit(1)
+	}
+	if err = (&kibanaeckcontrollers.VisualizationReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Visualization")
+		os.Exit(1)
+	}
+	if err = (&kibanaeckcontrollers.DashboardReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

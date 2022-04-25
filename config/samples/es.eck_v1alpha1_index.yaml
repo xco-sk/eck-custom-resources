@@ -3,14 +3,28 @@ kind: Index
 metadata:
   name: index-sample
 spec:
-  settings: |
+  dependsOn:
+    indexTemplates:
+      - indexTemplateName: indextemplate-sample
+    indices:
+      - indexName: index-base-samplee
+  body: |
     {
-      "number_of_shards": 2,
-      "number_of_replicase": 0
+      "index": {
+          "lifecycle": {
+            "name": "indexlifecyclepolicy-sample"
+          }
+      },
+      "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+      },
+      "mappings": {
+          "properties": {
+            "field1": { "type": "text" }
+          }
+      },
+      "aliases": {
+          "index-sample-alias": {}
+      }
     }
-  targetCluster:
-    authentication:
-      usernamePasswordSecret:
-        secretName: quickstart-es-elastic-user
-    eck:
-      clusterName: quickstart

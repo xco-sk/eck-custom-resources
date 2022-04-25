@@ -1,0 +1,6 @@
+apiVersion: kibana.eck.github.com/v1alpha1
+kind: IndexPattern
+metadata:
+  name: indexpattern-sample
+spec:
+  # TODO(user): Add fields here

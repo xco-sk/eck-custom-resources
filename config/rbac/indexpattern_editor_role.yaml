@@ -1,0 +1,24 @@
+# permissions for end users to edit indexpatterns.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: indexpattern-editor-role
+rules:
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - indexpatterns
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - indexpatterns/status
+  verbs:
+  - get

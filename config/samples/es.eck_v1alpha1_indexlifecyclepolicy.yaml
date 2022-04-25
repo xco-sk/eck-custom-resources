@@ -3,4 +3,30 @@ kind: IndexLifecyclePolicy
 metadata:
   name: indexlifecyclepolicy-sample
 spec:
-  # TODO(user): Add fields here
+  body: |
+    {
+      "policy": {
+        "_meta": {
+          "description": "used as example for lifecycle policy",
+          "project": {
+            "name": "eck-custom-resources"
+          }
+        },
+        "phases": {
+          "warm": {
+            "min_age": "10d",
+            "actions": {
+              "forcemerge": {
+                "max_num_segments": 1
+              }
+            }
+          },
+          "delete": {
+            "min_age": "30d",
+            "actions": {
+              "delete": {}
+            }
+          }
+        }
+      }
+    }
