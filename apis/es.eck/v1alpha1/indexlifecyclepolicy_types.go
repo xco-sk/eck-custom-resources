@@ -20,9 +20,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // IndexLifecyclePolicySpec defines the desired state of IndexLifecyclePolicy
 type IndexLifecyclePolicySpec struct {
 	// +kubebuilder:validation:MinLength=0
@@ -32,8 +29,6 @@ type IndexLifecyclePolicySpec struct {
 
 // IndexLifecyclePolicyStatus defines the observed state of IndexLifecyclePolicy
 type IndexLifecyclePolicyStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true

@@ -20,6 +20,7 @@ import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
+	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -44,7 +45,7 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 	logger := log.FromContext(ctx)
 
 	// Define esclient as a singleton
-	esClient, createClientErr := utils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
@@ -54,10 +55,10 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 	if err := r.Get(ctx, req.NamespacedName, &snapshotLifecyclePolicy); err != nil {
 		logger.Info("Deleting Snapshot lifecycle policy", "snapshot lifecycle policy", req.Name)
 
-		return utils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
+		return esutils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
 	}
 
-	return utils.UpsertSnapshotLifecyclePolicy(esClient, snapshotLifecyclePolicy)
+	return esutils.UpsertSnapshotLifecyclePolicy(esClient, snapshotLifecyclePolicy)
 }
 
 // SetupWithManager sets up the controller with the Manager.

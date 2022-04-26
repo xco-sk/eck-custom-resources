@@ -1,8 +1,9 @@
-package utils
+package elasticsearch
 
 import (
 	"encoding/json"
 	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -42,7 +43,7 @@ func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.
 	indexExists, existsErr := VerifyIndexExists(esClient, indexName)
 	if existsErr != nil {
 		logger.Error(existsErr, "Failed to verify if index exists")
-		return GetRequeueResult(), existsErr
+		return utils.GetRequeueResult(), existsErr
 	}
 
 	if !indexExists {
@@ -53,13 +54,13 @@ func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.
 	isEmpty, emptyErr := VerifyIndexEmpty(esClient, indexName)
 	if emptyErr != nil {
 		logger.Error(emptyErr, "Failed to verify if index is empty")
-		return GetRequeueResult(), emptyErr
+		return utils.GetRequeueResult(), emptyErr
 	}
 
 	if isEmpty {
 		res, deleteErr := esClient.Indices.Delete([]string{indexName})
 		if deleteErr != nil || res.IsError() {
-			return GetRequeueResult(), deleteErr
+			return utils.GetRequeueResult(), deleteErr
 		}
 	} else {
 		logger.Info("Index not empty, skipping deletion", "Index name", indexName)

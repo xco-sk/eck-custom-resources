@@ -19,6 +19,8 @@ package eseck
 import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
+	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -39,21 +41,24 @@ type IngestPipelineReconciler struct {
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=ingestpipelines/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=ingestpipelines/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the IngestPipeline object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// Define esclient as a singleton
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	if createClientErr != nil {
+		logger.Error(createClientErr, "Failed to create Elasticsearch client")
+		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
+	}
 
-	return ctrl.Result{}, nil
+	var ingestPipeline eseckv1alpha1.IngestPipeline
+	if err := r.Get(ctx, req.NamespacedName, &ingestPipeline); err != nil {
+		logger.Info("Deleting Ingest pipeline", "id", req.Name)
+		return esutils.DeleteIngestPipeline(esClient, req.Name)
+	}
+
+	logger.Info("Creating/Updating Ingest pipeline", "id", req.Name)
+	return esutils.UpsertIngestPipeline(esClient, ingestPipeline)
 }
 
 // SetupWithManager sets up the controller with the Manager.
