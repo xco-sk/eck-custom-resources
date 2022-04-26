@@ -52,7 +52,7 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 
 	var snapshotLifecyclePolicy eseckv1alpha1.SnapshotLifecyclePolicy
 	if err := r.Get(ctx, req.NamespacedName, &snapshotLifecyclePolicy); err != nil {
-		logger.Info("Snapshot lifecycle policy does not exists - deleting", "snapshot lifecycle policy", req.Name)
+		logger.Info("Deleting Snapshot lifecycle policy", "snapshot lifecycle policy", req.Name)
 
 		return utils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
 	}

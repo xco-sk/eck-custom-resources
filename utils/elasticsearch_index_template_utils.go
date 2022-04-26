@@ -8,17 +8,19 @@ import (
 )
 
 func DeleteIndexTemplate(esClient *elasticsearch.Client, indexTemplateName string) (ctrl.Result, error) {
-	_, err := esClient.Indices.DeleteTemplate(indexTemplateName)
-	if err != nil {
+	res, err := esClient.Indices.DeleteTemplate(indexTemplateName)
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
-	return ctrl.Result{}, err
+	return ctrl.Result{}, nil
 }
 
 func UpsertIndexTemplate(esClient *elasticsearch.Client, indexTemplate v1alpha1.IndexTemplate) (ctrl.Result, error) {
-	_, err := esClient.Indices.PutIndexTemplate(indexTemplate.Name, strings.NewReader(indexTemplate.Spec.Body))
-	if err != nil {
+	res, err := esClient.Indices.PutIndexTemplate(indexTemplate.Name, strings.NewReader(indexTemplate.Spec.Body))
+
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
+
 	return ctrl.Result{}, nil
 }

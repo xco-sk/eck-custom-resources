@@ -8,20 +8,22 @@ import (
 )
 
 func DeleteIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePolicyName string) (ctrl.Result, error) {
-	_, err := esClient.ILM.DeleteLifecycle(indexLifecyclePolicyName)
-	if err != nil {
+	res, err := esClient.ILM.DeleteLifecycle(indexLifecyclePolicyName)
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
 	return ctrl.Result{}, nil
 }
 
 func UpsertIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePolicy v1alpha1.IndexLifecyclePolicy) (ctrl.Result, error) {
-	_, err := esClient.ILM.PutLifecycle(
+	res, err := esClient.ILM.PutLifecycle(
 		indexLifecyclePolicy.Name,
 		esClient.ILM.PutLifecycle.WithBody(strings.NewReader(indexLifecyclePolicy.Spec.Body)),
 	)
-	if err != nil {
+
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
+
 	return ctrl.Result{}, nil
 }

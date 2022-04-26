@@ -57,8 +57,8 @@ func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.
 	}
 
 	if isEmpty {
-		_, deleteErr := esClient.Indices.Delete([]string{indexName})
-		if deleteErr != nil {
+		res, deleteErr := esClient.Indices.Delete([]string{indexName})
+		if deleteErr != nil || res.IsError() {
 			return GetRequeueResult(), deleteErr
 		}
 	} else {
@@ -78,8 +78,8 @@ func RecreateIndexIfEmpty(esClient *elasticsearch.Client, req ctrl.Request) (ctr
 	}
 
 	if indexEmpty {
-		_, deleteErr := esClient.Indices.Delete([]string{req.Name})
-		if deleteErr != nil {
+		res, deleteErr := esClient.Indices.Delete([]string{req.Name})
+		if deleteErr != nil || res.IsError() {
 			return ctrl.Result{}, deleteErr, true
 		}
 		logger.Info("Recreating index")

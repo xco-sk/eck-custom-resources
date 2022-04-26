@@ -52,7 +52,7 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 	var indexTemplate eseckv1alpha1.IndexTemplate
 	if err := r.Get(ctx, req.NamespacedName, &indexTemplate); err != nil {
-		logger.Info("Index template does not exists - deleting", "index template", req.Name)
+		logger.Info("Deleting Index template", "index template", req.Name)
 		return utils.DeleteIndexTemplate(esClient, req.Name)
 	}
 

@@ -8,16 +8,16 @@ import (
 )
 
 func DeleteSnapshotLifecyclePolicy(esClient *elasticsearch.Client, snapshotLifecyclePolicyName string) (ctrl.Result, error) {
-	_, err := esClient.SlmDeleteLifecycle(snapshotLifecyclePolicyName)
-	if err != nil {
+	res, err := esClient.SlmDeleteLifecycle(snapshotLifecyclePolicyName)
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
 	return ctrl.Result{}, nil
 }
 
 func UpsertSnapshotLifecyclePolicy(esClient *elasticsearch.Client, snapshotLifecyclePolicy v1alpha1.SnapshotLifecyclePolicy) (ctrl.Result, error) {
-	_, err := esClient.SlmPutLifecycle(snapshotLifecyclePolicy.Name, esClient.SlmPutLifecycle.WithBody(strings.NewReader(snapshotLifecyclePolicy.Spec.Body)))
-	if err != nil {
+	res, err := esClient.SlmPutLifecycle(snapshotLifecyclePolicy.Name, esClient.SlmPutLifecycle.WithBody(strings.NewReader(snapshotLifecyclePolicy.Spec.Body)))
+	if err != nil || res.IsError() {
 		return GetRequeueResult(), err
 	}
 	return ctrl.Result{}, nil

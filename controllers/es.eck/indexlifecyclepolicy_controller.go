@@ -52,7 +52,7 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 
 	var indexLifecyclePolicy eseckv1alpha1.IndexLifecyclePolicy
 	if err := r.Get(ctx, req.NamespacedName, &indexLifecyclePolicy); err != nil {
-		logger.Info("Index lifecycle policy does not exists - deleting", "index lifecycle policy", req.Name)
+		logger.Info("Deleting Index lifecycle policy", "index lifecycle policy", req.Name)
 
 		return utils.DeleteIndexLifecyclePolicy(esClient, req.Name)
 	}

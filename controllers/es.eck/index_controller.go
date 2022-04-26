@@ -62,6 +62,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		logger.Error(indexExistsErr, "Failed to verify if index exists")
 		return ctrl.Result{}, indexExistsErr
 	}
+
 	if indexExists {
 		result, err, recreated := utils.RecreateIndexIfEmpty(esClient, req)
 		if recreated {
@@ -75,12 +76,11 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		esClient.Indices.Create.WithBody(strings.NewReader(index.Spec.Body)),
 	)
 
-	if createIndexErr != nil {
+	if createIndexErr != nil || indicesCreateResponse.IsError() {
 		logger.Error(createIndexErr, "Error creating index")
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createIndexErr)
 	}
 	defer indicesCreateResponse.Body.Close()
-	logger.Info("Got", "response", indicesCreateResponse)
 
 	return ctrl.Result{}, nil
 }
