@@ -18,6 +18,7 @@ package eseck
 
 import (
 	"context"
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -30,7 +31,8 @@ import (
 // SnapshotRepositoryReconciler reconciles a SnapshotRepository object
 type SnapshotRepositoryReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme        *runtime.Scheme
+	ProjectConfig configv2.ProjectConfig
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=snapshotrepositories,verbs=get;list;watch;create;update;patch;delete

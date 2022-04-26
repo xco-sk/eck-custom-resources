@@ -52,7 +52,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	var index eseckv1alpha1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
-		logger.Info("Index does not exists - deleting", "index", req.Name)
+		logger.Info("Deleting index", "index", req.Name)
 
 		return utils.DeleteIndexIfEmpty(esClient, req.Name)
 	}
@@ -72,7 +72,6 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	var indicesCreateResponse, createIndexErr = esClient.Indices.Create(index.Name,
-		esClient.Indices.Create.WithHuman(),
 		esClient.Indices.Create.WithBody(strings.NewReader(index.Spec.Body)),
 	)
 

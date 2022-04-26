@@ -59,6 +59,8 @@ func main() {
 	var enableLeaderElection bool
 	var probeAddr string
 	var configFile string
+	var eckClusterName string
+	var eckSecretName string
 	flag.StringVar(&configFile, "config", "",
 		"The controller will load its initial configuration from this file. "+
 			"Omit this flag to use the default configuration values. "+
@@ -68,6 +70,8 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
+	flag.StringVar(&eckClusterName, "eck-cluster-name", "quickstart", "The ECK cluster name")
+	flag.StringVar(&eckSecretName, "eck-secret-name", "quickstart-es-elastic-user", "The secret name that contains 'elastic' user credentials.")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -77,7 +81,18 @@ func main() {
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
 	var err error
-	ctrlConfig := configv2.ProjectConfig{}
+	ctrlConfig := configv2.ProjectConfig{
+		TargetCluster: configv2.ElasticsearchSpec{
+			EckCluster: configv2.EckElasticsearchCluster{
+				ClusterName: eckClusterName,
+			},
+			Authentication: configv2.ElasticsearchAuthentication{
+				UsernamePassword: configv2.UsernamePasswordAuthentication{
+					SecretName: eckSecretName,
+				},
+			},
+		},
+	}
 	options := ctrl.Options{
 		Scheme:                 scheme,
 		MetricsBindAddress:     metricsAddr,
@@ -86,6 +101,7 @@ func main() {
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "d47cd155.github.com",
 	}
+
 	if configFile != "" {
 		options, err = options.AndFrom(ctrl.ConfigFile().AtPath(configFile).OfKind(&ctrlConfig))
 		if err != nil {
@@ -133,57 +149,65 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&eseckcontrollers.RoleReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Role")
 		os.Exit(1)
 	}
 	if err = (&eseckcontrollers.UserReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "User")
 		os.Exit(1)
 	}
 	if err = (&eseckcontrollers.IngestPipelineReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IngestPipeline")
 		os.Exit(1)
 	}
 	if err = (&eseckcontrollers.SnapshotRepositoryReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SnapshotRepository")
 		os.Exit(1)
 	}
 	if err = (&kibanaeckcontrollers.SavedSearchReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SavedSearch")
 		os.Exit(1)
 	}
 	if err = (&kibanaeckcontrollers.IndexPatternReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexPattern")
 		os.Exit(1)
 	}
 	if err = (&kibanaeckcontrollers.VisualizationReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Visualization")
 		os.Exit(1)
 	}
 	if err = (&kibanaeckcontrollers.DashboardReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
 		os.Exit(1)

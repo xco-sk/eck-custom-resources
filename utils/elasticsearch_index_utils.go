@@ -1,10 +1,10 @@
 package utils
 
 import (
+	"encoding/json"
 	"github.com/elastic/go-elasticsearch/v8"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"strconv"
 )
 
 func VerifyIndexExists(esClient *elasticsearch.Client, indexName string) (bool, error) {
@@ -19,19 +19,14 @@ func VerifyIndexEmpty(esClient *elasticsearch.Client, indexName string) (bool, e
 	var countResponse, countErr = esClient.Count(
 		esClient.Count.WithIndex(indexName),
 	)
-	var docsCount []byte
 	if countErr != nil {
 		return false, countErr
 	}
 
-	_, readErr := countResponse.Body.Read(docsCount)
-	if readErr != nil {
-		return false, readErr
-	}
-
-	count, conversionErr := strconv.Atoi(string(docsCount))
-	if conversionErr != nil {
-		return false, conversionErr
+	var jsonResponse map[string]interface{}
+	decodeErr := json.NewDecoder(countResponse.Body).Decode(&jsonResponse)
+	if decodeErr != nil {
+		return false, decodeErr
 	}
 
 	responseCloseErr := countResponse.Body.Close()
@@ -39,7 +34,7 @@ func VerifyIndexEmpty(esClient *elasticsearch.Client, indexName string) (bool, e
 		return false, responseCloseErr
 	}
 
-	return count == 0, nil
+	return int(jsonResponse["count"].(float64)) == 0, nil
 }
 
 func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.Result, error) {
