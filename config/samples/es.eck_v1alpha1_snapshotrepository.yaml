@@ -3,4 +3,10 @@ kind: SnapshotRepository
 metadata:
   name: snapshotrepository-sample
 spec:
-  # TODO(user): Add fields here
+  body: |
+    {
+      "type": "fs",
+      "settings": {
+        "location": "/tmp/"
+      }
+    }

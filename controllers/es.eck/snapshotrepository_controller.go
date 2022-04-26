@@ -19,6 +19,8 @@ package eseck
 import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
+	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -49,11 +51,23 @@ type SnapshotRepositoryReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *SnapshotRepositoryReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	// Define esclient as a singleton
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.TargetCluster, req)
+	if createClientErr != nil {
+		logger.Error(createClientErr, "Failed to create Elasticsearch client")
+		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
+	}
 
-	return ctrl.Result{}, nil
+	var snapshotRepository eseckv1alpha1.SnapshotRepository
+	if err := r.Get(ctx, req.NamespacedName, &snapshotRepository); err != nil {
+		logger.Info("Deleting Snapshot repository", "snapshot repository", req.Name)
+		return esutils.DeleteSnapshotRepository(esClient, req.Name)
+	}
+
+	logger.Info("Creating/Updating Snapshot repository", "snapshot repository", req.Name)
+	return esutils.UpsertSnapshotRepository(esClient, snapshotRepository)
 }
 
 // SetupWithManager sets up the controller with the Manager.
