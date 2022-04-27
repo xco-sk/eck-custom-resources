@@ -55,24 +55,6 @@ resources:
   controller: true
   domain: github.com
   group: es.eck
-  kind: Role
-  path: github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1
-  version: v1alpha1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: github.com
-  group: es.eck
-  kind: User
-  path: github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1
-  version: v1alpha1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: github.com
-  group: es.eck
   kind: IngestPipeline
   path: github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1
   version: v1alpha1
@@ -120,5 +102,23 @@ resources:
   group: kibana.eck
   kind: Dashboard
   path: github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: es.eck
+  kind: ElasticsearchRole
+  path: github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: es.eck
+  kind: ElasticsearchUser
+  path: github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1
   version: v1alpha1
 version: "3"

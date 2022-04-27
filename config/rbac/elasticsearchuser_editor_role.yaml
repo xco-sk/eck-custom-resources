@@ -1,0 +1,24 @@
+# permissions for end users to edit elasticsearchusers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elasticsearchuser-editor-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchusers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchusers/status
+  verbs:
+  - get

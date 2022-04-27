@@ -1,6 +1,6 @@
 apiVersion: es.eck.github.com/v1alpha1
-kind: User
+kind: ElasticsearchUser
 metadata:
-  name: user-sample
+  name: elasticsearchuser-sample
 spec:
   # TODO(user): Add fields here

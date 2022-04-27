@@ -1,0 +1,24 @@
+# permissions for end users to edit elasticsearchroles.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elasticsearchrole-editor-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchroles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchroles/status
+  verbs:
+  - get

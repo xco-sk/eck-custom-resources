@@ -20,43 +20,38 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// RoleSpec defines the desired state of Role
-type RoleSpec struct {
+// ElasticsearchRoleSpec defines the desired state of ElasticsearchRole
+type ElasticsearchRoleSpec struct {
 	// +kubebuilder:validation:MinLength=0
 	// +required
 	Body string `json:"body"`
 }
 
-// RoleStatus defines the observed state of Role
-type RoleStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+// ElasticsearchRoleStatus defines the observed state of ElasticsearchRole
+type ElasticsearchRoleStatus struct {
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Role is the Schema for the roles API
-type Role struct {
+// ElasticsearchRole is the Schema for the elasticsearchroles API
+type ElasticsearchRole struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   RoleSpec   `json:"spec,omitempty"`
-	Status RoleStatus `json:"status,omitempty"`
+	Spec   ElasticsearchRoleSpec   `json:"spec,omitempty"`
+	Status ElasticsearchRoleStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// RoleList contains a list of Role
-type RoleList struct {
+// ElasticsearchRoleList contains a list of ElasticsearchRole
+type ElasticsearchRoleList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Role `json:"items"`
+	Items           []ElasticsearchRole `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Role{}, &RoleList{})
+	SchemeBuilder.Register(&ElasticsearchRole{}, &ElasticsearchRoleList{})
 }

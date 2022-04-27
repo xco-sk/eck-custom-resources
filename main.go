@@ -148,22 +148,6 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "SnapshotLifecyclePolicy")
 		os.Exit(1)
 	}
-	if err = (&eseckcontrollers.RoleReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		ProjectConfig: ctrlConfig,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Role")
-		os.Exit(1)
-	}
-	if err = (&eseckcontrollers.UserReconciler{
-		Client:        mgr.GetClient(),
-		Scheme:        mgr.GetScheme(),
-		ProjectConfig: ctrlConfig,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "User")
-		os.Exit(1)
-	}
 	if err = (&eseckcontrollers.IngestPipelineReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
@@ -210,6 +194,22 @@ func main() {
 		ProjectConfig: ctrlConfig,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
+		os.Exit(1)
+	}
+	if err = (&eseckcontrollers.ElasticsearchRoleReconciler{
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchRole")
+		os.Exit(1)
+	}
+	if err = (&eseckcontrollers.ElasticsearchUserReconciler{
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchUser")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

@@ -28,27 +28,27 @@ import (
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 )
 
-// RoleReconciler reconciles a Role object
-type RoleReconciler struct {
+// ElasticsearchUserReconciler reconciles a ElasticsearchUser object
+type ElasticsearchUserReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
 }
 
-//+kubebuilder:rbac:groups=es.eck.github.com,resources=roles,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=es.eck.github.com,resources=roles/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=es.eck.github.com,resources=roles/finalizers,verbs=update
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=elasticsearchusers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=elasticsearchusers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=es.eck.github.com,resources=elasticsearchusers/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Role object against the actual cluster state, and then
+// the ElasticsearchUser object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
-func (r *RoleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
@@ -57,8 +57,8 @@ func (r *RoleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *RoleReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *ElasticsearchUserReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&eseckv1alpha1.Role{}).
+		For(&eseckv1alpha1.ElasticsearchUser{}).
 		Complete(r)
 }

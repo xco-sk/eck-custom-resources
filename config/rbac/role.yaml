@@ -14,6 +14,58 @@ rules:
 - apiGroups:
   - es.eck.github.com
   resources:
+  - elasticsearchroles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchroles/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchroles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchusers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchusers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchusers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
   - indexlifecyclepolicies
   verbs:
   - create
@@ -118,32 +170,6 @@ rules:
 - apiGroups:
   - es.eck.github.com
   resources:
-  - roles
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - roles/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - roles/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - snapshotlifecyclepolicies
   verbs:
   - create
@@ -189,32 +215,6 @@ rules:
   - es.eck.github.com
   resources:
   - snapshotrepositories/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - users
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - users/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - users/status
   verbs:
   - get
   - patch

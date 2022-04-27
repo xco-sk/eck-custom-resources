@@ -1,0 +1,18 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchRole
+metadata:
+  name: elasticsearchrole-sample
+spec:
+  body: |
+    {
+      "cluster": ["all"],
+      "indices": [
+        {
+          "names": [ "index-sample"],
+          "privileges": ["all"]
+        }
+      ],
+      "metadata" : {
+        "version" : 1
+      }
+    }
