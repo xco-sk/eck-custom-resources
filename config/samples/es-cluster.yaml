@@ -1,0 +1,14 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: quickstart
+spec:
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.roles: ["master", "data", "ingest", "ml", "transform"]
+        xpack.ml.enabled: true
+        node.store.allow_mmap: false
+        path.repo: ["/tmp"]
+  version: 8.1.0
