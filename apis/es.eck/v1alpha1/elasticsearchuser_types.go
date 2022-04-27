@@ -22,7 +22,8 @@ import (
 
 // ElasticsearchUserSpec defines the desired state of ElasticsearchUser
 type ElasticsearchUserSpec struct {
-	Body string `json:"body"`
+	SecretName string `json:"secretName"`
+	Body       string `json:"body"`
 }
 
 // ElasticsearchUserStatus defines the observed state of ElasticsearchUser

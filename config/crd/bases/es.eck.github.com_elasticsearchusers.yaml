@@ -37,8 +37,11 @@ spec:
             properties:
               body:
                 type: string
+              secretName:
+                type: string
             required:
             - body
+            - secretName
             type: object
           status:
             description: ElasticsearchUserStatus defines the observed state of ElasticsearchUser
