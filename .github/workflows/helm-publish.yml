@@ -4,8 +4,8 @@ name: helm-publish
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
 
   workflow_dispatch:
 
