@@ -29,7 +29,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.4.0
         with:
           charts_dir: helm
-          charts_repo_url: https://xco-sk.github.io/eck-custom-resources/helm
+          charts_repo_url: https://xco-sk.github.io/eck-custom-resources
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
        
