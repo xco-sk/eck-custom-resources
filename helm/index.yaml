@@ -3,12 +3,12 @@ entries:
   eck-custom-resources-operator:
   - apiVersion: v2
     appVersion: 0.0.1-alfa1
-    created: "2022-04-28T16:18:01.425767+02:00"
+    created: "2022-04-28T16:42:20.440267+02:00"
     description: A Helm chart for Kubernetes
     digest: db250868bdfbe4bf460b848f1fa30d5e26eccf7bdaf537d4e431eb2243667172
     name: eck-custom-resources-operator
     type: application
     urls:
-    - https://xco-sk.github.io/eck-custom-resources/helm/helm_charts/eck-custom-resources-operator-0.1.0.tgz
+    - https://xco-sk.github.io/eck-custom-resources/helm/eck-custom-resources-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2022-04-28T16:18:01.424902+02:00"
+generated: "2022-04-28T16:42:20.439412+02:00"
