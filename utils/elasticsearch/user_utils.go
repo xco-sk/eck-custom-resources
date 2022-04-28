@@ -9,7 +9,6 @@ import (
 	k8sv1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strings"
 )
 
@@ -22,7 +21,6 @@ func DeleteUser(esClient *elasticsearch.Client, userName string) (ctrl.Result, e
 }
 
 func UpsertUser(esClient *elasticsearch.Client, cli client.Client, ctx context.Context, user v1alpha1.ElasticsearchUser) (ctrl.Result, error) {
-	logger := log.FromContext(ctx)
 	var secret k8sv1.Secret
 
 	// Inject password field with data from given secret
