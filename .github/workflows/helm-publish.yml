@@ -27,8 +27,6 @@ jobs:
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
-        with:
-          charts_repo_url: https://xco-sk.github.io/eck-custom-resources
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
        
