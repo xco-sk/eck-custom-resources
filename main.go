@@ -73,8 +73,8 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.StringVar(&elasticsearchUrl, "es-url", "localhost", "The ES cluster URL including http:// or https://")
-	flag.StringVar(&elasticsearchCertificateSecret, "es-http-cert-secret", "quickstart", "Name of the secret containing public key for ES HTTP communication")
+	flag.StringVar(&elasticsearchUrl, "es-url", "https://quickstart-es-http:9200", "The ES cluster URL including http:// or https://")
+	flag.StringVar(&elasticsearchCertificateSecret, "es-http-cert-secret", "quickstart-es-http-certs-public", "Name of the secret containing public key for ES HTTP communication")
 	flag.StringVar(&elasticsearchCertificateKey, "eck-http-cert-key", "ca.crt", "Key in secret with certificate under which the certificate data reside.")
 	flag.StringVar(&username, "es-username", "elastic", "The secret name that contains 'elastic' user credentials.")
 	flag.StringVar(&usernameSecret, "es-username-secret", "quickstart-es-elastic-user", "The secret name that contains 'elastic' user credentials.")
