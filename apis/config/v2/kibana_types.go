@@ -16,8 +16,8 @@ limitations under the License.
 
 package v2
 
-// ElasticsearchSpec Definition of target elasticsearch cluster
-type ElasticsearchSpec struct {
+// KibanaSpec Definition of target elasticsearch cluster
+type KibanaSpec struct {
 	// +required
 	// +kubebuilder:validation:MinLength=0
 	Url string `json:"url,omitempty"`
@@ -25,11 +25,11 @@ type ElasticsearchSpec struct {
 	Certificate PublicCertificate `json:"certificate,omitempty"`
 
 	// +optional
-	Authentication ElasticsearchAuthentication `json:"authentication,omitempty"`
+	Authentication KibanaAuthentication `json:"authentication,omitempty"`
 }
 
-// ElasticsearchAuthentication Definition of Elasticsearch authentication
-type ElasticsearchAuthentication struct {
+// KibanaAuthentication Definition of Elasticsearch authentication
+type KibanaAuthentication struct {
 	// +optional
 	UsernamePassword UsernamePasswordAuthentication `json:"usernamePasswordSecret,omitempty"`
 }

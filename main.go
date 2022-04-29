@@ -59,8 +59,11 @@ func main() {
 	var enableLeaderElection bool
 	var probeAddr string
 	var configFile string
-	var eckClusterName string
-	var eckSecretName string
+	var elasticsearchUrl string
+	var elasticsearchCertificateSecret string
+	var elasticsearchCertificateKey string
+	var username string
+	var usernameSecret string
 	flag.StringVar(&configFile, "config", "",
 		"The controller will load its initial configuration from this file. "+
 			"Omit this flag to use the default configuration values. "+
@@ -70,8 +73,11 @@ func main() {
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.StringVar(&eckClusterName, "eck-cluster-name", "quickstart", "The ECK cluster name")
-	flag.StringVar(&eckSecretName, "eck-secret-name", "quickstart-es-elastic-user", "The secret name that contains 'elastic' user credentials.")
+	flag.StringVar(&elasticsearchUrl, "es-url", "localhost", "The ES cluster URL including http:// or https://")
+	flag.StringVar(&elasticsearchCertificateSecret, "es-http-cert-secret", "quickstart", "Name of the secret containing public key for ES HTTP communication")
+	flag.StringVar(&elasticsearchCertificateKey, "eck-http-cert-key", "ca.crt", "Key in secret with certificate under which the certificate data reside.")
+	flag.StringVar(&username, "es-username", "elastic", "The secret name that contains 'elastic' user credentials.")
+	flag.StringVar(&usernameSecret, "es-username-secret", "quickstart-es-elastic-user", "The secret name that contains 'elastic' user credentials.")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -82,13 +88,16 @@ func main() {
 
 	var err error
 	ctrlConfig := configv2.ProjectConfig{
-		TargetCluster: configv2.ElasticsearchSpec{
-			EckCluster: configv2.EckElasticsearchCluster{
-				ClusterName: eckClusterName,
+		Elasticsearch: configv2.ElasticsearchSpec{
+			Url: elasticsearchUrl,
+			Certificate: configv2.PublicCertificate{
+				SecretName:     elasticsearchCertificateSecret,
+				CertificateKey: elasticsearchCertificateKey,
 			},
 			Authentication: configv2.ElasticsearchAuthentication{
 				UsernamePassword: configv2.UsernamePasswordAuthentication{
-					SecretName: eckSecretName,
+					SecretName: usernameSecret,
+					UserName:   username,
 				},
 			},
 		},

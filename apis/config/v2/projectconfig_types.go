@@ -23,8 +23,6 @@ import (
 
 // ProjectConfigStatus defines the observed state of ProjectConfig
 type ProjectConfigStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true
@@ -33,10 +31,11 @@ type ProjectConfigStatus struct {
 type ProjectConfig struct {
 	metav1.TypeMeta `json:",inline"`
 
-	// ControllerManagerConfigurationSpec returns the contfigurations for controllers
+	// ControllerManagerConfigurationSpec returns the configurations for controllers
 	cfg.ControllerManagerConfigurationSpec `json:",inline"`
 
-	TargetCluster ElasticsearchSpec `json:"targetCluster,omitempty"`
+	Elasticsearch ElasticsearchSpec `json:"elasticsearch,omitempty"`
+	Kibana        KibanaSpec        `json:"kibana,omitempty"`
 }
 
 //+kubebuilder:object:root=true
