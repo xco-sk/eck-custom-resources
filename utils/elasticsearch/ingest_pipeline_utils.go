@@ -20,7 +20,7 @@ func UpsertIngestPipeline(esClient *elasticsearch.Client, ingestPipeline v1alpha
 	res, err := esClient.Ingest.PutPipeline(ingestPipeline.Name, strings.NewReader(ingestPipeline.Spec.Body))
 
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 
 	return ctrl.Result{}, nil

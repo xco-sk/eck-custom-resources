@@ -2,8 +2,11 @@ package elasticsearch
 
 import (
 	"context"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v8/esapi"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"io"
 	k8sv1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -58,4 +61,17 @@ func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec confi
 	}
 
 	return esClient, nil
+}
+
+func GetClientErrorOrResponseError(err error, response *esapi.Response) error {
+	if err != nil {
+		return err
+	}
+
+	body, readErr := io.ReadAll(response.Body)
+	if readErr != nil {
+		return readErr
+	}
+
+	return fmt.Errorf("error response: %s", body)
 }

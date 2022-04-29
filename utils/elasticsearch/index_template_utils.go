@@ -20,7 +20,7 @@ func UpsertIndexTemplate(esClient *elasticsearch.Client, indexTemplate v1alpha1.
 	res, err := esClient.Indices.PutIndexTemplate(indexTemplate.Name, strings.NewReader(indexTemplate.Spec.Body))
 
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 
 	return ctrl.Result{}, nil

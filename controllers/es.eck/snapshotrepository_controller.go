@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type SnapshotRepositoryReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=snapshotrepositories,verbs=get;list;watch;create;update;patch;delete
@@ -54,11 +57,26 @@ func (r *SnapshotRepositoryReconciler) Reconcile(ctx context.Context, req ctrl.R
 	var snapshotRepository eseckv1alpha1.SnapshotRepository
 	if err := r.Get(ctx, req.NamespacedName, &snapshotRepository); err != nil {
 		logger.Info("Deleting Snapshot repository", "snapshot repository", req.Name)
-		return esutils.DeleteSnapshotRepository(esClient, req.Name)
+		res, err := esutils.DeleteSnapshotRepository(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&snapshotRepository, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", snapshotRepository.APIVersion, snapshotRepository.Kind, snapshotRepository.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating Snapshot repository", "snapshot repository", req.Name)
-	return esutils.UpsertSnapshotRepository(esClient, snapshotRepository)
+	res, err := esutils.UpsertSnapshotRepository(esClient, snapshotRepository)
+
+	if err == nil {
+		r.Recorder.Event(&snapshotRepository, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", snapshotRepository.APIVersion, snapshotRepository.Kind, snapshotRepository.Name))
+	} else {
+		r.Recorder.Event(&snapshotRepository, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", snapshotRepository.APIVersion, snapshotRepository.Kind, snapshotRepository.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

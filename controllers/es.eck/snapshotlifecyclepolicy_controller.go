@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type SnapshotLifecyclePolicyReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=snapshotlifecyclepolicies,verbs=get;list;watch;create;update;patch;delete
@@ -55,10 +58,25 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 	if err := r.Get(ctx, req.NamespacedName, &snapshotLifecyclePolicy); err != nil {
 		logger.Info("Deleting Snapshot lifecycle policy", "snapshot lifecycle policy", req.Name)
 
-		return esutils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
+		res, err := esutils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&snapshotLifecyclePolicy, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", snapshotLifecyclePolicy.APIVersion, snapshotLifecyclePolicy.Kind, snapshotLifecyclePolicy.Name))
+		}
+		return res, err
 	}
 
-	return esutils.UpsertSnapshotLifecyclePolicy(esClient, snapshotLifecyclePolicy)
+	res, err := esutils.UpsertSnapshotLifecyclePolicy(esClient, snapshotLifecyclePolicy)
+
+	if err == nil {
+		r.Recorder.Event(&snapshotLifecyclePolicy, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", snapshotLifecyclePolicy.APIVersion, snapshotLifecyclePolicy.Kind, snapshotLifecyclePolicy.Name))
+	} else {
+		r.Recorder.Event(&snapshotLifecyclePolicy, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", snapshotLifecyclePolicy.APIVersion, snapshotLifecyclePolicy.Kind, snapshotLifecyclePolicy.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

@@ -20,7 +20,7 @@ func UpsertRole(esClient *elasticsearch.Client, role v1alpha1.ElasticsearchRole)
 	res, err := esClient.Security.PutRole(role.Name, strings.NewReader(role.Spec.Body))
 
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 
 	return ctrl.Result{}, nil

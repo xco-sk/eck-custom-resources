@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type IngestPipelineReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=ingestpipelines,verbs=get;list;watch;create;update;patch;delete
@@ -54,11 +57,26 @@ func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	var ingestPipeline eseckv1alpha1.IngestPipeline
 	if err := r.Get(ctx, req.NamespacedName, &ingestPipeline); err != nil {
 		logger.Info("Deleting Ingest pipeline", "id", req.Name)
-		return esutils.DeleteIngestPipeline(esClient, req.Name)
+		res, err := esutils.DeleteIngestPipeline(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&ingestPipeline, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", ingestPipeline.APIVersion, ingestPipeline.Kind, ingestPipeline.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating Ingest pipeline", "id", req.Name)
-	return esutils.UpsertIngestPipeline(esClient, ingestPipeline)
+	res, err := esutils.UpsertIngestPipeline(esClient, ingestPipeline)
+
+	if err == nil {
+		r.Recorder.Event(&ingestPipeline, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", ingestPipeline.APIVersion, ingestPipeline.Kind, ingestPipeline.Name))
+	} else {
+		r.Recorder.Event(&ingestPipeline, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", ingestPipeline.APIVersion, ingestPipeline.Kind, ingestPipeline.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

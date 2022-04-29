@@ -19,7 +19,7 @@ func DeleteSnapshotLifecyclePolicy(esClient *elasticsearch.Client, snapshotLifec
 func UpsertSnapshotLifecyclePolicy(esClient *elasticsearch.Client, snapshotLifecyclePolicy v1alpha1.SnapshotLifecyclePolicy) (ctrl.Result, error) {
 	res, err := esClient.SlmPutLifecycle(snapshotLifecyclePolicy.Name, esClient.SlmPutLifecycle.WithBody(strings.NewReader(snapshotLifecyclePolicy.Spec.Body)))
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 	return ctrl.Result{}, nil
 }

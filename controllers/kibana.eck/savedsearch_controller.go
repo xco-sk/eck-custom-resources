@@ -19,6 +19,7 @@ package kibanaeck
 import (
 	"context"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -33,6 +34,7 @@ type SavedSearchReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=savedsearches,verbs=get;list;watch;create;update;patch;delete

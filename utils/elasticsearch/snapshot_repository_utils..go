@@ -17,28 +17,29 @@ func DeleteSnapshotRepository(esClient *elasticsearch.Client, repositoryName str
 }
 
 func UpsertSnapshotRepository(esClient *elasticsearch.Client, snapshotRepository v1alpha1.SnapshotRepository) (ctrl.Result, error) {
-	//res, err := esClient.Snapshot.GetRepository(
-	//	esClient.Snapshot.GetRepository.WithRepository(snapshotRepository.Name)
-	//)
-	//if err != nil {
-	//	return utils.GetRequeueResult(), err
-	//}
-	//esClient.Snapshot.CreateRepository
-	//if res.StatusCode
-	return createSnapshotRepository(esClient, snapshotRepository)
+	res, err := esClient.Snapshot.GetRepository(
+		esClient.Snapshot.GetRepository.WithRepository(snapshotRepository.Name),
+	)
+	if err != nil {
+		return utils.GetRequeueResult(), err
+	}
+
+	if res.StatusCode == 404 {
+		return createSnapshotRepository(esClient, snapshotRepository)
+	}
+	return updateSnapshotRepository(esClient, snapshotRepository)
 }
 
 func createSnapshotRepository(esClient *elasticsearch.Client, snapshotRepository v1alpha1.SnapshotRepository) (ctrl.Result, error) {
 	res, err := esClient.Snapshot.CreateRepository(snapshotRepository.Name, strings.NewReader(snapshotRepository.Spec.Body))
 
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 
 	return ctrl.Result{}, nil
 }
 
-/*
 func updateSnapshotRepository(esClient *elasticsearch.Client, snapshotRepository v1alpha1.SnapshotRepository) (ctrl.Result, error) {
 	_, repoDeleteErr := DeleteSnapshotRepository(esClient, snapshotRepository.Name)
 	if repoDeleteErr != nil {
@@ -47,9 +48,8 @@ func updateSnapshotRepository(esClient *elasticsearch.Client, snapshotRepository
 
 	res, err := esClient.Snapshot.CreateRepository(snapshotRepository.Name, strings.NewReader(snapshotRepository.Spec.Body))
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 
 	return ctrl.Result{}, nil
 }
-*/

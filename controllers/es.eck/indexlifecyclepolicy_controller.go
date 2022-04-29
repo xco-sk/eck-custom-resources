@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type IndexLifecyclePolicyReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=indexlifecyclepolicies,verbs=get;list;watch;create;update;patch;delete
@@ -55,11 +58,26 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 	if err := r.Get(ctx, req.NamespacedName, &indexLifecyclePolicy); err != nil {
 		logger.Info("Deleting Index lifecycle policy", "index lifecycle policy", req.Name)
 
-		return esutils.DeleteIndexLifecyclePolicy(esClient, req.Name)
+		res, err := esutils.DeleteIndexLifecyclePolicy(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&indexLifecyclePolicy, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", indexLifecyclePolicy.APIVersion, indexLifecyclePolicy.Kind, indexLifecyclePolicy.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating index lifecycle policy", "index lifecycle policy", req.Name)
-	return esutils.UpsertIndexLifecyclePolicy(esClient, indexLifecyclePolicy)
+	res, err := esutils.UpsertIndexLifecyclePolicy(esClient, indexLifecyclePolicy)
+
+	if err == nil {
+		r.Recorder.Event(&indexLifecyclePolicy, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", indexLifecyclePolicy.APIVersion, indexLifecyclePolicy.Kind, indexLifecyclePolicy.Name))
+	} else {
+		r.Recorder.Event(&indexLifecyclePolicy, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexLifecyclePolicy.APIVersion, indexLifecyclePolicy.Kind, indexLifecyclePolicy.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

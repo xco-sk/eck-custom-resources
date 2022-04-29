@@ -129,6 +129,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("index_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Index")
 		os.Exit(1)
@@ -137,6 +138,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("indextemplate_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexTemplate")
 		os.Exit(1)
@@ -145,6 +147,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("indexlifecyclepolicy_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexLifecyclePolicy")
 		os.Exit(1)
@@ -153,6 +156,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("snapshotlifecyclepolicy_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SnapshotLifecyclePolicy")
 		os.Exit(1)
@@ -161,6 +165,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("ingestpipeline_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IngestPipeline")
 		os.Exit(1)
@@ -169,6 +174,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("snapshotrepository_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SnapshotRepository")
 		os.Exit(1)
@@ -177,6 +183,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("savedsearch_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "SavedSearch")
 		os.Exit(1)
@@ -185,6 +192,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("indexpattern_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "IndexPattern")
 		os.Exit(1)
@@ -193,6 +201,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("visualization_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Visualization")
 		os.Exit(1)
@@ -201,6 +210,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("dashboard_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Dashboard")
 		os.Exit(1)
@@ -209,6 +219,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("elasticsearchrole_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchRole")
 		os.Exit(1)
@@ -217,6 +228,7 @@ func main() {
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),
 		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("elasticsearchuser_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchUser")
 		os.Exit(1)

@@ -44,7 +44,7 @@ func UpsertUser(esClient *elasticsearch.Client, cli client.Client, ctx context.C
 
 	res, err := esClient.Security.PutUser(user.Name, strings.NewReader(string(userWithPassword)))
 	if err != nil || res.IsError() {
-		return utils.GetRequeueResult(), err
+		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
 	return ctrl.Result{}, nil
 }

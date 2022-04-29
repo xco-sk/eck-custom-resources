@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type IndexTemplateReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=indextemplates,verbs=get;list;watch;create;update;patch;delete
@@ -54,11 +57,26 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	var indexTemplate eseckv1alpha1.IndexTemplate
 	if err := r.Get(ctx, req.NamespacedName, &indexTemplate); err != nil {
 		logger.Info("Deleting Index template", "index template", req.Name)
-		return esutils.DeleteIndexTemplate(esClient, req.Name)
+		res, err := esutils.DeleteIndexTemplate(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&indexTemplate, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", indexTemplate.APIVersion, indexTemplate.Kind, indexTemplate.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating index template", "index template", req.Name)
-	return esutils.UpsertIndexTemplate(esClient, indexTemplate)
+	res, err := esutils.UpsertIndexTemplate(esClient, indexTemplate)
+
+	if err == nil {
+		r.Recorder.Event(&indexTemplate, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", indexTemplate.APIVersion, indexTemplate.Kind, indexTemplate.Name))
+	} else {
+		r.Recorder.Event(&indexTemplate, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexTemplate.APIVersion, indexTemplate.Kind, indexTemplate.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

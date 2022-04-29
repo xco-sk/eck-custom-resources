@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type ElasticsearchUserReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=elasticsearchusers,verbs=get;list;watch;create;update;patch;delete
@@ -54,11 +57,26 @@ func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Re
 	var user eseckv1alpha1.ElasticsearchUser
 	if err := r.Get(ctx, req.NamespacedName, &user); err != nil {
 		logger.Info("Deleting User", "user", req.Name)
-		return esutils.DeleteUser(esClient, req.Name)
+		res, err := esutils.DeleteUser(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&user, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", user.APIVersion, user.Kind, user.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating User", "user", req.Name)
-	return esutils.UpsertUser(esClient, r.Client, ctx, user)
+	res, err := esutils.UpsertUser(esClient, r.Client, ctx, user)
+
+	if err == nil {
+		r.Recorder.Event(&user, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", user.APIVersion, user.Kind, user.Name))
+	} else {
+		r.Recorder.Event(&user, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", user.APIVersion, user.Kind, user.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

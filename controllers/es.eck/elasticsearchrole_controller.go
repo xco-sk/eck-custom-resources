@@ -18,9 +18,11 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -35,6 +37,7 @@ type ElasticsearchRoleReconciler struct {
 	client.Client
 	Scheme        *runtime.Scheme
 	ProjectConfig configv2.ProjectConfig
+	Recorder      record.EventRecorder
 }
 
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=elasticsearchroles,verbs=get;list;watch;create;update;patch;delete
@@ -54,11 +57,26 @@ func (r *ElasticsearchRoleReconciler) Reconcile(ctx context.Context, req ctrl.Re
 	var role eseckv1alpha1.ElasticsearchRole
 	if err := r.Get(ctx, req.NamespacedName, &role); err != nil {
 		logger.Info("Deleting Role", "role", req.Name)
-		return esutils.DeleteRole(esClient, req.Name)
+		res, err := esutils.DeleteRole(esClient, req.Name)
+		if err == nil {
+			r.Recorder.Event(&role, "Normal", "Failed to delete",
+				fmt.Sprintf("Failed to delete %s/%s %s", role.APIVersion, role.Kind, role.Name))
+		}
+		return res, err
 	}
 
 	logger.Info("Creating/Updating Role", "role", req.Name)
-	return esutils.UpsertRole(esClient, role)
+	res, err := esutils.UpsertRole(esClient, role)
+
+	if err == nil {
+		r.Recorder.Event(&role, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", role.APIVersion, role.Kind, role.Name))
+	} else {
+		r.Recorder.Event(&role, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", role.APIVersion, role.Kind, role.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.
