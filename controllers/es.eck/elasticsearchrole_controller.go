@@ -56,12 +56,7 @@ func (r *ElasticsearchRoleReconciler) Reconcile(ctx context.Context, req ctrl.Re
 	var role eseckv1alpha1.ElasticsearchRole
 	if err := r.Get(ctx, req.NamespacedName, &role); err != nil {
 		logger.Info("Deleting Role", "role", req.Name)
-		res, err := esutils.DeleteRole(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&role, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", role.APIVersion, role.Kind, role.Name))
-		}
-		return res, err
+		return esutils.DeleteRole(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating Role", "role", req.Name)

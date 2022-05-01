@@ -56,12 +56,7 @@ func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	var ingestPipeline eseckv1alpha1.IngestPipeline
 	if err := r.Get(ctx, req.NamespacedName, &ingestPipeline); err != nil {
 		logger.Info("Deleting Ingest pipeline", "id", req.Name)
-		res, err := esutils.DeleteIngestPipeline(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&ingestPipeline, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", ingestPipeline.APIVersion, ingestPipeline.Kind, ingestPipeline.Name))
-		}
-		return res, err
+		return esutils.DeleteIngestPipeline(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating Ingest pipeline", "id", req.Name)

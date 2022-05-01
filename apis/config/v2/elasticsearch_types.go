@@ -20,7 +20,7 @@ package v2
 type ElasticsearchSpec struct {
 	// +required
 	// +kubebuilder:validation:MinLength=0
-	Url string `json:"url,omitempty"`
+	Url string `json:"url"`
 	// +optional
 	Certificate PublicCertificate `json:"certificate,omitempty"`
 

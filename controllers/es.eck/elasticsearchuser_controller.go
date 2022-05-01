@@ -56,12 +56,7 @@ func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Re
 	var user eseckv1alpha1.ElasticsearchUser
 	if err := r.Get(ctx, req.NamespacedName, &user); err != nil {
 		logger.Info("Deleting User", "user", req.Name)
-		res, err := esutils.DeleteUser(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&user, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", user.APIVersion, user.Kind, user.Name))
-		}
-		return res, err
+		return esutils.DeleteUser(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating User", "user", req.Name)

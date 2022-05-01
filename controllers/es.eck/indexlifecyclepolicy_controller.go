@@ -57,12 +57,7 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 	if err := r.Get(ctx, req.NamespacedName, &indexLifecyclePolicy); err != nil {
 		logger.Info("Deleting Index lifecycle policy", "index lifecycle policy", req.Name)
 
-		res, err := esutils.DeleteIndexLifecyclePolicy(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&indexLifecyclePolicy, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", indexLifecyclePolicy.APIVersion, indexLifecyclePolicy.Kind, indexLifecyclePolicy.Name))
-		}
-		return res, err
+		return esutils.DeleteIndexLifecyclePolicy(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating index lifecycle policy", "index lifecycle policy", req.Name)

@@ -18,6 +18,7 @@ package eseck
 
 import (
 	"context"
+	"github.com/elastic/go-elasticsearch/v8"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"
@@ -27,7 +28,6 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"strings"
 )
 
 // IndexReconciler reconciles a Index object
@@ -54,10 +54,20 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	var index eseckv1alpha1.Index
 	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
-		logger.Info("Deleting index", "index", req.Name)
-
 		return esutils.DeleteIndexIfEmpty(esClient, req.Name)
 	}
+
+	res, err := r.createUpdate(ctx, req, esClient, index)
+	return utils.RecordEventAndReturn(res, err, r.Recorder, utils.Event{
+		Object:  &index,
+		Name:    req.Name,
+		Reason:  "Create/Update",
+		Message: "",
+	})
+}
+
+func (r *IndexReconciler) createUpdate(ctx context.Context, req ctrl.Request, esClient *elasticsearch.Client, index eseckv1alpha1.Index) (ctrl.Result, error) {
+	logger := log.FromContext(ctx)
 
 	indexExists, indexExistsErr := esutils.VerifyIndexExists(esClient, req.Name)
 	if indexExistsErr != nil {
@@ -66,25 +76,24 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	if indexExists {
-		result, err, recreated := esutils.RecreateIndexIfEmpty(esClient, req)
-		if recreated {
-			return result, err
-		} else {
-			// TODO patch index
+		isEmpty, indexEmptyErr := esutils.VerifyIndexEmpty(esClient, req.Name)
+		if indexEmptyErr != nil {
+			logger.Error(indexExistsErr, "Failed to verify if index is empty")
+			return utils.GetRequeueResult(), client.IgnoreNotFound(indexEmptyErr)
 		}
+
+		if isEmpty {
+			_, deleteErr := esutils.DeleteIndex(esClient, req.Name)
+			if deleteErr != nil {
+				logger.Error(deleteErr, "Failed to delete index")
+				return utils.GetRequeueResult(), client.IgnoreNotFound(deleteErr)
+			}
+
+			return esutils.CreateIndex(esClient, index)
+		}
+		return esutils.UpdateIndex(esClient, index, r.Recorder)
 	}
-
-	var indicesCreateResponse, createIndexErr = esClient.Indices.Create(index.Name,
-		esClient.Indices.Create.WithBody(strings.NewReader(index.Spec.Body)),
-	)
-
-	if createIndexErr != nil || indicesCreateResponse.IsError() {
-		logger.Error(createIndexErr, "Error creating index")
-		return utils.GetRequeueResult(), client.IgnoreNotFound(createIndexErr)
-	}
-	defer indicesCreateResponse.Body.Close()
-
-	return ctrl.Result{}, nil
+	return esutils.CreateIndex(esClient, index)
 }
 
 // SetupWithManager sets up the controller with the Manager.

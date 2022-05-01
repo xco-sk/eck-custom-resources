@@ -56,12 +56,7 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	var indexTemplate eseckv1alpha1.IndexTemplate
 	if err := r.Get(ctx, req.NamespacedName, &indexTemplate); err != nil {
 		logger.Info("Deleting Index template", "index template", req.Name)
-		res, err := esutils.DeleteIndexTemplate(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&indexTemplate, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", indexTemplate.APIVersion, indexTemplate.Kind, indexTemplate.Name))
-		}
-		return res, err
+		return esutils.DeleteIndexTemplate(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating index template", "index template", req.Name)

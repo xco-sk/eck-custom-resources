@@ -57,12 +57,7 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 	if err := r.Get(ctx, req.NamespacedName, &snapshotLifecyclePolicy); err != nil {
 		logger.Info("Deleting Snapshot lifecycle policy", "snapshot lifecycle policy", req.Name)
 
-		res, err := esutils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&snapshotLifecyclePolicy, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", snapshotLifecyclePolicy.APIVersion, snapshotLifecyclePolicy.Kind, snapshotLifecyclePolicy.Name))
-		}
-		return res, err
+		return esutils.DeleteSnapshotLifecyclePolicy(esClient, req.Name)
 	}
 
 	res, err := esutils.UpsertSnapshotLifecyclePolicy(esClient, snapshotLifecyclePolicy)

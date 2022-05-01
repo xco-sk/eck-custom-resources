@@ -56,12 +56,7 @@ func (r *SnapshotRepositoryReconciler) Reconcile(ctx context.Context, req ctrl.R
 	var snapshotRepository eseckv1alpha1.SnapshotRepository
 	if err := r.Get(ctx, req.NamespacedName, &snapshotRepository); err != nil {
 		logger.Info("Deleting Snapshot repository", "snapshot repository", req.Name)
-		res, err := esutils.DeleteSnapshotRepository(esClient, req.Name)
-		if err == nil {
-			r.Recorder.Event(&snapshotRepository, "Normal", "Failed to delete",
-				fmt.Sprintf("Failed to delete %s/%s %s", snapshotRepository.APIVersion, snapshotRepository.Kind, snapshotRepository.Name))
-		}
-		return res, err
+		return esutils.DeleteSnapshotRepository(esClient, req.Name)
 	}
 
 	logger.Info("Creating/Updating Snapshot repository", "snapshot repository", req.Name)
