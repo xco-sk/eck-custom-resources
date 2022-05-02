@@ -12,6 +12,11 @@ import (
 	"strings"
 )
 
+var UpdatableSettings = [...]string{
+	"number_of_replicas",
+	"refresh_interval",
+}
+
 func VerifyIndexExists(esClient *elasticsearch.Client, indexName string) (bool, error) {
 	existsResponse, err := esClient.Indices.Exists([]string{indexName})
 	if err != nil {
@@ -96,7 +101,12 @@ func UpdateIndex(esClient *elasticsearch.Client, index v1alpha1.Index, eventReco
 		return ctrl.Result{}, err
 	}
 
-	marshalledSettings, err := json.Marshal(updatedBody["settings"])
+	whitelistedUpdatedBody := make(map[string]interface{})
+	for _, updatable := range UpdatableSettings {
+		whitelistedUpdatedBody[updatable] = updatedBody["settings"].(map[string]interface{})[updatable]
+	}
+
+	marshalledSettings, err := json.Marshal(whitelistedUpdatedBody)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -109,7 +119,7 @@ func UpdateIndex(esClient *elasticsearch.Client, index v1alpha1.Index, eventReco
 	}
 	eventRecorder.Event(&index, "Normal", "Index settings updated", fmt.Sprintf("Index settings successfuly updated for %s", index.Name))
 
-	marshalledMapping, err := json.Marshal(updatedBody["mapping"])
+	marshalledMapping, err := json.Marshal(updatedBody["mappings"])
 	if err != nil {
 		return ctrl.Result{}, err
 	}
