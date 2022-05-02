@@ -28,6 +28,15 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Setup Go environment
+        uses: actions/setup-go@v3.0.0
+
+      - name: Make manifests
+        run: make manifests
+
+      - name: Copy generated CRDs
+        run: cp config/crd/bases/* charts/eck-custom-resources-operator/crds/
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.0
         env:

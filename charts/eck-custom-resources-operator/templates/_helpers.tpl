@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create the name of the cluster role to use
+*/}}
+{{- define "eck-custom-resources-operator.clusterRoleName" -}}
+{{- if .Values.clusterRole.create }}
+{{- default (include "eck-custom-resources-operator.fullname" .) .Values.clusterRole.name }}
+{{- else }}
+{{- default "default" .Values.clusterRole.name }}
+{{- end }}
+{{- end }}
