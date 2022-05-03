@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "eck-custom-resources-operator.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "eck-custom-resources-operator.fullname" . }}:{{ .Values.metrics.service.port }}']
   restartPolicy: Never
