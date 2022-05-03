@@ -26,13 +26,12 @@ type ProjectConfigStatus struct {
 }
 
 //+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
 
 type ProjectConfig struct {
-	metav1.TypeMeta `json:",inline"`
+	metav1.TypeMeta `json:"type"`
 
 	// ControllerManagerConfigurationSpec returns the configurations for controllers
-	cfg.ControllerManagerConfigurationSpec `json:",inline"`
+	cfg.ControllerManagerConfigurationSpec `json:"manager"`
 
 	Elasticsearch ElasticsearchSpec `json:"elasticsearch,omitempty"`
 	Kibana        KibanaSpec        `json:"kibana,omitempty"`

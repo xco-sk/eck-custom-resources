@@ -31,7 +31,6 @@ spec:
         - command:
           - /manager
           args:
-            - --leader-elect
             - --config=/opt/eck-cr-operator/operator_config.yaml
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           name: {{ .Chart.Name }}
