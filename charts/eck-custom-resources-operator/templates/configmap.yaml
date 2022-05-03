@@ -15,21 +15,21 @@ data:
       kind: ControllerManagerConfig
     manager:
       health:
-        healthProbeBindAddress: ":8081"
+        healthProbeBindAddress: {{ .Values.manager.health.healthProbeBindAddress }}
       metrics:
-        bindAddress: 127.0.0.1:8080
+        bindAddress: {{ .Values.manager.metrics.bindAddress }}
       webhook:
-        port: 9443
+        port: {{ .Values.manager.webhook.port }}
       leaderElection:
-        leaderElect: true
-        resourceName: github.com/xco-sk/eck-custom-resources
+        leaderElect: {{ .Values.manager.leaderElection.leaderElect }}
+        resourceName: eck-custom-resources.xco-sk.github.com
     
     elasticsearch:
-      url: https://quickstart-es-http:9200
+      url: {{ .Values.elasticsearch.url }}
       certificate:
-        secretName: quickstart-es-http-certs-public
-        certificateKey: ca.crt
+        secretName: {{ .Values.elasticsearch.certificate.secretName }}
+        certificateKey: {{ .Values.elasticsearch.certificate.certificateKey }}
       authentication:
         usernamePasswordSecret:
-          secretName: quickstart-es-elastic-user
-          userName: elastic
+          secretName: {{ .Values.elasticsearch.authentication.usernamePasswordSecret.secretName }}
+          userName: {{ .Values.elasticsearch.authentication.usernamePasswordSecret.userName }}
