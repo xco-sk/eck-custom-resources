@@ -7,7 +7,7 @@ Elasticsearch and Kibana.
 
 Currently supported resources: 
 - For Elasticsearch:
-  - Index
+  - [Index](docs/cr_index.md)
   - Index template
   - Index lifecycle policy
   - Ingest pipeline
