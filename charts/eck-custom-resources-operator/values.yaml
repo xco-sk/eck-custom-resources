@@ -72,7 +72,7 @@ affinity: {}
 
 manager:
   health:
-    healthProbeBindAddress: ":8081"
+    healthProbePort: 8081
   webhook:
     port: 9443
   leaderElection:

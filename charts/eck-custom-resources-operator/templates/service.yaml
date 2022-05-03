@@ -9,9 +9,9 @@ spec:
   type: {{ .Values.metrics.service.type }}
   ports:
     - port: {{ .Values.metrics.service.port }}
-      targetPort: http
+      targetPort: metrics
       protocol: TCP
-      name: http
+      name: metrics
   selector:
     {{- include "eck-custom-resources-operator.selectorLabels" . | nindent 4 }}
 {{- end }}

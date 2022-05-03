@@ -6,8 +6,12 @@ metadata:
 spec:
   endpoints:
     - path: /metrics
-      port: http
+      port: metrics
       scheme: http
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
   selector:
-    {{- include "eck-custom-resources-operator.labels" . | nindent 4 }}
+    matchLabels:
+      {{- include "eck-custom-resources-operator.labels" . | nindent 6 }}
 {{- end }}

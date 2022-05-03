@@ -38,19 +38,22 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 8081
+            - name: health
+              containerPort: {{ .Values.manager.health.healthProbePort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.metrics.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /healthz
-              port: http
+              port: health
             initialDelaySeconds: 15
             periodSeconds: 20
           readinessProbe:
             httpGet:
               path: /readyz
-              port: http
+              port: health
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:

@@ -15,9 +15,9 @@ data:
       kind: ControllerManagerConfig
     manager:
       health:
-        healthProbeBindAddress: {{ .Values.manager.health.healthProbeBindAddress }}
+        healthProbeBindAddress: :{{ .Values.manager.health.healthProbePort }}
       metrics:
-        bindAddress: 127.0.0.1:{{ .Values.metrics.service.port }}
+        bindAddress: :{{ .Values.metrics.service.port }}
       webhook:
         port: {{ .Values.manager.webhook.port }}
       leaderElection:
