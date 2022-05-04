@@ -21,7 +21,7 @@ Currently supported resources:
   - [Visualization](docs/cr_visualization.md)
   - [Dashboard](docs/cr_dashboard.md)
 
-# Installation
+## Installation
 
 ```shell
 # Add eck-custom-resources helm repo
@@ -32,5 +32,25 @@ helm install eck-cr eck-custom-resources/eck-custom-resources-operator
 ```
 Configuration options are documented in [docs/helm](docs/helm.md)
 
+## Uninstallation
+To uninstall the eck-cr from Kubernetes cluster, run:
 
+```shell
+helm uninstall eck-cr
+```
 
+This removes all resources related to eck-custom-resources operator. It won't remove the CRDs nor any deployed custom resource
+(e.g. Index, Index Template ...), they will remain in K8s and also in Elasticsearch.
+
+## Working with custom resources
+After the operator is installed, you can deploy Elasticsearch/Kibana resources from the list above. The reconciler
+will take care of propagating the change to Elasticsearch or Kibana, whether it is creation of new resource, deletion
+or update.
+
+For detailed documentation for each resource, see [List of support resources](docs/cr_list.md)
+
+## Help and Troubleshooting
+In case you need help or found a bug, please create an [Issue on Github](https://github.com/xco-sk/eck-custom-resources/issues).
+
+## License
+Licensed under the Apache License, Version 2.0; see [LICENSE.md](LICENSE.md)
