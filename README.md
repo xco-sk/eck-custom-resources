@@ -8,18 +8,18 @@ Elasticsearch and Kibana.
 Currently supported resources: 
 - For Elasticsearch:
   - [Index](docs/cr_index.md)
-  - Index template
-  - Index lifecycle policy
-  - Ingest pipeline
-  - Snapshot repository
-  - Snapshot lifecycle policy
-  - User
-  - Role
+  - [Index template](docs/cr_index_template.md)
+  - [Index lifecycle policy](docs/cr_index_lifecycle_policy.md)
+  - [Ingest pipeline](docs/cr_ingest_pipeline.md)
+  - [Snapshot repository](docs/cr_snapshot_repo.md)
+  - [Snapshot lifecycle policy](docs/cr_snapshot_lifecycle_policy.md)
+  - [User](docs/cr_user.md)
+  - [Role](docs/cr_role.md)
 - For Kibana:
-  - Index pattern
-  - Saved search
-  - Visualization
-  - Dashboard
+  - [Index pattern](docs/cr_index_pattern.md)
+  - [Saved search](docs/cr_saved_search.md)
+  - [Visualization](docs/cr_visualization.md)
+  - [Dashboard](docs/cr_dashboard.md)
 
 # Installation
 
