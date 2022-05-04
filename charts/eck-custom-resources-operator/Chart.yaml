@@ -1,6 +1,13 @@
 apiVersion: v2
 name: eck-custom-resources-operator
-description: A Helm chart for Kubernetes
+description: Helm chart for eck-custom-resources operator
+home: https://github.com/xco-sk/eck-custom-resources
+sources:
+  - https://github.com/xco-sk/eck-custom-resources
+maintainers:
+  - name: Marek Hornak
+    email: marek@xco.sk
+    url: https://github.com/xco-sk
 type: application
 version: 0.1.0
 appVersion: 0.0.1-beta1

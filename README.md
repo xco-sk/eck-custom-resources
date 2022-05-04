@@ -30,7 +30,7 @@ helm repo add eck-custom-resources https://xco-sk.github.io/eck-custom-resources
 # Install chart
 helm install eck-cr eck-custom-resources/eck-custom-resources-operator
 ```
-Configuration options are documented in [docs/helm](docs/helm.md)
+Configuration options are documented in [chart README file](charts/eck-custom-resources-operator/README.md)
 
 ## Uninstallation
 To uninstall the eck-cr from Kubernetes cluster, run:

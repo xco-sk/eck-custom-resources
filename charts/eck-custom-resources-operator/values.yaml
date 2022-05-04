@@ -2,41 +2,52 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- Desired number of replicas
 replicaCount: 1
 
 image:
+  # -- ECK Custom resources docker image registry
   repository: xcosk/eck-custom-resources
+  # -- Pull policy for docker image
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- Docker image tag. Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- Docker image pull secrets
 imagePullSecrets: []
+
+# -- Override for Chart.Name default value
 nameOverride: ""
+
+# -- Fully qualified app name
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- The name of the service account to use.
+  # -- If not set and create is true, a name is generated using the fullname template
   name: ""
 
 clusterRole:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- The name of the service account to use.
+  # -- If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# -- Pod annotation
 podAnnotations: {}
 
+# -- Pod security context
 podSecurityContext: {}
   # fsGroup: 2000
 
+# -- Security context
 securityContext: {}
   # capabilities:
   #   drop:
@@ -45,6 +56,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- Configuration of limits and requests for operator pod
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -58,38 +70,60 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
+  # -- Flag if Horizontal pod autoscaling is used or not
   enabled: false
+  # -- Minimum number of replicas
   minReplicas: 1
+  # -- Maximum number of replicas
   maxReplicas: 100
+  # -- Target CPU utilization percentage metric used for autoscaling decision
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  # -- targetMemoryUtilizationPercentage: 80
 
+# -- Node selector
 nodeSelector: {}
 
+# -- Tolerations
 tolerations: []
 
+# -- Affinity settings
 affinity: {}
 
+# -- Operator configuration flags
 manager:
   health:
+    # -- Port on which the health probe listens
     healthProbePort: 8081
   webhook:
+    # -- Port on which the webhook listens
     port: 9443
   leaderElection:
+    # -- If leader election is enabled
     leaderElect: true
 
+# -- Prometheus metrics configuration
 metrics:
+  # -- Flag to indicate if prometheus metrics are exported. If true, the Service and ServiceMonitor resources are deployed alongside the application
   enabled: false
   service:
+    # -- Metrics service type
     type: ClusterIP
+    # -- Metrics service port
     port: 8080
 
+# -- Configuration of Elasticsearch cluster to which the Custom resources are deployed
 elasticsearch:
+  # -- Url for Elasticsearch
   url: https://quickstart-es-http:9200
   certificate:
+    # -- Name of the Secret containing certificate used for communication with Elasticsearch
     secretName: quickstart-es-http-certs-public
+    # -- Key in Secret that contain the PEM-encoded certificate
     certificateKey: ca.crt
   authentication:
+    # -- Configuration of secret containing authentication information
     usernamePasswordSecret:
+      # -- Name of the Secret containing password for user that is used to manage deployed resources. Should be in `username: password` format.
       secretName: quickstart-es-elastic-user
+      # -- Username of user that is used to manage deployed resources
       userName: elastic
