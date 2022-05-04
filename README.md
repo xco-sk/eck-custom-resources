@@ -47,7 +47,7 @@ After the operator is installed, you can deploy Elasticsearch/Kibana resources f
 will take care of propagating the change to Elasticsearch or Kibana, whether it is creation of new resource, deletion
 or update.
 
-For detailed documentation for each resource, see [List of support resources](docs/cr_list.md)
+For detailed documentation for each resource, see [List of supported resources](docs/cr_list.md)
 
 ## Help and Troubleshooting
 In case you need help or found a bug, please create an [Issue on Github](https://github.com/xco-sk/eck-custom-resources/issues).
