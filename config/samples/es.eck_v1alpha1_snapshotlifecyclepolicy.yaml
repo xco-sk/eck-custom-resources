@@ -3,4 +3,20 @@ kind: SnapshotLifecyclePolicy
 metadata:
   name: snapshotlifecyclepolicy-sample
 spec:
-  # TODO(user): Add fields here
+  body: |
+    {
+      "schedule": "0 30 1 * * ?", 
+      "name": "<daily-snap-{now/d}>", 
+      "repository": "snapshotrepository-sample", 
+      "config": { 
+        "indices": ["*"], 
+        "ignore_unavailable": false,
+        "include_global_state": true
+      },
+      "retention": { 
+        "expire_after": "30d", 
+        "min_count": 5, 
+        "max_count": 50 
+      }
+    }
+

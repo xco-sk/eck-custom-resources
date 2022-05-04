@@ -23,6 +23,14 @@ are logged into the object events, so running
 
 ![Index lifecycle](index-lifecycle.svg "Index lifecycle")
 
+## Fields
+
+| Key             | Type   | Description                                                                           |
+|-----------------|--------|---------------------------------------------------------------------------------------|
+| `metadata.name` | string | Name of the Index                                                                     |
+| `spec.body`     | string | Index definition - similar to one you would use when creating index using ES REST API |
+
+
 ## Example
 ```yaml
 apiVersion: es.eck.github.com/v1alpha1
