@@ -1,0 +1,34 @@
+# Helm chart for eck-custom-resources
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+## Installation
+
+```shell
+# Add eck-custom-resources helm repo
+helm repo add eck-custom-resources https://xco-sk.github.io/eck-custom-resources/
+
+# Install chart
+helm install eck-cr eck-custom-resources/eck-custom-resources-operator
+```
+
+## Uninstallation
+To uninstall the eck-cr named release from Kubernetes cluster, run:
+
+```shell
+helm uninstall eck-cr
+```
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

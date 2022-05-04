@@ -1,6 +1,6 @@
 # Helm chart for eck-custom-resources
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1-beta1](https://img.shields.io/badge/AppVersion-0.0.1--beta1-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1-beta1](https://img.shields.io/badge/AppVersion-0.0.1--beta1-informational?style=flat-square)
 
 Helm chart for eck-custom-resources operator
 
@@ -15,6 +15,23 @@ Helm chart for eck-custom-resources operator
 ## Source Code
 
 * <https://github.com/xco-sk/eck-custom-resources>
+
+## Installation
+
+```shell
+# Add eck-custom-resources helm repo
+helm repo add eck-custom-resources https://xco-sk.github.io/eck-custom-resources/
+
+# Install chart
+helm install eck-cr eck-custom-resources/eck-custom-resources-operator
+```
+
+## Uninstallation
+To uninstall the eck-cr named release from Kubernetes cluster, run:
+
+```shell
+helm uninstall eck-cr
+```
 
 ## Values
 
