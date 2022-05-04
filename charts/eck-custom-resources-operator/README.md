@@ -1,4 +1,4 @@
-# Helm chart for eck-custom-resources
+# eck-custom-resources-operator
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1-beta1](https://img.shields.io/badge/AppVersion-0.0.1--beta1-informational?style=flat-square)
 
@@ -28,8 +28,6 @@ Helm chart for eck-custom-resources operator
 | clusterRole.annotations | object | `{}` | Annotations to add to the service account |
 | clusterRole.create | bool | `true` | Specifies whether a service account should be created |
 | clusterRole.name | string | `""` | If not set and create is true, a name is generated using the fullname template |
-| elasticsearch | object | `{"authentication":{"usernamePasswordSecret":{"secretName":"quickstart-es-elastic-user","userName":"elastic"}},"certificate":{"certificateKey":"ca.crt","secretName":"quickstart-es-http-certs-public"},"url":"https://quickstart-es-http:9200"}` | Configuration of Elasticsearch cluster to which the Custom resources are deployed |
-| elasticsearch.authentication.usernamePasswordSecret | object | `{"secretName":"quickstart-es-elastic-user","userName":"elastic"}` | Configuration of secret containing authentication information |
 | elasticsearch.authentication.usernamePasswordSecret.secretName | string | `"quickstart-es-elastic-user"` | Name of the Secret containing password for user that is used to manage deployed resources. Should be in `username: password` format. |
 | elasticsearch.authentication.usernamePasswordSecret.userName | string | `"elastic"` | Username of user that is used to manage deployed resources |
 | elasticsearch.certificate.certificateKey | string | `"ca.crt"` | Key in Secret that contain the PEM-encoded certificate |
@@ -40,11 +38,9 @@ Helm chart for eck-custom-resources operator
 | image.repository | string | `"xcosk/eck-custom-resources"` | ECK Custom resources docker image registry |
 | image.tag | string | `""` | Docker image tag. Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets |
-| manager | object | `{"health":{"healthProbePort":8081},"leaderElection":{"leaderElect":true},"webhook":{"port":9443}}` | Operator configuration flags |
 | manager.health.healthProbePort | int | `8081` | Port on which the health probe listens |
 | manager.leaderElection.leaderElect | bool | `true` | If leader election is enabled |
 | manager.webhook.port | int | `9443` | Port on which the webhook listens |
-| metrics | object | `{"enabled":false,"service":{"port":8080,"type":"ClusterIP"}}` | Prometheus metrics configuration |
 | metrics.enabled | bool | `false` | Flag to indicate if prometheus metrics are exported. If true, the Service and ServiceMonitor resources are deployed alongside the application |
 | metrics.service.port | int | `8080` | Metrics service port |
 | metrics.service.type | string | `"ClusterIP"` | Metrics service type |

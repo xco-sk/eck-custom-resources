@@ -89,7 +89,7 @@ tolerations: []
 # -- Affinity settings
 affinity: {}
 
-# -- Operator configuration flags
+# Operator configuration flags
 manager:
   health:
     # -- Port on which the health probe listens
@@ -101,7 +101,7 @@ manager:
     # -- If leader election is enabled
     leaderElect: true
 
-# -- Prometheus metrics configuration
+#  Prometheus metrics configuration
 metrics:
   # -- Flag to indicate if prometheus metrics are exported. If true, the Service and ServiceMonitor resources are deployed alongside the application
   enabled: false
@@ -111,7 +111,7 @@ metrics:
     # -- Metrics service port
     port: 8080
 
-# -- Configuration of Elasticsearch cluster to which the Custom resources are deployed
+# Configuration of Elasticsearch cluster to which the Custom resources are deployed
 elasticsearch:
   # -- Url for Elasticsearch
   url: https://quickstart-es-http:9200
@@ -121,7 +121,7 @@ elasticsearch:
     # -- Key in Secret that contain the PEM-encoded certificate
     certificateKey: ca.crt
   authentication:
-    # -- Configuration of secret containing authentication information
+    # Configuration of secret containing authentication information
     usernamePasswordSecret:
       # -- Name of the Secret containing password for user that is used to manage deployed resources. Should be in `username: password` format.
       secretName: quickstart-es-elastic-user
