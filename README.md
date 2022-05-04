@@ -15,7 +15,7 @@ Currently supported resources:
   - [Snapshot lifecycle policy](docs/cr_snapshot_lifecycle_policy.md)
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
-- For Kibana:
+- For Kibana (planned):
   - [Index pattern](docs/cr_index_pattern.md)
   - [Saved search](docs/cr_saved_search.md)
   - [Visualization](docs/cr_visualization.md)
