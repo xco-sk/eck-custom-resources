@@ -106,7 +106,7 @@ func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1
 	}
 
 	if len(missingIdx) > 0 || len(missingIdxTemplates) > 0 || len(errors) > 0 {
-		return fmt.Errorf("dependencies not fulfilled. Missing indices: %s. Missing index templates: %s. Errors: %s",
+		return fmt.Errorf("dependencies not fulfilled. Missing indices:[%s]. Missing index templates:[%s]. Errors:[%s]",
 			strings.Join(missingIdx[:], ","),
 			strings.Join(missingIdxTemplates[:], ","),
 			strings.Join(errors[:], ","))
