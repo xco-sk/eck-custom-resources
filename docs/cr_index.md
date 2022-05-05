@@ -25,11 +25,12 @@ are logged into the object events, so running
 
 ## Fields
 
-| Key             | Type   | Description                                                                           |
-|-----------------|--------|---------------------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Index                                                                     |
-| `spec.body`     | string | Index definition - similar to one you would use when creating index using ES REST API |
-
+| Key                             | Type   | Description                                                                                     |
+|---------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `metadata.name`                 | string | Name of the Index                                                                               |
+| `spec.body`                     | string | Index definition - similar to one you would use when creating index using ES REST API           |
+| `spec.dependsOn.indexTemplates` | list | List of index templates that have to be present in ES cluster before index is created / updated |
+| `spec.dependsOn.indices`        | list | List of indices that have to be present in ES cluster before index created / updated            |
 
 ## Example
 ```yaml
@@ -38,6 +39,11 @@ kind: Index
 metadata:
   name: index-sample
 spec:
+  dependsOn:
+    indexTemplates:
+      - indexTemplateName: indextemplate-sample
+    indices:
+      - indexName: index-base-sample
   body: |
     {
       "settings": {

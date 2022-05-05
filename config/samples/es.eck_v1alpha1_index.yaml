@@ -7,7 +7,7 @@ spec:
     indexTemplates:
       - indexTemplateName: indextemplate-sample
     indices:
-      - indexName: index-base-samplee
+      - indexName: index-base-sample
   body: |
     {
       "settings": {

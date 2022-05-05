@@ -16,6 +16,8 @@ in official documentation.
 |-----------------|--------|-----------------------------------------------------------------------------------------------|
 | `metadata.name` | string | Name of the Index Template                                                                    |
 | `spec.body`     | string | Index template definition - same you would use when creating index template using ES REST API |
+| `spec.dependsOn.indexTemplates` | list | List of index templates that have to be present in ES cluster before index is created / updated |
+| `spec.dependsOn.indices`        | list | List of indices that have to be present in ES cluster before index created / updated            |
 
 ## Example
 
@@ -25,6 +27,11 @@ kind: IndexTemplate
 metadata:
   name: indextemplate-sample
 spec:
+  dependsOn:
+    indexTemplates:
+      - indexTemplateName: indextemplate-base
+    indices:
+      - indexName: index-base-sample
   body: |
     {
       "index_patterns" : ["index-*"],

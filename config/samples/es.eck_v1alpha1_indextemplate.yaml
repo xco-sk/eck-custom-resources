@@ -3,6 +3,11 @@ kind: IndexTemplate
 metadata:
   name: indextemplate-sample
 spec:
+  dependsOn:
+    indexTemplates:
+      - indexTemplateName: indextemplate-base-sample
+    indices:
+      - indexName: index-base-sample
   body: |
     {
       "index_patterns" : ["index-*"],
