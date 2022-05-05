@@ -59,6 +59,12 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return esutils.DeleteIndexTemplate(esClient, req.Name)
 	}
 
+	if err := esutils.DependenciesFulfilled(esClient, indexTemplate.Spec.DependsOn); err != nil {
+		r.Recorder.Event(&indexTemplate, "Warning", "Missing dependencies",
+			fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
+		return utils.GetRequeueResult(), err
+	}
+
 	logger.Info("Creating/Updating index template", "index template", req.Name)
 	res, err := esutils.UpsertIndexTemplate(esClient, indexTemplate)
 

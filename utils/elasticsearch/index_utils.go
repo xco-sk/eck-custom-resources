@@ -22,7 +22,14 @@ func VerifyIndexExists(esClient *elasticsearch.Client, indexName string) (bool, 
 	if err != nil {
 		return false, err
 	}
-	return existsResponse.StatusCode == 200, nil
+	if existsResponse.StatusCode <= 299 {
+		return true, nil
+	}
+	if existsResponse.StatusCode == 404 {
+		return false, nil
+	}
+
+	return false, GetClientErrorOrResponseError(nil, existsResponse)
 }
 
 func VerifyIndexEmpty(esClient *elasticsearch.Client, indexName string) (bool, error) {

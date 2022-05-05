@@ -25,3 +25,19 @@ func UpsertIndexTemplate(esClient *elasticsearch.Client, indexTemplate v1alpha1.
 
 	return ctrl.Result{}, nil
 }
+
+func IndexTemplateExists(esClient *elasticsearch.Client, indexTemplateName string) (bool, error) {
+
+	res, err := esClient.Indices.ExistsIndexTemplate(indexTemplateName)
+	if err != nil {
+		return false, err
+	}
+	if res.StatusCode <= 299 {
+		return true, nil
+	}
+	if res.StatusCode == 404 {
+		return false, nil
+	}
+
+	return false, GetClientErrorOrResponseError(nil, res)
+}

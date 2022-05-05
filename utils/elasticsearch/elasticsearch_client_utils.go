@@ -6,11 +6,13 @@ import (
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"io"
 	k8sv1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"strings"
 )
 
 var esClient *elasticsearch.Client = nil
@@ -74,4 +76,40 @@ func GetClientErrorOrResponseError(err error, response *esapi.Response) error {
 	}
 
 	return fmt.Errorf("error response: %s", body)
+}
+
+func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1.Dependencies) error {
+
+	var missingIdxTemplates []string
+	var missingIdx []string
+	var errors []string
+
+	for _, idxTplDependency := range dependencies.IndexTemplate {
+		exists, err := IndexTemplateExists(esClient, idxTplDependency.IndexTemplateName)
+		if err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+		if !exists {
+			missingIdxTemplates = append(missingIdxTemplates, idxTplDependency.IndexTemplateName)
+		}
+	}
+	for _, idxDependency := range dependencies.Index {
+		exists, err := VerifyIndexExists(esClient, idxDependency.IndexName)
+		if err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+		if !exists {
+			missingIdx = append(missingIdx, idxDependency.IndexName)
+		}
+	}
+
+	if len(missingIdx) > 0 || len(missingIdxTemplates) > 0 || len(errors) > 0 {
+		return fmt.Errorf("dependencies not fulfilled. Missing indices: %s. Missing index templates: %s. Errors: %s",
+			strings.Join(missingIdx[:], ","),
+			strings.Join(missingIdxTemplates[:], ","),
+			strings.Join(errors[:], ","))
+	}
+	return nil
 }

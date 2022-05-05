@@ -18,6 +18,7 @@ package eseck
 
 import (
 	"context"
+	"fmt"
 	"github.com/elastic/go-elasticsearch/v8"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
@@ -68,6 +69,12 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 func (r *IndexReconciler) createUpdate(ctx context.Context, req ctrl.Request, esClient *elasticsearch.Client, index eseckv1alpha1.Index) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
+
+	if err := esutils.DependenciesFulfilled(esClient, index.Spec.DependsOn); err != nil {
+		r.Recorder.Event(&index, "Warning", "Missing dependencies",
+			fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
+		return utils.GetRequeueResult(), err
+	}
 
 	indexExists, indexExistsErr := esutils.VerifyIndexExists(esClient, req.Name)
 	if indexExistsErr != nil {
