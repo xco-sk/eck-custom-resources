@@ -1,10 +1,14 @@
 package utils
 
 import (
+	"context"
 	"fmt"
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	k8sv1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"time"
 )
 
@@ -53,4 +57,18 @@ func RecordEventAndReturn(res ctrl.Result, err error, recorder record.EventRecor
 	}
 
 	return res, err
+}
+
+func GetUserSecret(cli client.Client, ctx context.Context, namespace string, auth *configv2.UsernamePasswordAuthentication, secret *k8sv1.Secret) error {
+	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: auth.SecretName}, secret); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetCertificateSecret(cli client.Client, ctx context.Context, namespace string, certificate *configv2.PublicCertificate, secret *k8sv1.Secret) error {
+	if err := cli.Get(ctx, client.ObjectKey{Namespace: namespace, Name: certificate.SecretName}, secret); err != nil {
+		return err
+	}
+	return nil
 }

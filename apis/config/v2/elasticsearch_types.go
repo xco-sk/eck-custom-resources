@@ -22,14 +22,14 @@ type ElasticsearchSpec struct {
 	// +kubebuilder:validation:MinLength=0
 	Url string `json:"url"`
 	// +optional
-	Certificate PublicCertificate `json:"certificate,omitempty"`
+	Certificate *PublicCertificate `json:"certificate,omitempty"`
 
 	// +optional
-	Authentication ElasticsearchAuthentication `json:"authentication,omitempty"`
+	Authentication *ElasticsearchAuthentication `json:"authentication,omitempty"`
 }
 
 // ElasticsearchAuthentication Definition of Elasticsearch authentication
 type ElasticsearchAuthentication struct {
 	// +optional
-	UsernamePassword UsernamePasswordAuthentication `json:"usernamePasswordSecret,omitempty"`
+	UsernamePassword *UsernamePasswordAuthentication `json:"usernamePasswordSecret,omitempty"`
 }
