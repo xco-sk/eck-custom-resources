@@ -12,49 +12,56 @@ import (
 	"strings"
 )
 
-func DoGet(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request, url string) (*http.Response, error) {
-	httpRequest, err := http.NewRequest("GET", url, nil)
+type Client struct {
+	Cli        client.Client
+	Ctx        context.Context
+	KibanaSpec configv2.KibanaSpec
+	Req        ctrl.Request
+}
+
+func (kClient Client) DoGet(path string) (*http.Response, error) {
+	httpRequest, err := http.NewRequest("GET", kClient.KibanaSpec.Url+path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return doRequest(cli, ctx, kibanaSpec, req, httpRequest)
+	return kClient.doRequest(httpRequest)
 }
 
-func DoPost(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request, url string, body string) (*http.Response, error) {
-	httpRequest, err := http.NewRequest("POST", url, strings.NewReader(body))
+func (kClient Client) DoPost(path string, body string) (*http.Response, error) {
+	httpRequest, err := http.NewRequest("POST", kClient.KibanaSpec.Url+path, strings.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	return doRequest(cli, ctx, kibanaSpec, req, httpRequest)
+	return kClient.doRequest(httpRequest)
 }
 
-func DoPut(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request, url string, body string) (*http.Response, error) {
-	httpRequest, err := http.NewRequest("PUT", url, strings.NewReader(body))
+func (kClient Client) DoPut(path string, body string) (*http.Response, error) {
+	httpRequest, err := http.NewRequest("PUT", kClient.KibanaSpec.Url+path, strings.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 
-	return doRequest(cli, ctx, kibanaSpec, req, httpRequest)
+	return kClient.doRequest(httpRequest)
 }
 
-func DoDelete(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request, url string) (*http.Response, error) {
-	httpRequest, err := http.NewRequest("DELETE", url, nil)
+func (kClient Client) DoDelete(path string) (*http.Response, error) {
+	httpRequest, err := http.NewRequest("DELETE", kClient.KibanaSpec.Url+path, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return doRequest(cli, ctx, kibanaSpec, req, httpRequest)
+	return kClient.doRequest(httpRequest)
 }
 
-func getHttpClient(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request) (*http.Client, error) {
+func (kClient Client) getHttpClient() (*http.Client, error) {
 
 	tr := &http.Transport{}
 
-	if kibanaSpec.Certificate != nil {
+	if kClient.KibanaSpec.Certificate != nil {
 		var certificateSecret k8sv1.Secret
-		if err := utils.GetCertificateSecret(cli, ctx, req.Namespace, kibanaSpec.Certificate, &certificateSecret); err != nil {
+		if err := utils.GetCertificateSecret(kClient.Cli, kClient.Ctx, kClient.Req.Namespace, kClient.KibanaSpec.Certificate, &certificateSecret); err != nil {
 			return nil, err
 		}
 		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // TODO: use real certificate
@@ -67,16 +74,16 @@ func getHttpClient(cli client.Client, ctx context.Context, kibanaSpec configv2.K
 	return httpClient, nil
 }
 
-func doRequest(cli client.Client, ctx context.Context, kibanaSpec configv2.KibanaSpec, req ctrl.Request, httpRequest *http.Request) (*http.Response, error) {
-	if kibanaSpec.Authentication != nil && kibanaSpec.Authentication.UsernamePassword != nil {
+func (kClient Client) doRequest(httpRequest *http.Request) (*http.Response, error) {
+	if kClient.KibanaSpec.Authentication != nil && kClient.KibanaSpec.Authentication.UsernamePassword != nil {
 		var userSecret k8sv1.Secret
-		if err := utils.GetUserSecret(cli, ctx, req.Namespace, kibanaSpec.Authentication.UsernamePassword, &userSecret); err != nil {
+		if err := utils.GetUserSecret(kClient.Cli, kClient.Ctx, kClient.Req.Namespace, kClient.KibanaSpec.Authentication.UsernamePassword, &userSecret); err != nil {
 			return nil, err
 		}
-		httpRequest.SetBasicAuth(kibanaSpec.Authentication.UsernamePassword.UserName, string(userSecret.Data[kibanaSpec.Authentication.UsernamePassword.UserName]))
+		httpRequest.SetBasicAuth(kClient.KibanaSpec.Authentication.UsernamePassword.UserName, string(userSecret.Data[kClient.KibanaSpec.Authentication.UsernamePassword.UserName]))
 	}
 
-	httpClient, err := getHttpClient(cli, ctx, kibanaSpec, req)
+	httpClient, err := kClient.getHttpClient()
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,6 @@ import (
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"
-	"io"
 	k8sv1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -60,13 +59,7 @@ func GetClientErrorOrResponseError(err error, response *esapi.Response) error {
 	if err != nil {
 		return err
 	}
-
-	body, readErr := io.ReadAll(response.Body)
-	if readErr != nil {
-		return readErr
-	}
-
-	return fmt.Errorf("error response: %s", body)
+	return fmt.Errorf("error(status: %d, response: %s)", response.StatusCode, response.String())
 }
 
 func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1.Dependencies) error {
