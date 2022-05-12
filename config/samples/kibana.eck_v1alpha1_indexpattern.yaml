@@ -3,4 +3,11 @@ kind: IndexPattern
 metadata:
   name: indexpattern-sample
 spec:
-  # TODO(user): Add fields here
+  body: |
+    {
+        "attributes": {
+            "title": "index-*",
+            "timeFieldName": "@timestamp"
+        }
+    }
+

@@ -18,7 +18,9 @@ package kibanaeck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -41,21 +43,34 @@ type IndexPatternReconciler struct {
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=indexpatterns/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=indexpatterns/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the IndexPattern object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: r.ProjectConfig.Kibana,
+		Req:        req,
+	}
 
-	return ctrl.Result{}, nil
+	var indexPattern kibanaeckv1alpha1.IndexPattern
+	if err := r.Get(ctx, req.NamespacedName, &indexPattern); err != nil {
+		logger.Info("Deleting index pattern", "role", req.Name)
+		return kibanaUtils.DeleteIndexPattern(kibanaClient, req.Name)
+	}
+
+	logger.Info("Creating/Updating index pattern", "role", req.Name)
+	res, err := kibanaUtils.UpsertIndexPattern(kibanaClient, indexPattern)
+
+	if err == nil {
+		r.Recorder.Event(&indexPattern, "Normal", "Created",
+			fmt.Sprintf("Created/Updated %s/%s %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name))
+	} else {
+		r.Recorder.Event(&indexPattern, "Warning", "Failed to create/update",
+			fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name, err.Error()))
+	}
+
+	return res, err
 }
 
 // SetupWithManager sets up the controller with the Manager.

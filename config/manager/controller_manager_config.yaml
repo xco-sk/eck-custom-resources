@@ -21,3 +21,12 @@ elasticsearch:
     usernamePasswordSecret:
       secretName: quickstart-es-elastic-user
       userName: elastic
+kibana:
+  url: https://quickstart-kb-http:5601
+  certificate:
+    secretName: quickstart-kb-http-certs-public
+    certificateKey: ca.crt
+  authentication:
+    usernamePasswordSecret:
+      secretName: quickstart-es-elastic-user
+      userName: elastic
