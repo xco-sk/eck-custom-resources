@@ -88,6 +88,7 @@ func (kClient Client) doRequest(httpRequest *http.Request) (*http.Response, erro
 		return nil, err
 	}
 
+	httpRequest.Header.Set("kbn-xsrf", "true")
 	response, err := httpClient.Do(httpRequest)
 	if err != nil {
 		return nil, err
