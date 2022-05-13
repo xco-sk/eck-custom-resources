@@ -34,17 +34,24 @@ spec:
   dependencies:
     - type: index-pattern
       name: indexpattern-sample
-    - type: search
-      name: savedsearch-sample
   body: |
     {
-      "type": "lens",
       "attributes": {
-        "title": "Count of docs",
+        "visState": "{\"title\":\"Count visualization\",\"type\":\"metric\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"params\":{},\"schema\":\"metric\"}],\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":60}}}}",
+        "title": "Count visualization",
+        "uiStateJSON": "{}",
         "description": "",
-        "visualizationType": "lnsMetric",
-        "state": {
-          "visualization": {
-              ...
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "indexpattern-sample"
+        }
+      ]
+    }
 ```
-[Complete sample](../config/samples/kibana.eck_v1alpha1_visualization.yaml)

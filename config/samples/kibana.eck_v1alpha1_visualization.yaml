@@ -6,60 +6,23 @@ spec:
   dependencies:
     - type: index-pattern
       name: indexpattern-sample
-    - type: search
-      name: savedsearch-sample
   body: |
     {
-      "type": "lens",
       "attributes": {
-        "title": "Count of docs",
+        "visState": "{\"title\":\"Count visualization\",\"type\":\"metric\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"params\":{},\"schema\":\"metric\"}],\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Green to Red\",\"metricColorMode\":\"None\",\"colorsRange\":[{\"from\":0,\"to\":10000}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":60}}}}",
+        "title": "Count visualization",
+        "uiStateJSON": "{}",
         "description": "",
-        "visualizationType": "lnsMetric",
-        "state": {
-          "visualization": {
-            "layerId": "13e00170-fe50-4495-87ff-048934afece1",
-            "accessor": "6d115d38-e79d-4e91-b5c2-29a69065cbfc",
-            "layerType": "data"
-          },
-          "query": {
-            "query": "",
-            "language": "kuery"
-          },
-          "filters": [],
-          "datasourceStates": {
-            "indexpattern": {
-              "layers": {
-                "13e00170-fe50-4495-87ff-048934afece1": {
-                  "columns": {
-                    "6d115d38-e79d-4e91-b5c2-29a69065cbfc": {
-                      "label": "Count of records",
-                      "dataType": "number",
-                      "operationType": "count",
-                      "isBucketed": false,
-                      "scale": "ratio",
-                      "sourceField": "___records___"
-                    }
-                  },
-                  "columnOrder": [
-                    "6d115d38-e79d-4e91-b5c2-29a69065cbfc"
-                  ],
-                  "incompleteColumns": {}
-                }
-              }
-            }
-          }
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
         }
       },
       "references": [
         {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
           "type": "index-pattern",
-          "id": "indexpattern-sample",
-          "name": "indexpattern-datasource-current-indexpattern"
-        },
-        {
-          "type": "index-pattern",
-          "id": "indexpattern-sample",
-          "name": "indexpattern-datasource-layer-13e00170-fe50-4495-87ff-048934afece1"
+          "id": "indexpattern-sample"
         }
       ]
     }
