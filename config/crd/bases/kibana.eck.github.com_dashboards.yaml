@@ -42,6 +42,8 @@ spec:
                   properties:
                     name:
                       type: string
+                    space:
+                      type: string
                     type:
                       enum:
                       - visualization

@@ -18,7 +18,7 @@ func DeleteSavedObject(kClient Client, savedObjectType string, savedObjectMeta m
 
 func UpsertSavedObject(kClient Client, savedObjectType string, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) (ctrl.Result, error) {
 
-	exists, err := SavedObjectExists(kClient, savedObjectType, savedObjectMeta, savedObject)
+	exists, err := SavedObjectExists(kClient, savedObjectType, savedObjectMeta.Name, savedObject.Space)
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -44,18 +44,23 @@ func UpsertSavedObject(kClient Client, savedObjectType string, savedObjectMeta m
 	return ctrl.Result{}, nil
 }
 
-func SavedObjectExists(kClient Client, savedObjectType string, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) (bool, error) {
-	res, err := kClient.DoGet(formatSavedObjectUrl(savedObjectType, savedObjectMeta.Name, savedObject.Space))
+func SavedObjectExists(kClient Client, savedObjectType string, name string, space *string) (bool, error) {
+	res, err := kClient.DoGet(formatSavedObjectUrl(savedObjectType, name, space))
 	return err == nil && res.StatusCode == 200, err
 }
 
-func DependenciesFulfilled(kClient Client, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) error {
+func DependenciesFulfilled(kClient Client, savedObject kibanaeckv1alpha1.SavedObject) error {
 
 	var missingDependencies []string
 	var errors []string
 
 	for _, dependency := range savedObject.Dependencies {
-		exists, err := SavedObjectExists(kClient, string(dependency.ObjectType), savedObjectMeta, savedObject)
+		dSpace := savedObject.Space
+		if dependency.Space != nil {
+			dSpace = dependency.Space
+		}
+
+		exists, err := SavedObjectExists(kClient, string(dependency.ObjectType), dependency.Name, dSpace)
 
 		if err != nil {
 			errors = append(errors, err.Error())

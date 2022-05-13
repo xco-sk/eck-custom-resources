@@ -9,6 +9,7 @@ type SavedObject struct {
 type Dependency struct {
 	ObjectType SavedObjectType `json:"type"`
 	Name       string          `json:"name"`
+	Space      *string         `json:"space,omitempty"`
 }
 
 // +kubebuilder:validation:Enum=visualization;dashboard;search;index-pattern

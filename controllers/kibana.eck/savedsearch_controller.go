@@ -64,7 +64,7 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	}
 
 	if savedSearch.ObjectMeta.DeletionTimestamp.IsZero() {
-		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject()); err != nil {
+		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, savedSearch.Spec.GetSavedObject()); err != nil {
 			r.Recorder.Event(&savedSearch, "Warning", "Missing dependencies",
 				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
 			return utils.GetRequeueResult(), err
