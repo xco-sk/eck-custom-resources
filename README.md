@@ -15,11 +15,11 @@ Currently supported resources:
   - [Snapshot lifecycle policy](docs/cr_snapshot_lifecycle_policy.md)
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
-- For Kibana (planned):
+- For Kibana:
   - [Index pattern](docs/cr_index_pattern.md)
-  - [Saved search](docs/cr_saved_search.md)
-  - [Visualization](docs/cr_visualization.md)
-  - [Dashboard](docs/cr_dashboard.md)
+  - [Saved search](docs/cr_saved_search.md) (to be implemented, see [Project board](https://github.com/users/xco-sk/projects/1/))
+  - [Visualization](docs/cr_visualization.md) (to be implemented, see [Project board](https://github.com/users/xco-sk/projects/1/))
+  - [Dashboard](docs/cr_dashboard.md) (to be implemented, see [Project board](https://github.com/users/xco-sk/projects/1/))
 
 ## Installation
 
