@@ -1,6 +1,5 @@
 # Saved Search (savedsearches.kibana.eck.github.com)
 
-
 Custom resource definition representing (Saved) Search in Kibana.
 
 ## Lifecycle
