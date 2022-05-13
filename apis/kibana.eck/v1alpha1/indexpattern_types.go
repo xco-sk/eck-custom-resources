@@ -25,7 +25,7 @@ import (
 
 // IndexPatternSpec defines the desired state of IndexPattern
 type IndexPatternSpec struct {
-	Body string `json:"body"`
+	SavedObject `json:",inline"`
 }
 
 // IndexPatternStatus defines the observed state of IndexPattern

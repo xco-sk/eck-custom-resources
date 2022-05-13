@@ -25,7 +25,7 @@ import (
 
 // VisualizationSpec defines the desired state of Visualization
 type VisualizationSpec struct {
-	Body string `json:"body"`
+	SavedObject `json:",inline"`
 }
 
 // VisualizationStatus defines the observed state of Visualization

@@ -25,7 +25,7 @@ import (
 
 // DashboardSpec defines the desired state of Dashboard
 type DashboardSpec struct {
-	Body string `json:"body"`
+	SavedObject `json:",inline"`
 }
 
 // DashboardStatus defines the observed state of Dashboard

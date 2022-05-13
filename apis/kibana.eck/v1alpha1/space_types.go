@@ -23,13 +23,17 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// SavedSearchSpec defines the desired state of SavedSearch
-type SavedSearchSpec struct {
-	SavedObject `json:",inline"`
+// SpaceSpec defines the desired state of Space
+type SpaceSpec struct {
+	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+	// Important: Run "make" to regenerate code after modifying this file
+
+	// Foo is an example field of Space. Edit space_types.go to remove/update
+	Foo string `json:"foo,omitempty"`
 }
 
-// SavedSearchStatus defines the observed state of SavedSearch
-type SavedSearchStatus struct {
+// SpaceStatus defines the observed state of Space
+type SpaceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -37,24 +41,24 @@ type SavedSearchStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// SavedSearch is the Schema for the savedsearches API
-type SavedSearch struct {
+// Space is the Schema for the spaces API
+type Space struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   SavedSearchSpec   `json:"spec,omitempty"`
-	Status SavedSearchStatus `json:"status,omitempty"`
+	Spec   SpaceSpec   `json:"spec,omitempty"`
+	Status SpaceStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// SavedSearchList contains a list of SavedSearch
-type SavedSearchList struct {
+// SpaceList contains a list of Space
+type SpaceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []SavedSearch `json:"items"`
+	Items           []Space `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&SavedSearch{}, &SavedSearchList{})
+	SchemeBuilder.Register(&Space{}, &SpaceList{})
 }

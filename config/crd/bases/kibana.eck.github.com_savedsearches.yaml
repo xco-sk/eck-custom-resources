@@ -37,6 +37,27 @@ spec:
             properties:
               body:
                 type: string
+              dependencies:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    space:
+                      type: string
+                    type:
+                      enum:
+                      - visualization
+                      - dashboard
+                      - search
+                      - index-pattern
+                      type: string
+                  required:
+                  - name
+                  - type
+                  type: object
+                type: array
+              space:
+                type: string
             required:
             - body
             type: object
