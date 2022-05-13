@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -63,6 +64,12 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	}
 
 	if savedSearch.ObjectMeta.DeletionTimestamp.IsZero() {
+		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject()); err != nil {
+			r.Recorder.Event(savedSearch, "Warning", "Missing dependencies",
+				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
+			return utils.GetRequeueResult(), err
+		}
+
 		logger.Info("Creating/Updating saved search", "saved-search", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject())
 

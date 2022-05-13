@@ -300,6 +300,32 @@ rules:
 - apiGroups:
   - kibana.eck.github.com
   resources:
+  - spaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - spaces/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - spaces/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
   - visualizations
   verbs:
   - create

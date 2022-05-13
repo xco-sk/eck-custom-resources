@@ -8,6 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"strings"
 )
 
 func DeleteSavedObject(kClient Client, savedObjectType string, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) (ctrl.Result, error) {
@@ -46,6 +47,31 @@ func UpsertSavedObject(kClient Client, savedObjectType string, savedObjectMeta m
 func SavedObjectExists(kClient Client, savedObjectType string, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) (bool, error) {
 	res, err := kClient.DoGet(formatSavedObjectUrl(savedObjectType, savedObjectMeta.Name, savedObject.Space))
 	return err == nil && res.StatusCode == 200, err
+}
+
+func DependenciesFulfilled(kClient Client, savedObjectMeta metav1.ObjectMeta, savedObject kibanaeckv1alpha1.SavedObject) error {
+
+	var missingDependencies []string
+	var errors []string
+
+	for _, dependency := range savedObject.Dependencies {
+		exists, err := SavedObjectExists(kClient, string(dependency.ObjectType), savedObjectMeta, savedObject)
+
+		if err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+		if !exists {
+			missingDependencies = append(missingDependencies, fmt.Sprintf("%s/%s", dependency.ObjectType, dependency.Name))
+		}
+	}
+
+	if len(missingDependencies) > 0 || len(errors) > 0 {
+		return fmt.Errorf("dependencies not fulfilled. Missing dependencies:[%s]. Errors:[%s]",
+			strings.Join(missingDependencies[:], ","),
+			strings.Join(errors[:], ","))
+	}
+	return nil
 }
 
 func formatSavedObjectUrl(savedObjectType string, name string, space *string) string {

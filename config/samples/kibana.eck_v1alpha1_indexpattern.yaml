@@ -3,6 +3,10 @@ kind: IndexPattern
 metadata:
   name: indexpattern-sample
 spec:
+  space: my-space
+  dependencies:
+    - type: search
+      name: search-sample
   body: |
     {
         "attributes": {

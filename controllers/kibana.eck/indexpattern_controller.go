@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -63,6 +64,13 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	}
 
 	if indexPattern.ObjectMeta.DeletionTimestamp.IsZero() {
+
+		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject()); err != nil {
+			r.Recorder.Event(indexPattern, "Warning", "Missing dependencies",
+				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
+			return utils.GetRequeueResult(), err
+		}
+
 		logger.Info("Creating/Updating index pattern", "index pattern", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject())
 
