@@ -58,14 +58,14 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		Req:        req,
 	}
 
-	var savedSearch *kibanaeckv1alpha1.SavedSearch
-	if err := r.Get(ctx, req.NamespacedName, savedSearch); err != nil {
+	var savedSearch kibanaeckv1alpha1.SavedSearch
+	if err := r.Get(ctx, req.NamespacedName, &savedSearch); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if savedSearch.ObjectMeta.DeletionTimestamp.IsZero() {
 		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject()); err != nil {
-			r.Recorder.Event(savedSearch, "Warning", "Missing dependencies",
+			r.Recorder.Event(&savedSearch, "Warning", "Missing dependencies",
 				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
 			return utils.GetRequeueResult(), err
 		}
@@ -74,22 +74,29 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject())
 
 		if err == nil {
-			r.Recorder.Event(savedSearch, "Normal", "Created",
+			r.Recorder.Event(&savedSearch, "Normal", "Created",
 				fmt.Sprintf("Created/Updated %s/%s %s", savedSearch.APIVersion, savedSearch.Kind, savedSearch.Name))
 		} else {
-			r.Recorder.Event(savedSearch, "Warning", "Failed to create/update",
+			r.Recorder.Event(&savedSearch, "Warning", "Failed to create/update",
 				fmt.Sprintf("Failed to create/update %s/%s %s: %s", savedSearch.APIVersion, savedSearch.Kind, savedSearch.Name, err.Error()))
+		}
+
+		if !controllerutil.ContainsFinalizer(&savedSearch, savedSearchFinalizer) {
+			controllerutil.AddFinalizer(&savedSearch, savedSearchFinalizer)
+			if err := r.Update(ctx, &savedSearch); err != nil {
+				return ctrl.Result{}, err
+			}
 		}
 		return res, err
 	} else {
 		// The object is being deleted
-		if controllerutil.ContainsFinalizer(savedSearch, savedSearchFinalizer) {
+		if controllerutil.ContainsFinalizer(&savedSearch, savedSearchFinalizer) {
 			if _, err := kibanaUtils.DeleteSavedObject(kibanaClient, savedObjectType, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject()); err != nil {
 				return ctrl.Result{}, err
 			}
 
-			controllerutil.RemoveFinalizer(savedSearch, savedSearchFinalizer)
-			if err := r.Update(ctx, savedSearch); err != nil {
+			controllerutil.RemoveFinalizer(&savedSearch, savedSearchFinalizer)
+			if err := r.Update(ctx, &savedSearch); err != nil {
 				return ctrl.Result{}, err
 			}
 		}

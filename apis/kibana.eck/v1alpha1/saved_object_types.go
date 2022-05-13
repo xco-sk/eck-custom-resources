@@ -16,7 +16,8 @@ type SavedObjectType string
 
 func (in *SavedObject) GetSavedObject() SavedObject {
 	return SavedObject{
-		Space: in.Space,
-		Body:  in.Body,
+		Space:        in.Space,
+		Body:         in.Body,
+		Dependencies: in.Dependencies,
 	}
 }

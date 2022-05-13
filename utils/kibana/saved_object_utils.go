@@ -78,5 +78,5 @@ func formatSavedObjectUrl(savedObjectType string, name string, space *string) st
 	if space == nil {
 		return fmt.Sprintf("/api/saved_objects/%s/%s", savedObjectType, name)
 	}
-	return fmt.Sprintf("/s/%s/api/%s/%s", *space, savedObjectType, name)
+	return fmt.Sprintf("/s/%s/api/saved_objects/%s/%s", *space, savedObjectType, name)
 }

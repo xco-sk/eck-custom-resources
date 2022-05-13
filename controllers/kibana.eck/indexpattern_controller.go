@@ -58,15 +58,15 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		Req:        req,
 	}
 
-	var indexPattern *kibanaeckv1alpha1.IndexPattern
-	if err := r.Get(ctx, req.NamespacedName, indexPattern); err != nil {
+	var indexPattern kibanaeckv1alpha1.IndexPattern
+	if err := r.Get(ctx, req.NamespacedName, &indexPattern); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if indexPattern.ObjectMeta.DeletionTimestamp.IsZero() {
 
 		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject()); err != nil {
-			r.Recorder.Event(indexPattern, "Warning", "Missing dependencies",
+			r.Recorder.Event(&indexPattern, "Warning", "Missing dependencies",
 				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
 			return utils.GetRequeueResult(), err
 		}
@@ -75,22 +75,30 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject())
 
 		if err == nil {
-			r.Recorder.Event(indexPattern, "Normal", "Created",
+			r.Recorder.Event(&indexPattern, "Normal", "Created",
 				fmt.Sprintf("Created/Updated %s/%s %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name))
 		} else {
-			r.Recorder.Event(indexPattern, "Warning", "Failed to create/update",
+			r.Recorder.Event(&indexPattern, "Warning", "Failed to create/update",
 				fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name, err.Error()))
 		}
+
+		if !controllerutil.ContainsFinalizer(&indexPattern, indexPatternFinalizer) {
+			controllerutil.AddFinalizer(&indexPattern, indexPatternFinalizer)
+			if err := r.Update(ctx, &indexPattern); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
 		return res, err
 	} else {
 		// The object is being deleted
-		if controllerutil.ContainsFinalizer(indexPattern, indexPatternFinalizer) {
+		if controllerutil.ContainsFinalizer(&indexPattern, indexPatternFinalizer) {
 			if _, err := kibanaUtils.DeleteSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject()); err != nil {
 				return ctrl.Result{}, err
 			}
 
-			controllerutil.RemoveFinalizer(indexPattern, indexPatternFinalizer)
-			if err := r.Update(ctx, indexPattern); err != nil {
+			controllerutil.RemoveFinalizer(&indexPattern, indexPatternFinalizer)
+			if err := r.Update(ctx, &indexPattern); err != nil {
 				return ctrl.Result{}, err
 			}
 		}

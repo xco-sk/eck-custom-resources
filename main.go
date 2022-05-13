@@ -195,8 +195,10 @@ func main() {
 		os.Exit(1)
 	}
 	if err = (&kibanaeckcontrollers.SpaceReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("kibanaspace_controller"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Space")
 		os.Exit(1)
