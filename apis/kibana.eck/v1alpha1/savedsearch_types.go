@@ -25,7 +25,7 @@ import (
 
 // SavedSearchSpec defines the desired state of SavedSearch
 type SavedSearchSpec struct {
-	Body string `json:"body"`
+	SavedObject `json:",inline"`
 }
 
 // SavedSearchStatus defines the observed state of SavedSearch

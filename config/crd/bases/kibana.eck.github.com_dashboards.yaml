@@ -37,6 +37,8 @@ spec:
             properties:
               body:
                 type: string
+              space:
+                type: string
             required:
             - body
             type: object

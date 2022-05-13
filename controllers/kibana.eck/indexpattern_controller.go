@@ -22,6 +22,7 @@ import (
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -46,6 +47,9 @@ type IndexPatternReconciler struct {
 func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	indexPatternFinalizer := "indexpatterns.kibana.eck.github.com/finalizer"
+	savedObjectType := "index-pattern"
+
 	kibanaClient := kibanaUtils.Client{
 		Cli:        r.Client,
 		Ctx:        ctx,
@@ -53,24 +57,38 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		Req:        req,
 	}
 
-	var indexPattern kibanaeckv1alpha1.IndexPattern
-	if err := r.Get(ctx, req.NamespacedName, &indexPattern); err != nil {
-		logger.Info("Deleting index pattern", "role", req.Name)
-		return kibanaUtils.DeleteIndexPattern(kibanaClient, req.Name)
+	var indexPattern *kibanaeckv1alpha1.IndexPattern
+	if err := r.Get(ctx, req.NamespacedName, indexPattern); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	logger.Info("Creating/Updating index pattern", "role", req.Name)
-	res, err := kibanaUtils.UpsertIndexPattern(kibanaClient, indexPattern)
+	if indexPattern.ObjectMeta.DeletionTimestamp.IsZero() {
+		logger.Info("Creating/Updating index pattern", "index pattern", req.Name)
+		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject())
 
-	if err == nil {
-		r.Recorder.Event(&indexPattern, "Normal", "Created",
-			fmt.Sprintf("Created/Updated %s/%s %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name))
+		if err == nil {
+			r.Recorder.Event(indexPattern, "Normal", "Created",
+				fmt.Sprintf("Created/Updated %s/%s %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name))
+		} else {
+			r.Recorder.Event(indexPattern, "Warning", "Failed to create/update",
+				fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name, err.Error()))
+		}
+		return res, err
 	} else {
-		r.Recorder.Event(&indexPattern, "Warning", "Failed to create/update",
-			fmt.Sprintf("Failed to create/update %s/%s %s: %s", indexPattern.APIVersion, indexPattern.Kind, indexPattern.Name, err.Error()))
-	}
+		// The object is being deleted
+		if controllerutil.ContainsFinalizer(indexPattern, indexPatternFinalizer) {
+			if _, err := kibanaUtils.DeleteSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject()); err != nil {
+				return ctrl.Result{}, err
+			}
 
-	return res, err
+			controllerutil.RemoveFinalizer(indexPattern, indexPatternFinalizer)
+			if err := r.Update(ctx, indexPattern); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.
