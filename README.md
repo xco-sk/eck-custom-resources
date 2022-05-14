@@ -16,7 +16,7 @@ Currently supported resources:
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
 - For Kibana:
-  - [Space](docs/cr_space.md) (to be implemented, see [Project board](https://github.com/users/xco-sk/projects/1/))
+  - [Space](docs/cr_space.md)
   - [Index pattern](docs/cr_index_pattern.md)
   - [Saved search](docs/cr_saved_search.md)
   - [Visualization](docs/cr_visualization.md)

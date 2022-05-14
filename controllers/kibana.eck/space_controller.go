@@ -18,8 +18,11 @@ package kibanaeck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -41,21 +44,57 @@ type SpaceReconciler struct {
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=spaces/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=spaces/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Space object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	spaceFinalizer := "spaces.kibana.eck.github.com/finalizer"
 
-	return ctrl.Result{}, nil
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: r.ProjectConfig.Kibana,
+		Req:        req,
+	}
+
+	var space kibanaeckv1alpha1.Space
+	if err := r.Get(ctx, req.NamespacedName, &space); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	if space.ObjectMeta.DeletionTimestamp.IsZero() {
+		logger.Info("Creating/Updating saved search", "id", req.Name)
+		res, err := kibanaUtils.UpsertSpace(kibanaClient, space)
+
+		if err == nil {
+			r.Recorder.Event(&space, "Normal", "Created",
+				fmt.Sprintf("Created/Updated %s/%s %s", space.APIVersion, space.Kind, space.Name))
+		} else {
+			r.Recorder.Event(&space, "Warning", "Failed to create/update",
+				fmt.Sprintf("Failed to create/update %s/%s %s: %s", space.APIVersion, space.Kind, space.Name, err.Error()))
+		}
+
+		if !controllerutil.ContainsFinalizer(&space, spaceFinalizer) {
+			controllerutil.AddFinalizer(&space, spaceFinalizer)
+			if err := r.Update(ctx, &space); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+		return res, err
+	} else {
+		// The object is being deleted
+		if controllerutil.ContainsFinalizer(&space, spaceFinalizer) {
+			if _, err := kibanaUtils.DeleteSpace(kibanaClient, space.Name); err != nil {
+				return ctrl.Result{}, err
+			}
+
+			controllerutil.RemoveFinalizer(&space, spaceFinalizer)
+			if err := r.Update(ctx, &space); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.

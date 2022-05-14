@@ -70,7 +70,7 @@ func (r *LensReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 			return utils.GetRequeueResult(), err
 		}
 
-		logger.Info("Creating/Updating saved search", "id", req.Name)
+		logger.Info("Creating/Updating lens", "id", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, lens.ObjectMeta, lens.Spec.GetSavedObject())
 
 		if err == nil {

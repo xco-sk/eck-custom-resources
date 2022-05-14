@@ -35,9 +35,7 @@ spec:
           spec:
             description: SpaceSpec defines the desired state of Space
             properties:
-              foo:
-                description: Foo is an example field of Space. Edit space_types.go
-                  to remove/update
+              body:
                 type: string
             type: object
           status:
