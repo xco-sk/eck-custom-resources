@@ -3,4 +3,12 @@ kind: Space
 metadata:
   name: space-sample
 spec:
-  # TODO(user): Add fields here
+  body: |
+    {
+      "name": "ECK Space sample",
+      "description" : "This space was created using ECK-CR operator",
+      "color": "#aabbcc",
+      "initials": "CR",
+      "disabledFeatures": [],
+      "imageUrl": ""
+    }
