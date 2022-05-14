@@ -11,7 +11,9 @@
 - [Role](cr_role.md)
 
 ## Kibana (planned):
+- [Space](cr_space.md)
 - [Index pattern](cr_index_pattern.md)
 - [Saved search](cr_saved_search.md)
 - [Visualization](cr_visualization.md)
+- [Lens](cr_lens.md)
 - [Dashboard](cr_dashboard.md)
