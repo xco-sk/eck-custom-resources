@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: indexpatterns.kibana.eck.github.com
+  name: lens.kibana.eck.github.com
 spec:
   group: kibana.eck.github.com
   names:
-    kind: IndexPattern
-    listKind: IndexPatternList
-    plural: indexpatterns
-    singular: indexpattern
+    kind: Lens
+    listKind: LensList
+    plural: lens
+    singular: lens
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: IndexPattern is the Schema for the indexpatterns API
+        description: Lens is the Schema for the lens API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,7 +33,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: IndexPatternSpec defines the desired state of IndexPattern
+            description: LensSpec defines the desired state of Lens
             properties:
               body:
                 type: string
@@ -63,7 +63,7 @@ spec:
             - body
             type: object
           status:
-            description: IndexPatternStatus defines the observed state of IndexPattern
+            description: LensStatus defines the observed state of Lens
             type: object
         type: object
     served: true

@@ -1,0 +1,63 @@
+apiVersion: kibana.eck.github.com/v1alpha1
+kind: Lens
+metadata:
+  name: lens-sample
+spec:
+  space: my-space
+  dependencies:
+    - type: index-pattern
+      name: indexpattern-sample
+  body: |
+    {
+      "attributes": {
+        "title": "Count of docs 2",
+        "description": "",
+        "visualizationType": "lnsMetric",
+        "state": {
+          "visualization": {
+            "layerId": "13e00170-fe50-4495-87ff-048934afece1",
+            "accessor": "6d115d38-e79d-4e91-b5c2-29a69065cbfc",
+            "layerType": "data"
+          },
+          "query": {
+            "query": "",
+            "language": "kuery"
+          },
+          "filters": [],
+          "datasourceStates": {
+            "indexpattern": {
+              "layers": {
+                "13e00170-fe50-4495-87ff-048934afece1": {
+                  "columns": {
+                    "6d115d38-e79d-4e91-b5c2-29a69065cbfc": {
+                      "label": "Count of records",
+                      "dataType": "number",
+                      "operationType": "count",
+                      "isBucketed": false,
+                      "scale": "ratio",
+                      "sourceField": "___records___"
+                    }
+                  },
+                  "columnOrder": [
+                      "6d115d38-e79d-4e91-b5c2-29a69065cbfc"
+                  ],
+                  "incompleteColumns": {}
+                }
+              }
+            }
+          }
+        }
+      },
+      "references": [
+        {
+          "type": "index-pattern",
+          "id": "indexpattern-sample",
+          "name": "indexpattern-datasource-current-indexpattern"
+        },
+        {
+          "type": "index-pattern",
+          "id": "indexpattern-sample",
+          "name": "indexpattern-datasource-layer-13e00170-fe50-4495-87ff-048934afece1"
+        }
+      ]
+    }

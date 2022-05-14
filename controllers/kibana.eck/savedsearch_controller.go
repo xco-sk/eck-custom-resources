@@ -70,7 +70,7 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 			return utils.GetRequeueResult(), err
 		}
 
-		logger.Info("Creating/Updating saved search", "saved-search", req.Name)
+		logger.Info("Creating/Updating saved search", "id", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, savedSearch.ObjectMeta, savedSearch.Spec.GetSavedObject())
 
 		if err == nil {

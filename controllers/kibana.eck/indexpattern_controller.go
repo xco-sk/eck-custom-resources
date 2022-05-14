@@ -71,7 +71,7 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 			return utils.GetRequeueResult(), err
 		}
 
-		logger.Info("Creating/Updating index pattern", "index pattern", req.Name)
+		logger.Info("Creating/Updating index pattern", "id", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, indexPattern.ObjectMeta, indexPattern.Spec.GetSavedObject())
 
 		if err == nil {

@@ -70,7 +70,7 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return utils.GetRequeueResult(), err
 		}
 
-		logger.Info("Creating/Updating saved search", "saved-search", req.Name)
+		logger.Info("Creating/Updating saved search", "id", req.Name)
 		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, visualization.ObjectMeta, visualization.Spec.GetSavedObject())
 
 		if err == nil {

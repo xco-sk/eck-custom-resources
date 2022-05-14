@@ -12,7 +12,7 @@ type Dependency struct {
 	Space      *string         `json:"space,omitempty"`
 }
 
-// +kubebuilder:validation:Enum=visualization;dashboard;search;index-pattern
+// +kubebuilder:validation:Enum=visualization;dashboard;search;index-pattern;lens
 type SavedObjectType string
 
 func (in *SavedObject) GetSavedObject() SavedObject {

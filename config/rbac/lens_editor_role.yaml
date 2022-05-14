@@ -1,0 +1,24 @@
+# permissions for end users to edit lens.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: lens-editor-role
+rules:
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens/status
+  verbs:
+  - get
