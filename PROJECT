@@ -130,4 +130,13 @@ resources:
   kind: Space
   path: github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: kibana.eck
+  kind: Lens
+  path: github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1
+  version: v1alpha1
 version: "3"

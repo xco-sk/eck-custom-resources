@@ -50,6 +50,7 @@ spec:
                       - dashboard
                       - search
                       - index-pattern
+                      - lens
                       type: string
                   required:
                   - name

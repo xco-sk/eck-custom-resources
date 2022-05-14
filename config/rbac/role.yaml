@@ -274,6 +274,32 @@ rules:
 - apiGroups:
   - kibana.eck.github.com
   resources:
+  - lens
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
   - savedsearches
   verbs:
   - create

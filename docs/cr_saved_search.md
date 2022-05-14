@@ -20,7 +20,7 @@ See [Saved objects APIs](https://www.elastic.co/guide/en/kibana/master/saved-obj
 | `spec.body`                 | string          | Saved search definition json                                                                                                                    | No default                                           |
 | `spec.dependencies`         | List of objects | List of dependencies - the reconciler will wait for all resources from the list to be present in Kibana before deploying/updating this resource | -                                                    |                                                 |
 | `spec.dependencies[].space` | string          | Kibana Space where to look for given resource                                                                                                   | -                                                    |
-| `spec.dependencies[].type`  | string          | Type of resource - one of `visualization, dashboard, search, index-pattern`                                                                     | -                                                    |
+| `spec.dependencies[].type`  | string          | Type of resource - one of `visualization, dashboard, search, index-pattern, lens`                                                               | -                                                    |
 | `spec.dependencies[].name`  | string          | Name of resource                                                                                                                                | -                                                    |
 
 ## Example
