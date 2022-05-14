@@ -20,9 +20,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // IndexPatternSpec defines the desired state of IndexPattern
 type IndexPatternSpec struct {
 	SavedObject `json:",inline"`
@@ -30,8 +27,6 @@ type IndexPatternSpec struct {
 
 // IndexPatternStatus defines the observed state of IndexPattern
 type IndexPatternStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true
