@@ -3,4 +3,29 @@ kind: Dashboard
 metadata:
   name: dashboard-sample
 spec:
-  # TODO(user): Add fields here
+  space: my-space
+  dependencies:
+    - type: lens
+      name: lens-sample
+  body: |
+    {
+      "attributes": {
+        "title": "Sample dashboard",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"version\":\"8.1.0\",\"type\":\"lens\",\"gridData\":{\"x\":0,\"y\":0,\"w\":24,\"h\":15,\"i\":\"4cfcdf6b-1729-4467-a911-c69be15d58f8\"},\"panelIndex\":\"4cfcdf6b-1729-4467-a911-c69be15d58f8\",\"embeddableConfig\":{\"enhancements\":{}},\"panelRefName\":\"panel_4cfcdf6b-1729-4467-a911-c69be15d58f8\"}]",
+        "optionsJSON": "{\"useMargins\":true,\"syncColors\":false,\"hidePanelTitles\":false}",
+        "version": 1,
+        "timeRestore": false,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+        }
+      },
+      "references": [
+        {
+          "name": "4cfcdf6b-1729-4467-a911-c69be15d58f8:panel_4cfcdf6b-1729-4467-a911-c69be15d58f8",
+          "type": "lens",
+          "id": "lens-sample"
+        }
+      ]
+    }

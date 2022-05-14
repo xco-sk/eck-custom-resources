@@ -21,7 +21,7 @@ Currently supported resources:
   - [Saved search](docs/cr_saved_search.md)
   - [Visualization](docs/cr_visualization.md)
   - [Lens](docs/cr_lens.md)
-  - [Dashboard](docs/cr_dashboard.md) (to be implemented, see [Project board](https://github.com/users/xco-sk/projects/1/))
+  - [Dashboard](docs/cr_dashboard.md)
 
 ## Installation
 

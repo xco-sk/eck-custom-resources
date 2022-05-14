@@ -18,8 +18,12 @@ package kibanaeck
 
 import (
 	"context"
+	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
+	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -41,21 +45,66 @@ type DashboardReconciler struct {
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=dashboards/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=kibana.eck.github.com,resources=dashboards/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Dashboard object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
 func (r *DashboardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	dashboardFinalizer := "dashboards.kibana.eck.github.com/finalizer"
+	savedObjectType := "dashboard"
 
-	return ctrl.Result{}, nil
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: r.ProjectConfig.Kibana,
+		Req:        req,
+	}
+
+	var dashboard kibanaeckv1alpha1.Dashboard
+	if err := r.Get(ctx, req.NamespacedName, &dashboard); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	if dashboard.ObjectMeta.DeletionTimestamp.IsZero() {
+
+		if err := kibanaUtils.DependenciesFulfilled(kibanaClient, dashboard.Spec.GetSavedObject()); err != nil {
+			r.Recorder.Event(&dashboard, "Warning", "Missing dependencies",
+				fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
+			return utils.GetRequeueResult(), err
+		}
+
+		logger.Info("Creating/Updating dashboard", "id", req.Name)
+		res, err := kibanaUtils.UpsertSavedObject(kibanaClient, savedObjectType, dashboard.ObjectMeta, dashboard.Spec.GetSavedObject())
+
+		if err == nil {
+			r.Recorder.Event(&dashboard, "Normal", "Created",
+				fmt.Sprintf("Created/Updated %s/%s %s", dashboard.APIVersion, dashboard.Kind, dashboard.Name))
+		} else {
+			r.Recorder.Event(&dashboard, "Warning", "Failed to create/update",
+				fmt.Sprintf("Failed to create/update %s/%s %s: %s", dashboard.APIVersion, dashboard.Kind, dashboard.Name, err.Error()))
+		}
+
+		if !controllerutil.ContainsFinalizer(&dashboard, dashboardFinalizer) {
+			controllerutil.AddFinalizer(&dashboard, dashboardFinalizer)
+			if err := r.Update(ctx, &dashboard); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return res, err
+	} else {
+		// The object is being deleted
+		if controllerutil.ContainsFinalizer(&dashboard, dashboardFinalizer) {
+			if _, err := kibanaUtils.DeleteSavedObject(kibanaClient, savedObjectType, dashboard.ObjectMeta, dashboard.Spec.GetSavedObject()); err != nil {
+				return ctrl.Result{}, err
+			}
+
+			controllerutil.RemoveFinalizer(&dashboard, dashboardFinalizer)
+			if err := r.Update(ctx, &dashboard); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.

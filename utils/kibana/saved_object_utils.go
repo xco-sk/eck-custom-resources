@@ -67,7 +67,11 @@ func DependenciesFulfilled(kClient Client, savedObject kibanaeckv1alpha1.SavedOb
 			continue
 		}
 		if !exists {
-			missingDependencies = append(missingDependencies, fmt.Sprintf("%s/%s", dependency.ObjectType, dependency.Name))
+			spaceInfoMessage := ""
+			if dSpace != nil {
+				spaceInfoMessage = fmt.Sprintf(" (in space: %s)", *dSpace)
+			}
+			missingDependencies = append(missingDependencies, fmt.Sprintf("%s/%s%s", dependency.ObjectType, dependency.Name, spaceInfoMessage))
 		}
 	}
 
