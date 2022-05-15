@@ -10,7 +10,7 @@
 - [User](cr_user.md)
 - [Role](cr_role.md)
 
-## Kibana (planned):
+## Kibana:
 - [Space](cr_space.md)
 - [Index pattern](cr_index_pattern.md)
 - [Saved search](cr_saved_search.md)
