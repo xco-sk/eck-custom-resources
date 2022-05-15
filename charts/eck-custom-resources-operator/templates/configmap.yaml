@@ -33,3 +33,13 @@ data:
         usernamePasswordSecret:
           secretName: {{ .Values.elasticsearch.authentication.usernamePasswordSecret.secretName }}
           userName: {{ .Values.elasticsearch.authentication.usernamePasswordSecret.userName }}
+    
+    kibana:
+      url: {{ .Values.kibana.url }}
+      certificate:
+        secretName: {{ .Values.kibana.certificate.secretName }}
+        certificateKey: {{ .Values.kibana.certificate.certificateKey }}
+      authentication:
+        usernamePasswordSecret:
+          secretName: {{ .Values.kibana.authentication.usernamePasswordSecret.secretName }}
+          userName: {{ .Values.kibana.authentication.usernamePasswordSecret.userName }}
