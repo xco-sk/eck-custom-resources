@@ -113,7 +113,7 @@ metrics:
 
 # Configuration of Elasticsearch cluster to which the Custom resources are deployed
 elasticsearch:
-  # -- Url for Elasticsearch
+  # -- Url of Elasticsearch
   url: https://quickstart-es-http:9200
   certificate:
     # -- Name of the Secret containing certificate used for communication with Elasticsearch
@@ -123,7 +123,24 @@ elasticsearch:
   authentication:
     # Configuration of secret containing authentication information
     usernamePasswordSecret:
-      # -- Name of the Secret containing password for user that is used to manage deployed resources. Should be in `username: password` format.
+      # -- Name of the Secret containing password for user that is used to manage deployed resources. Should be in the `username: password` format.
+      secretName: quickstart-es-elastic-user
+      # -- Username of user that is used to manage deployed resources
+      userName: elastic
+
+# Configuration of Kibana to which the Custom resources are deployed
+kibana:
+  # -- Url of Kibana
+  url: https://quickstart-kb-http:5601
+  certificate:
+    # -- Name of the Secret containing certificate used for communication with Kibana
+    secretName: quickstart-kb-http-certs-public
+    # -- Key in Secret that contain the PEM-encoded certificate
+    certificateKey: ca.crt
+  authentication:
+    # Configuration of secret containing authentication information
+    usernamePasswordSecret:
+      # -- Name of the Secret containing password for user that is used to manage deployed resources. Should be in the `username: password` format.
       secretName: quickstart-es-elastic-user
       # -- Username of user that is used to manage deployed resources
       userName: elastic
