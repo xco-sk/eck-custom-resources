@@ -15,10 +15,10 @@ in official documentation.
 
 ## Fields
 
-| Key             | Type   | Description                                                                 |
-|-----------------|--------|-----------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Snapshot Lifecycle Policy                                       |
-| `spec.body`     | string | Role definition - same you would use when creating policy using ES REST API |
+| Key             | Type   | Description                                                               |
+|-----------------|--------|---------------------------------------------------------------------------|
+| `metadata.name` | string | Name of the Snapshot Lifecycle Policy                                     |
+| `spec.body`     | string | Role definition - same you would use when creating role using ES REST API |
 
 ## Example
 

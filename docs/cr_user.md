@@ -17,7 +17,7 @@ in official documentation.
 |-------------------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `metadata.name`   | string | Name of the Index Lifecycle Policy                                                                                                            |
 | `spec.secretName` | string | The name of the secret, from where the password is taken during create or update, the key has to be equal to username (`metadata.name` field) |
-| `spec.body`       | string | User definition - same you would use when creating ILM policy using ES REST API                                                               |
+| `spec.body`       | string | User definition - same you would use when creating User using ES REST API                                                                     |
 
 The changes in secret (e.g. password rotation) **are not** automatically propagated.
 
