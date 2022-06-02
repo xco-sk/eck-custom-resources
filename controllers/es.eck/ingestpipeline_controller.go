@@ -77,5 +77,6 @@ func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 func (r *IngestPipelineReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.IngestPipeline{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

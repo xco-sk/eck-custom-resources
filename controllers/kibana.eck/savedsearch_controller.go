@@ -109,5 +109,6 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 func (r *SavedSearchReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&kibanaeckv1alpha1.SavedSearch{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

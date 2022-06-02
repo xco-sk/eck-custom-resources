@@ -83,5 +83,6 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 func (r *IndexTemplateReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.IndexTemplate{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

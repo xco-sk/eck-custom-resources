@@ -111,5 +111,6 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 func (r *IndexPatternReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&kibanaeckv1alpha1.IndexPattern{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -101,5 +102,6 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 func (r *SpaceReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&kibanaeckv1alpha1.Space{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

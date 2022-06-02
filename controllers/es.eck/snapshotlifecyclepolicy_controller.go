@@ -77,5 +77,6 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 func (r *SnapshotLifecyclePolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.SnapshotLifecyclePolicy{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }
