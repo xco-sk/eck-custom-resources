@@ -3,6 +3,7 @@ package kibana
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	k8sv1 "k8s.io/api/core/v1"
@@ -64,7 +65,16 @@ func (kClient Client) getHttpClient() (*http.Client, error) {
 		if err := utils.GetCertificateSecret(kClient.Cli, kClient.Ctx, kClient.Req.Namespace, kClient.KibanaSpec.Certificate, &certificateSecret); err != nil {
 			return nil, err
 		}
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true} // TODO: use real certificate
+
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(certificateSecret.Data[kClient.KibanaSpec.Certificate.CertificateKey])
+
+		tr.TLSClientConfig = &tls.Config{
+			RootCAs:            caCertPool,
+			InsecureSkipVerify: false,
+		}
+	} else if strings.HasPrefix(kClient.KibanaSpec.Url, "https://") {
+		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	}
 
 	httpClient := &http.Client{
