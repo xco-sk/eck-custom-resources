@@ -109,5 +109,6 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 func (r *VisualizationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&kibanaeckv1alpha1.Visualization{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

@@ -109,5 +109,6 @@ func (r *LensReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 func (r *LensReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&kibanaeckv1alpha1.Lens{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

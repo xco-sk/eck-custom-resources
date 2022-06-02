@@ -77,5 +77,6 @@ func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Re
 func (r *ElasticsearchUserReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.ElasticsearchUser{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

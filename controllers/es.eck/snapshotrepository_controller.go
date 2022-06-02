@@ -77,5 +77,6 @@ func (r *SnapshotRepositoryReconciler) Reconcile(ctx context.Context, req ctrl.R
 func (r *SnapshotRepositoryReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.SnapshotRepository{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

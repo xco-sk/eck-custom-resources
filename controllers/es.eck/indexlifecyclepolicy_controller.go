@@ -78,5 +78,6 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 func (r *IndexLifecyclePolicyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.IndexLifecyclePolicy{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }

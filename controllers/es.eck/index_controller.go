@@ -107,5 +107,6 @@ func (r *IndexReconciler) createUpdate(ctx context.Context, req ctrl.Request, es
 func (r *IndexReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.Index{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }
