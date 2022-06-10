@@ -18,19 +18,7 @@ package v1alpha1
 
 type Dependencies struct {
 	// +optional
-	IndexTemplate []IndexTemplateDependency `json:"indexTemplates,omitempty"`
+	IndexTemplates []string `json:"indexTemplates,omitempty"`
 	// +optional
-	Index []IndexDependency `json:"indices,omitempty"`
-}
-
-type IndexTemplateDependency struct {
-	// +required
-	// +kubebuilder:validation:MinLength=0
-	IndexTemplateName string `json:"indexTemplateName"`
-}
-
-type IndexDependency struct {
-	// +required
-	// +kubebuilder:validation:MinLength=0
-	IndexName string `json:"indexName"`
+	Indices []string `json:"indices,omitempty"`
 }

@@ -38,27 +38,15 @@ spec:
               body:
                 minLength: 0
                 type: string
-              dependsOn:
+              dependencies:
                 properties:
                   indexTemplates:
                     items:
-                      properties:
-                        indexTemplateName:
-                          minLength: 0
-                          type: string
-                      required:
-                      - indexTemplateName
-                      type: object
+                      type: string
                     type: array
                   indices:
                     items:
-                      properties:
-                        indexName:
-                          minLength: 0
-                          type: string
-                      required:
-                      - indexName
-                      type: object
+                      type: string
                     type: array
                 type: object
             required:

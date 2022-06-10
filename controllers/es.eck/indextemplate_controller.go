@@ -47,6 +47,11 @@ type IndexTemplateReconciler struct {
 func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	if !r.ProjectConfig.Elasticsearch.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
@@ -59,7 +64,7 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return esutils.DeleteIndexTemplate(esClient, req.Name)
 	}
 
-	if err := esutils.DependenciesFulfilled(esClient, indexTemplate.Spec.DependsOn); err != nil {
+	if err := esutils.DependenciesFulfilled(esClient, indexTemplate.Spec.Dependencies); err != nil {
 		r.Recorder.Event(&indexTemplate, "Warning", "Missing dependencies",
 			fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
 		return utils.GetRequeueResult(), err

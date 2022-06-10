@@ -23,7 +23,7 @@ import (
 // IndexSpec defines the desired state of Index
 type IndexSpec struct {
 	// +optional
-	DependsOn Dependencies `json:"dependsOn,omitempty"`
+	Dependencies Dependencies `json:"dependencies,omitempty"`
 	// +required
 	Body string `json:"body"`
 }

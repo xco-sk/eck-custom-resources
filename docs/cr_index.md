@@ -25,12 +25,12 @@ are logged into the object events, so running
 
 ## Fields
 
-| Key                             | Type   | Description                                                                                     |
-|---------------------------------|--------|-------------------------------------------------------------------------------------------------|
-| `metadata.name`                 | string | Name of the Index                                                                               |
-| `spec.body`                     | string | Index definition - similar to one you would use when creating index using ES REST API           |
-| `spec.dependsOn.indexTemplates` | list | List of index templates that have to be present in ES cluster before index is created / updated |
-| `spec.dependsOn.indices`        | list | List of indices that have to be present in ES cluster before index created / updated            |
+| Key                                | Type   | Description                                                                                     |
+|------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `metadata.name`                    | string | Name of the Index                                                                               |
+| `spec.body`                        | string | Index definition - similar to one you would use when creating index using ES REST API           |
+| `spec.dependencies.indexTemplates` | list   | List of index templates that have to be present in ES cluster before index is created / updated |
+| `spec.dependencies.indices`        | list   | List of indices that have to be present in ES cluster before index created / updated            |
 
 ## Example
 ```yaml
@@ -39,11 +39,11 @@ kind: Index
 metadata:
   name: index-sample
 spec:
-  dependsOn:
+  dependencies:
     indexTemplates:
-      - indexTemplateName: indextemplate-sample
+      - indextemplate-sample
     indices:
-      - indexName: index-base-sample
+      - index-base-sample
   body: |
     {
       "settings": {

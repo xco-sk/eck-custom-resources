@@ -47,6 +47,11 @@ type SnapshotRepositoryReconciler struct {
 func (r *SnapshotRepositoryReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	if !r.ProjectConfig.Elasticsearch.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")

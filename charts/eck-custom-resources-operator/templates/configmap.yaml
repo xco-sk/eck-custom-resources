@@ -25,6 +25,7 @@ data:
         resourceName: eck-custom-resources.xco-sk.github.com
     
     elasticsearch:
+      enabled: {{ .Values.elasticsearch.enabled }}
       url: {{ .Values.elasticsearch.url }}
       certificate:
         secretName: {{ .Values.elasticsearch.certificate.secretName }}
@@ -35,6 +36,7 @@ data:
           userName: {{ .Values.elasticsearch.authentication.usernamePasswordSecret.userName }}
     
     kibana:
+      enabled: {{ .Values.kibana.enabled }}
       url: {{ .Values.kibana.url }}
       certificate:
         secretName: {{ .Values.kibana.certificate.secretName }}
