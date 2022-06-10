@@ -1,6 +1,6 @@
 # Helm chart for eck-custom-resources
 
-![Version: 0.2.3](https://img.shields.io/badge/Version-0.2.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
 
 Helm chart for eck-custom-resources operator
 
@@ -49,6 +49,7 @@ helm uninstall eck-cr
 | elasticsearch.authentication.usernamePasswordSecret.userName | string | `"elastic"` | Username of user that is used to manage deployed resources |
 | elasticsearch.certificate.certificateKey | string | `"ca.crt"` | Key in Secret that contain the PEM-encoded certificate |
 | elasticsearch.certificate.secretName | string | `"quickstart-es-http-certs-public"` | Name of the Secret containing certificate used for communication with Elasticsearch |
+| elasticsearch.enabled | bool | `true` | Flag to define if the Elasticsearch reconciler is enabled or not |
 | elasticsearch.url | string | `"https://quickstart-es-http:9200"` | Url of Elasticsearch |
 | fullnameOverride | string | `""` | Fully qualified app name |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for docker image |
@@ -59,6 +60,7 @@ helm uninstall eck-cr
 | kibana.authentication.usernamePasswordSecret.userName | string | `"elastic"` | Username of user that is used to manage deployed resources |
 | kibana.certificate.certificateKey | string | `"ca.crt"` | Key in Secret that contain the PEM-encoded certificate |
 | kibana.certificate.secretName | string | `"quickstart-kb-http-certs-public"` | Name of the Secret containing certificate used for communication with Kibana |
+| kibana.enabled | bool | `true` | Flag to define if the Kibana reconciler is enabled or not |
 | kibana.url | string | `"https://quickstart-kb-http:5601"` | Url of Kibana |
 | manager.health.healthProbePort | int | `8081` | Port on which the health probe listens |
 | manager.leaderElection.leaderElect | bool | `true` | If leader election is enabled |
