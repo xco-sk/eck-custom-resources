@@ -47,6 +47,11 @@ type IndexReconciler struct {
 func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	if !r.ProjectConfig.Elasticsearch.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
@@ -70,7 +75,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 func (r *IndexReconciler) createUpdate(ctx context.Context, req ctrl.Request, esClient *elasticsearch.Client, index eseckv1alpha1.Index) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if err := esutils.DependenciesFulfilled(esClient, index.Spec.DependsOn); err != nil {
+	if err := esutils.DependenciesFulfilled(esClient, index.Spec.Dependencies); err != nil {
 		r.Recorder.Event(&index, "Warning", "Missing dependencies",
 			fmt.Sprintf("Some of declared dependencies are not present yet: %s", err.Error()))
 		return utils.GetRequeueResult(), err

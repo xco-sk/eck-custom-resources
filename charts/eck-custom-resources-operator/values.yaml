@@ -113,6 +113,8 @@ metrics:
 
 # Configuration of Elasticsearch cluster to which the Custom resources are deployed
 elasticsearch:
+  # -- Flag to define if the Elasticsearch reconciler is enabled or not
+  enabled: true
   # -- Url of Elasticsearch
   url: https://quickstart-es-http:9200
   certificate:
@@ -130,6 +132,8 @@ elasticsearch:
 
 # Configuration of Kibana to which the Custom resources are deployed
 kibana:
+  # -- Flag to define if the Kibana reconciler is enabled or not
+  enabled: true
   # -- Url of Kibana
   url: https://quickstart-kb-http:5601
   certificate:

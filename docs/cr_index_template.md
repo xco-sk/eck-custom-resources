@@ -1,6 +1,6 @@
 # Index Template (indextemplates.es.eck.github.com)
 
-Representation of Index template resource.
+Representation of the Index template resource.
 
 ## Lifecycle
 
@@ -12,12 +12,12 @@ in official documentation.
 
 ## Fields
 
-| Key             | Type   | Description                                                                                   |
-|-----------------|--------|-----------------------------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Index Template                                                                    |
-| `spec.body`     | string | Index template definition - same you would use when creating index template using ES REST API |
-| `spec.dependsOn.indexTemplates` | list | List of index templates that have to be present in ES cluster before index is created / updated |
-| `spec.dependsOn.indices`        | list | List of indices that have to be present in ES cluster before index created / updated            |
+| Key                                | Type   | Description                                                                                     |
+|------------------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `metadata.name`                    | string | Name of the Index Template                                                                      |
+| `spec.body`                        | string | Index template definition - same you would use when creating index template using ES REST API   |
+| `spec.dependencies.indexTemplates` | list   | List of index templates that have to be present in ES cluster before index is created / updated |
+| `spec.dependencies.indices`        | list   | List of indices that have to be present in ES cluster before index created / updated            |
 
 ## Example
 
@@ -29,9 +29,9 @@ metadata:
 spec:
   dependsOn:
     indexTemplates:
-      - indexTemplateName: indextemplate-base
+      - indextemplate-base
     indices:
-      - indexName: index-base-sample
+      - index-base-sample
   body: |
     {
       "index_patterns" : ["index-*"],

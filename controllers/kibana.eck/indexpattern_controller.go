@@ -48,6 +48,11 @@ type IndexPatternReconciler struct {
 func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	if !r.ProjectConfig.Kibana.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
 	indexPatternFinalizer := "indexpatterns.kibana.eck.github.com/finalizer"
 	savedObjectType := "index-pattern"
 

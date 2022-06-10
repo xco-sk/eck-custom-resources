@@ -68,24 +68,24 @@ func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1
 	var missingIdx []string
 	var errors []string
 
-	for _, idxTplDependency := range dependencies.IndexTemplate {
-		exists, err := IndexTemplateExists(esClient, idxTplDependency.IndexTemplateName)
+	for _, idxTplDependency := range dependencies.IndexTemplates {
+		exists, err := IndexTemplateExists(esClient, idxTplDependency)
 		if err != nil {
 			errors = append(errors, err.Error())
 			continue
 		}
 		if !exists {
-			missingIdxTemplates = append(missingIdxTemplates, idxTplDependency.IndexTemplateName)
+			missingIdxTemplates = append(missingIdxTemplates, idxTplDependency)
 		}
 	}
-	for _, idxDependency := range dependencies.Index {
-		exists, err := VerifyIndexExists(esClient, idxDependency.IndexName)
+	for _, idxDependency := range dependencies.Indices {
+		exists, err := VerifyIndexExists(esClient, idxDependency)
 		if err != nil {
 			errors = append(errors, err.Error())
 			continue
 		}
 		if !exists {
-			missingIdx = append(missingIdx, idxDependency.IndexName)
+			missingIdx = append(missingIdx, idxDependency)
 		}
 	}
 

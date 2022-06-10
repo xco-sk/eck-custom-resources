@@ -23,7 +23,7 @@ import (
 // IndexTemplateSpec defines the desired state of IndexTemplate
 type IndexTemplateSpec struct {
 	// +optional
-	DependsOn Dependencies `json:"dependsOn,omitempty"`
+	Dependencies Dependencies `json:"dependencies,omitempty"`
 	// +kubebuilder:validation:MinLength=0
 	// +required
 	Body string `json:"body"`

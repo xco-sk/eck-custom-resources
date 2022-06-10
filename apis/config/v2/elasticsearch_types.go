@@ -19,6 +19,9 @@ package v2
 // ElasticsearchSpec Definition of target elasticsearch cluster
 type ElasticsearchSpec struct {
 	// +required
+	Enabled bool `json:"enabled"`
+
+	// +required
 	// +kubebuilder:validation:MinLength=0
 	Url string `json:"url"`
 	// +optional

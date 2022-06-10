@@ -48,6 +48,11 @@ type SavedSearchReconciler struct {
 func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	if !r.ProjectConfig.Kibana.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
 	savedSearchFinalizer := "savedsearches.kibana.eck.github.com/finalizer"
 	savedObjectType := "search"
 

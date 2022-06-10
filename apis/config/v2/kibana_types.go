@@ -19,6 +19,9 @@ package v2
 // KibanaSpec Definition of target elasticsearch cluster
 type KibanaSpec struct {
 	// +required
+	Enabled bool `json:"enabled"`
+
+	// +required
 	// +kubebuilder:validation:MinLength=0
 	Url string `json:"url,omitempty"`
 	// +optional
@@ -28,7 +31,7 @@ type KibanaSpec struct {
 	Authentication *KibanaAuthentication `json:"authentication,omitempty"`
 }
 
-// KibanaAuthentication Definition of Elasticsearch authentication
+// KibanaAuthentication Definition of Kibana authentication
 type KibanaAuthentication struct {
 	// +optional
 	UsernamePassword *UsernamePasswordAuthentication `json:"usernamePasswordSecret,omitempty"`

@@ -3,11 +3,11 @@ kind: Index
 metadata:
   name: index-sample
 spec:
-  dependsOn:
+  dependencies:
     indexTemplates:
-      - indexTemplateName: indextemplate-sample
+      - indextemplate-sample
     indices:
-      - indexName: index-base-sample
+      - index-base-sample
   body: |
     {
       "settings": {

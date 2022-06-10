@@ -3,9 +3,9 @@ kind: Index
 metadata:
   name: index-base-sample
 spec:
-  dependsOn:
+  dependencies:
     indexTemplates:
-      - indexTemplateName: indextemplate-sample
+      - indextemplate-sample
   body: |
     {
       "aliases": {
