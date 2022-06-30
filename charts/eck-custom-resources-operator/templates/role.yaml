@@ -354,31 +354,31 @@ rules:
   resources:
   - savedsearches/status
   verbs:
-    - get
-    - patch
-    - update
+  - get
+  - patch
+  - update
 - apiGroups:
-    - kibana.eck.github.com
+  - kibana.eck.github.com
   resources:
-    - spaces
+  - spaces
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - kibana.eck.github.com
+  - kibana.eck.github.com
   resources:
-    - spaces/finalizers
+  - spaces/finalizers
   verbs:
-    - update
+  - update
 - apiGroups:
-    - kibana.eck.github.com
+  - kibana.eck.github.com
   resources:
-    - spaces/status
+  - spaces/status
   verbs:
   - get
   - patch
