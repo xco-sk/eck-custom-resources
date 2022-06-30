@@ -12,6 +12,39 @@ rules:
   - secrets
   verbs:
   - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
 - apiGroups:
   - es.eck.github.com
   resources:
@@ -275,6 +308,32 @@ rules:
 - apiGroups:
   - kibana.eck.github.com
   resources:
+  - lens
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - lens/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
   - savedsearches
   verbs:
   - create
@@ -294,6 +353,32 @@ rules:
   - kibana.eck.github.com
   resources:
   - savedsearches/status
+  verbs:
+    - get
+    - patch
+    - update
+- apiGroups:
+    - kibana.eck.github.com
+  resources:
+    - spaces
+  verbs:
+    - create
+    - delete
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - kibana.eck.github.com
+  resources:
+    - spaces/finalizers
+  verbs:
+    - update
+- apiGroups:
+    - kibana.eck.github.com
+  resources:
+    - spaces/status
   verbs:
   - get
   - patch
