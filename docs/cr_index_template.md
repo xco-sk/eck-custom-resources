@@ -27,7 +27,7 @@ kind: IndexTemplate
 metadata:
   name: indextemplate-sample
 spec:
-  dependsOn:
+  dependencies:
     indexTemplates:
       - indextemplate-base
     indices:
