@@ -1,0 +1,17 @@
+apiVersion: kibana.eck.github.com/v1alpha1
+kind: DataView
+metadata:
+  name: dataview-sample
+spec:
+  space: my-space
+  dependencies:
+    - type: lens
+      name: lens-sample
+  body: |
+    {
+      "override": true,
+      "refresh_fields": true,
+      "data_view": {
+         "title": "sample-view"
+      }
+    }

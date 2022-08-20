@@ -22,6 +22,7 @@ Currently supported resources:
   - [Visualization](docs/cr_visualization.md)
   - [Lens](docs/cr_lens.md)
   - [Dashboard](docs/cr_dashboard.md)
+  - [Data View](docs/cr_data_view.md)
 
 ## Installation
 
