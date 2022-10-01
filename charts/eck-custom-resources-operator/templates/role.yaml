@@ -409,4 +409,30 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dataviews
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dataviews/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - dataviews/status
+  verbs:
+  - get
+  - patch
+  - update
 {{- end }}

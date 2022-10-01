@@ -17,3 +17,4 @@
 - [Visualization](cr_visualization.md)
 - [Lens](cr_lens.md)
 - [Dashboard](cr_dashboard.md)
+- [Data View](cr_data_view.md)

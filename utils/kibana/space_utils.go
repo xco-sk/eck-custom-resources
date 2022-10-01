@@ -1,14 +1,13 @@
 package kibana
 
 import (
-	"encoding/json"
 	"fmt"
-	kibanaeckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1"
-	"github.com/xco-sk/eck-custom-resources/utils"
 	"io/ioutil"
 	"net/http"
+
+	kibanaeckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1"
+	"github.com/xco-sk/eck-custom-resources/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"strings"
 )
 
 func DeleteSpace(kClient Client, spaceName string) (ctrl.Result, error) {
@@ -25,7 +24,7 @@ func UpsertSpace(kClient Client, space kibanaeckv1alpha1.Space) (ctrl.Result, er
 
 	var res *http.Response
 
-	modifiedBody, err := injectId(space)
+	modifiedBody, err := InjectId(space.Spec.Body, space.Name)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -53,22 +52,4 @@ func UpsertSpace(kClient Client, space kibanaeckv1alpha1.Space) (ctrl.Result, er
 func SpaceExists(kClient Client, spaceName string) (bool, error) {
 	res, err := kClient.DoGet(fmt.Sprintf("/api/spaces/space/%s", spaceName))
 	return err == nil && res.StatusCode == 200, err
-}
-
-func injectId(space kibanaeckv1alpha1.Space) (*string, error) {
-	var body map[string]interface{}
-	err := json.NewDecoder(strings.NewReader(space.Spec.Body)).Decode(&body)
-	if err != nil {
-		return nil, err
-	}
-
-	body["id"] = space.Name
-
-	marshalledBody, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-
-	sBody := string(marshalledBody)
-	return &sBody, nil
 }
