@@ -35,6 +35,15 @@ helm install eck-cr eck-custom-resources/eck-custom-resources-operator
 ```
 Configuration options are documented in [chart README file](charts/eck-custom-resources-operator/README.md)
 
+## Upgrade guide
+
+### From 0.3.2 to 0.4.0
+There is new `DataView` CRD present. To apply the CRD, run:
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.4.0/config/crd/bases/kibana.eck.github.com_dataviews.yaml
+```
+
+
 ## Uninstallation
 To uninstall the eck-cr from Kubernetes cluster, run:
 

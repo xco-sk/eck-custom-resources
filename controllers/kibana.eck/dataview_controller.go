@@ -96,7 +96,7 @@ func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	} else {
 		// The object is being deleted
 		if controllerutil.ContainsFinalizer(&dataView, dataViewFinalizer) {
-			if _, err := kibanaUtils.DeleteDataView(kibanaClient, dataView.Name); err != nil {
+			if _, err := kibanaUtils.DeleteDataView(kibanaClient, dataView); err != nil {
 				return ctrl.Result{}, err
 			}
 
