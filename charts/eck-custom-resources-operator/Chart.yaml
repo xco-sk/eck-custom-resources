@@ -9,5 +9,5 @@ maintainers:
     email: marek@xco.sk
     url: https://github.com/xco-sk
 type: application
-version: 0.4.3
-appVersion: 0.4.0
+version: 0.4.4
+appVersion: 0.4.1
