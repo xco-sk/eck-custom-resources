@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -75,7 +76,7 @@ func (kClient Client) getHttpClient() (*http.Client, error) {
 			InsecureSkipVerify: false,
 		}
 	} else if strings.HasPrefix(kClient.KibanaSpec.Url, "https://") {
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		return nil, errors.New("Failed to configure http client, certificate not configured (kibana.certificate)")
 	}
 
 	httpClient := &http.Client{
