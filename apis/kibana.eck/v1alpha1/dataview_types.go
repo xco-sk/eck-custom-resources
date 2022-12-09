@@ -23,6 +23,9 @@ import (
 // DataViewSpec defines the desired state of DataView
 type DataViewSpec struct {
 	SavedObject `json:",inline"`
+
+	// +optional
+	Target string `json:"target,omitempty"`
 }
 
 // DataViewStatus defines the observed state of DataView

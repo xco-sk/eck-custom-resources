@@ -52,6 +52,7 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, nil
 	}
 
+	// Get the ElasticsearchInstance defined in target (if present and pass to the esutils.GetElasticsearchClient)
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")

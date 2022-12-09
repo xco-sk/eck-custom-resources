@@ -1,0 +1,6 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchInstance
+metadata:
+  name: elasticsearchinstance-sample
+spec:
+  # TODO(user): Add fields here

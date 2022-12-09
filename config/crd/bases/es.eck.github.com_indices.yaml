@@ -48,6 +48,8 @@ spec:
                       type: string
                     type: array
                 type: object
+              target:
+                type: string
             required:
             - body
             type: object

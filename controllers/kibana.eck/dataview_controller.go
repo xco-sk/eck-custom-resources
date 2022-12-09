@@ -55,6 +55,7 @@ func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	dataViewFinalizer := "dataview.kibana.eck.github.com/finalizer"
 
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
 	kibanaClient := kibanaUtils.Client{
 		Cli:        r.Client,
 		Ctx:        ctx,

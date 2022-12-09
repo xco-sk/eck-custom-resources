@@ -1,0 +1,6 @@
+apiVersion: kibana.eck.github.com/v1alpha1
+kind: KibanaInstance
+metadata:
+  name: kibanainstance-sample
+spec:
+  # TODO(user): Add fields here

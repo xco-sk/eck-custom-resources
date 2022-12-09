@@ -435,4 +435,40 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchinstances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchinstances/status
+  verbs:
+  - get
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - kibanainstances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - kibana.eck.github.com
+  resources:
+  - kibanainstances/status
+  verbs:
+  - get
 {{- end }}

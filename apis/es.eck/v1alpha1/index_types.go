@@ -26,6 +26,8 @@ type IndexSpec struct {
 	Dependencies Dependencies `json:"dependencies,omitempty"`
 	// +required
 	Body string `json:"body"`
+	// +optional
+	Target string `json:"target,omitempty"`
 }
 
 // IndexStatus defines the observed state of Index

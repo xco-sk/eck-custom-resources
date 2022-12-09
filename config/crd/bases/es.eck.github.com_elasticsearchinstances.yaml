@@ -5,20 +5,21 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: dataviews.kibana.eck.github.com
+  name: elasticsearchinstances.es.eck.github.com
 spec:
-  group: kibana.eck.github.com
+  group: es.eck.github.com
   names:
-    kind: DataView
-    listKind: DataViewList
-    plural: dataviews
-    singular: dataview
+    kind: ElasticsearchInstance
+    listKind: ElasticsearchInstanceList
+    plural: elasticsearchinstances
+    singular: elasticsearchinstance
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: DataView is the Schema for the dataviews API
+        description: ElasticsearchInstance is the Schema for the elasticsearchinstances
+          API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,39 +34,16 @@ spec:
           metadata:
             type: object
           spec:
-            description: DataViewSpec defines the desired state of DataView
+            description: ElasticsearchInstanceSpec defines the desired state of ElasticsearchInstance
             properties:
-              body:
+              foo:
+                description: Foo is an example field of ElasticsearchInstance. Edit
+                  elasticsearchinstance_types.go to remove/update
                 type: string
-              dependencies:
-                items:
-                  properties:
-                    name:
-                      type: string
-                    space:
-                      type: string
-                    type:
-                      enum:
-                      - visualization
-                      - dashboard
-                      - search
-                      - index-pattern
-                      - lens
-                      type: string
-                  required:
-                  - name
-                  - type
-                  type: object
-                type: array
-              space:
-                type: string
-              target:
-                type: string
-            required:
-            - body
             type: object
           status:
-            description: DataViewStatus defines the observed state of DataView
+            description: ElasticsearchInstanceStatus defines the observed state of
+              ElasticsearchInstance
             type: object
         type: object
     served: true
