@@ -17,25 +17,12 @@ limitations under the License.
 package v1alpha1
 
 import (
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// KibanaInstanceSpec defines the desired state of KibanaInstance
-type KibanaInstanceSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of KibanaInstance. Edit kibanainstance_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
-}
-
 // KibanaInstanceStatus defines the observed state of KibanaInstance
 type KibanaInstanceStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true
@@ -46,7 +33,7 @@ type KibanaInstance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   KibanaInstanceSpec   `json:"spec,omitempty"`
+	Spec   configv2.KibanaSpec  `json:"spec,omitempty"`
 	Status KibanaInstanceStatus `json:"status,omitempty"`
 }
 

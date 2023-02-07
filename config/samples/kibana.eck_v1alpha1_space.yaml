@@ -3,6 +3,7 @@ kind: Space
 metadata:
   name: space-sample
 spec:
+  targetInstance: kibana-sample
   body: |
     {
       "name": "ECK Space sample",

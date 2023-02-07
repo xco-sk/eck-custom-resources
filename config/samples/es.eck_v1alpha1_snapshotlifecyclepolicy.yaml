@@ -3,6 +3,7 @@ kind: SnapshotLifecyclePolicy
 metadata:
   name: snapshotlifecyclepolicy-sample
 spec:
+  targetInstance: elasticsearch-sample
   body: |
     {
       "schedule": "0 30 1 * * ?", 

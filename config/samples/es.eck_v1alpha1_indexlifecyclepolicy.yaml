@@ -3,6 +3,7 @@ kind: IndexLifecyclePolicy
 metadata:
   name: indexlifecyclepolicy-sample
 spec:
+  targetInstance: elasticsearch-sample
   body: |
     {
       "policy": {

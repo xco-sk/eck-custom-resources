@@ -20,18 +20,16 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // DashboardSpec defines the desired state of Dashboard
 type DashboardSpec struct {
+	// +optional
+	CommonConfig CommonKibanaConfig `json:",inline"`
+
 	SavedObject `json:",inline"`
 }
 
 // DashboardStatus defines the observed state of Dashboard
 type DashboardStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true

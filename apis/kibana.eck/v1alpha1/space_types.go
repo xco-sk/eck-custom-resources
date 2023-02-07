@@ -22,6 +22,9 @@ import (
 
 // SpaceSpec defines the desired state of Space
 type SpaceSpec struct {
+	// +optional
+	CommonConfig CommonKibanaConfig `json:",inline"`
+
 	Body string `json:"body,omitempty"`
 }
 

@@ -3,6 +3,7 @@ kind: Index
 metadata:
   name: index-sample
 spec:
+  targetInstance: elasticsearch-sample
   dependencies:
     indexTemplates:
       - indextemplate-sample

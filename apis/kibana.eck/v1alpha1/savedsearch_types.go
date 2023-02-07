@@ -22,6 +22,9 @@ import (
 
 // SavedSearchSpec defines the desired state of SavedSearch
 type SavedSearchSpec struct {
+	// +optional
+	CommonConfig CommonKibanaConfig `json:",inline"`
+
 	SavedObject `json:",inline"`
 }
 

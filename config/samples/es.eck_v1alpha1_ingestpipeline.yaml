@@ -3,6 +3,7 @@ kind: IngestPipeline
 metadata:
   name: ingestpipeline-sample
 spec:
+  targetInstance: elasticsearch-sample
   body: |
     {
       "description" : "Ingest pipeline sample",

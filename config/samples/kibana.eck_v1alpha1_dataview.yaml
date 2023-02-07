@@ -3,6 +3,7 @@ kind: DataView
 metadata:
   name: dataview-sample
 spec:
+  targetInstance: kibana-sample
   space: space-sample
   dependencies:
     - type: lens

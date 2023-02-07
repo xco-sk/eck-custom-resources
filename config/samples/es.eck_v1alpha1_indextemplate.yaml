@@ -3,6 +3,7 @@ kind: IndexTemplate
 metadata:
   name: indextemplate-sample
 spec:
+  targetInstance: elasticsearch-sample
   body: |
     {
       "index_patterns" : ["index-*"],

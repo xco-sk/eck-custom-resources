@@ -17,25 +17,12 @@ limitations under the License.
 package v1alpha1
 
 import (
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
-// ElasticsearchInstanceSpec defines the desired state of ElasticsearchInstance
-type ElasticsearchInstanceSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of ElasticsearchInstance. Edit elasticsearchinstance_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
-}
-
 // ElasticsearchInstanceStatus defines the observed state of ElasticsearchInstance
 type ElasticsearchInstanceStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true
@@ -46,7 +33,7 @@ type ElasticsearchInstance struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ElasticsearchInstanceSpec   `json:"spec,omitempty"`
+	Spec   configv2.ElasticsearchSpec  `json:"spec,omitempty"`
 	Status ElasticsearchInstanceStatus `json:"status,omitempty"`
 }
 

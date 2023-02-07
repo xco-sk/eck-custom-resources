@@ -3,6 +3,7 @@ kind: Dashboard
 metadata:
   name: dashboard-sample
 spec:
+  targetInstance: kibana-sample
   space: my-space
   dependencies:
     - type: lens

@@ -3,6 +3,7 @@ kind: ElasticsearchRole
 metadata:
   name: elasticsearchrole-sample
 spec:
+  targetInstance: elasticsearch-sample
   body: |
     {
       "cluster": ["all"],
