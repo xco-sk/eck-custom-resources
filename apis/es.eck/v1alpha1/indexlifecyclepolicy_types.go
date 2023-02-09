@@ -23,7 +23,7 @@ import (
 // IndexLifecyclePolicySpec defines the desired state of IndexLifecyclePolicy
 type IndexLifecyclePolicySpec struct {
 	// +optional
-	CommonConfig CommonElasticsearchConfig `json:",inline"`
+	CommonConfig *CommonElasticsearchConfig `json:",inline"`
 
 	// +kubebuilder:validation:MinLength=0
 	// +required

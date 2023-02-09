@@ -59,6 +59,8 @@ spec:
                 type: array
               space:
                 type: string
+              targetInstance:
+                type: string
             required:
             - body
             type: object

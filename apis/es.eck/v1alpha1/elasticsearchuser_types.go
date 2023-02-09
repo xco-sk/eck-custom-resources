@@ -23,7 +23,7 @@ import (
 // ElasticsearchUserSpec defines the desired state of ElasticsearchUser
 type ElasticsearchUserSpec struct {
 	// +optional
-	CommonConfig CommonElasticsearchConfig `json:",inline"`
+	CommonConfig *CommonElasticsearchConfig `json:",inline"`
 
 	SecretName string `json:"secretName"`
 	Body       string `json:"body"`

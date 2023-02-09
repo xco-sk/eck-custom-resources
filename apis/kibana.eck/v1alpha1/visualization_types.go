@@ -23,7 +23,7 @@ import (
 // VisualizationSpec defines the desired state of Visualization
 type VisualizationSpec struct {
 	// +optional
-	CommonConfig CommonKibanaConfig `json:",inline"`
+	CommonConfig *CommonKibanaConfig `json:",inline"`
 
 	SavedObject `json:",inline"`
 }

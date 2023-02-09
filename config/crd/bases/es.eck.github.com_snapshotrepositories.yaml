@@ -38,6 +38,8 @@ spec:
             properties:
               body:
                 type: string
+              targetInstance:
+                type: string
             required:
             - body
             type: object

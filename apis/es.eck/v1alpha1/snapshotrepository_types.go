@@ -23,7 +23,7 @@ import (
 // SnapshotRepositorySpec defines the desired state of SnapshotRepository
 type SnapshotRepositorySpec struct {
 	// +optional
-	CommonConfig CommonElasticsearchConfig `json:",inline"`
+	CommonConfig *CommonElasticsearchConfig `json:",inline"`
 
 	Body string `json:"body"`
 }

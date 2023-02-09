@@ -23,7 +23,7 @@ import (
 // IndexSpec defines the desired state of Index
 type IndexSpec struct {
 	// +optional
-	CommonConfig CommonElasticsearchConfig `json:",inline"`
+	CommonConfig *CommonElasticsearchConfig `json:",inline"`
 
 	// +optional
 	Dependencies Dependencies `json:"dependencies,omitempty"`

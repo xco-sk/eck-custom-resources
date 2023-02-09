@@ -19,10 +19,12 @@ package eseck
 import (
 	"context"
 	"fmt"
+
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	esutils "github.com/xco-sk/eck-custom-resources/utils/elasticsearch"
 	"k8s.io/client-go/tools/record"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -52,30 +54,64 @@ func (r *ElasticsearchRoleReconciler) Reconcile(ctx context.Context, req ctrl.Re
 		return ctrl.Result{}, nil
 	}
 
-	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
+	finalizer := "elasticsearchroles.es.eck.github.com/finalizer"
+
+	var role eseckv1alpha1.ElasticsearchRole
+	if err := r.Get(ctx, req.NamespacedName, &role); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Elasticsearch
+	if role.Spec.CommonConfig != nil && role.Spec.CommonConfig.ElasticsearchInstance != nil {
+		var resourceInstance eseckv1alpha1.ElasticsearchInstance
+		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, req.Namespace, *role.Spec.CommonConfig.ElasticsearchInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, targetInstance, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
 	}
 
-	var role eseckv1alpha1.ElasticsearchRole
-	if err := r.Get(ctx, req.NamespacedName, &role); err != nil {
-		logger.Info("Deleting Role", "role", req.Name)
-		return esutils.DeleteRole(esClient, req.Name)
-	}
+	if role.ObjectMeta.DeletionTimestamp.IsZero() {
+		logger.Info("Creating/Updating Role", "role", req.Name)
+		res, err := esutils.UpsertRole(esClient, role)
 
-	logger.Info("Creating/Updating Role", "role", req.Name)
-	res, err := esutils.UpsertRole(esClient, role)
+		if err == nil {
+			r.Recorder.Event(&role, "Normal", "Created",
+				fmt.Sprintf("Created/Updated %s/%s %s", role.APIVersion, role.Kind, role.Name))
+		} else {
+			r.Recorder.Event(&role, "Warning", "Failed to create/update",
+				fmt.Sprintf("Failed to create/update %s/%s %s: %s", role.APIVersion, role.Kind, role.Name, err.Error()))
+		}
 
-	if err == nil {
-		r.Recorder.Event(&role, "Normal", "Created",
-			fmt.Sprintf("Created/Updated %s/%s %s", role.APIVersion, role.Kind, role.Name))
+		if !controllerutil.ContainsFinalizer(&role, finalizer) {
+			controllerutil.AddFinalizer(&role, finalizer)
+			if err := r.Update(ctx, &role); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+		return res, err
 	} else {
-		r.Recorder.Event(&role, "Warning", "Failed to create/update",
-			fmt.Sprintf("Failed to create/update %s/%s %s: %s", role.APIVersion, role.Kind, role.Name, err.Error()))
-	}
+		// The object is being deleted
+		if controllerutil.ContainsFinalizer(&role, finalizer) {
+			logger.Info("Deleting object", "role", role.Name)
+			if _, err := esutils.DeleteRole(esClient, req.Name); err != nil {
+				return ctrl.Result{}, err
+			}
 
-	return res, err
+			controllerutil.RemoveFinalizer(&role, finalizer)
+			if err := r.Update(ctx, &role); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.

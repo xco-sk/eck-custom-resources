@@ -39,6 +39,8 @@ spec:
                 type: string
               secretName:
                 type: string
+              targetInstance:
+                type: string
             required:
             - body
             - secretName

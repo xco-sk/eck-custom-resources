@@ -59,7 +59,7 @@ spec:
                 type: array
               space:
                 type: string
-              target:
+              targetInstance:
                 type: string
             required:
             - body
