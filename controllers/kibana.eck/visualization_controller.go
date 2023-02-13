@@ -56,16 +56,27 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	visualizationFinalizer := "visualizations.kibana.eck.github.com/finalizer"
 	savedObjectType := "visualization"
 
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
-
 	var visualization kibanaeckv1alpha1.Visualization
 	if err := r.Get(ctx, req.NamespacedName, &visualization); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if visualization.Spec.CommonConfig != nil && visualization.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *visualization.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: targetInstance,
+		Req:        req,
 	}
 
 	if visualization.ObjectMeta.DeletionTimestamp.IsZero() {

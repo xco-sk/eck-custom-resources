@@ -55,16 +55,26 @@ func (r *DashboardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	dashboardFinalizer := "dashboards.kibana.eck.github.com/finalizer"
 	savedObjectType := "dashboard"
 
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
-
 	var dashboard kibanaeckv1alpha1.Dashboard
 	if err := r.Get(ctx, req.NamespacedName, &dashboard); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if dashboard.Spec.CommonConfig != nil && dashboard.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *dashboard.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: targetInstance,
+		Req:        req,
 	}
 
 	if dashboard.ObjectMeta.DeletionTimestamp.IsZero() {

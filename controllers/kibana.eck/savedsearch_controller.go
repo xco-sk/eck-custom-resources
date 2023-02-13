@@ -56,16 +56,27 @@ func (r *SavedSearchReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 	savedSearchFinalizer := "savedsearches.kibana.eck.github.com/finalizer"
 	savedObjectType := "search"
 
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
-
 	var savedSearch kibanaeckv1alpha1.SavedSearch
 	if err := r.Get(ctx, req.NamespacedName, &savedSearch); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if savedSearch.Spec.CommonConfig != nil && savedSearch.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *savedSearch.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: targetInstance,
+		Req:        req,
 	}
 
 	if savedSearch.ObjectMeta.DeletionTimestamp.IsZero() {

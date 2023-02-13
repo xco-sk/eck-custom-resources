@@ -56,16 +56,27 @@ func (r *LensReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 	lensFinalizer := "lenses.kibana.eck.github.com/finalizer"
 	savedObjectType := "lens"
 
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
-
 	var lens kibanaeckv1alpha1.Lens
 	if err := r.Get(ctx, req.NamespacedName, &lens); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if lens.Spec.CommonConfig != nil && lens.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *lens.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: targetInstance,
+		Req:        req,
 	}
 
 	if lens.ObjectMeta.DeletionTimestamp.IsZero() {

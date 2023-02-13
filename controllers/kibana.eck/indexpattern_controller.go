@@ -56,16 +56,27 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	indexPatternFinalizer := "indexpatterns.kibana.eck.github.com/finalizer"
 	savedObjectType := "index-pattern"
 
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
-
 	var indexPattern kibanaeckv1alpha1.IndexPattern
 	if err := r.Get(ctx, req.NamespacedName, &indexPattern); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if indexPattern.Spec.CommonConfig != nil && indexPattern.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *indexPattern.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: targetInstance,
+		Req:        req,
 	}
 
 	if indexPattern.ObjectMeta.DeletionTimestamp.IsZero() {

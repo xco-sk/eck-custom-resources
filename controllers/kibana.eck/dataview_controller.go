@@ -55,17 +55,27 @@ func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	dataViewFinalizer := "dataview.kibana.eck.github.com/finalizer"
 
+	var dataView kibanaeckv1alpha1.DataView
+	if err := r.Get(ctx, req.NamespacedName, &dataView); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance := r.ProjectConfig.Kibana
+	if dataView.Spec.CommonConfig != nil && dataView.Spec.CommonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *dataView.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
+			return utils.GetRequeueResult(), err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
 	kibanaClient := kibanaUtils.Client{
 		Cli:        r.Client,
 		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
+		KibanaSpec: targetInstance,
 		Req:        req,
-	}
-
-	var dataView kibanaeckv1alpha1.DataView
-	if err := r.Get(ctx, req.NamespacedName, &dataView); err != nil {
-		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if dataView.ObjectMeta.DeletionTimestamp.IsZero() {
