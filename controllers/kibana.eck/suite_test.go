@@ -87,6 +87,54 @@ var _ = BeforeSuite(func() {
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
+	err = (&DataViewReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("data-view"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IndexPatternReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("index-pattern"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&LensReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("lens"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SavedSearchReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("saved-search"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SpaceReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("space"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&VisualizationReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("visualization"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
 }, 60)
 
 var _ = AfterSuite(func() {
