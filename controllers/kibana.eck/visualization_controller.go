@@ -19,6 +19,7 @@ package kibanaeck
 import (
 	"context"
 	"fmt"
+
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
@@ -61,21 +62,16 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance := r.ProjectConfig.Kibana
-	if visualization.Spec.CommonConfig != nil && visualization.Spec.CommonConfig.KibanaInstance != nil {
-		var resourceInstance kibanaeckv1alpha1.KibanaInstance
-		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, req.Namespace, *visualization.Spec.CommonConfig.KibanaInstance, &resourceInstance); err != nil {
-			return utils.GetRequeueResult(), err
-		}
-
-		targetInstance = resourceInstance.Spec
+	targetInstance, err := r.getTargetInstance(&visualization, visualization.Spec.CommonConfig, ctx, req.Namespace)
+	if err != nil {
+		return utils.GetRequeueResult(), err
 	}
 
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
 	kibanaClient := kibanaUtils.Client{
 		Cli:        r.Client,
 		Ctx:        ctx,
-		KibanaSpec: targetInstance,
+		KibanaSpec: *targetInstance,
 		Req:        req,
 	}
 
@@ -127,4 +123,18 @@ func (r *VisualizationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&kibanaeckv1alpha1.Visualization{}).
 		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
+}
+
+func (r *VisualizationReconciler) getTargetInstance(object runtime.Object, commonConfig *kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
+	targetInstance := r.ProjectConfig.Kibana
+	if commonConfig != nil && commonConfig.KibanaInstance != nil {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, *commonConfig.KibanaInstance, &resourceInstance); err != nil {
+			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			return nil, err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+	return &targetInstance, nil
 }

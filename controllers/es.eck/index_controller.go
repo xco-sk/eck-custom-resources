@@ -61,17 +61,12 @@ func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance := r.ProjectConfig.Elasticsearch
-	if index.Spec.CommonConfig != nil && index.Spec.CommonConfig.ElasticsearchInstance != nil {
-		var resourceInstance eseckv1alpha1.ElasticsearchInstance
-		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, req.Namespace, *index.Spec.CommonConfig.ElasticsearchInstance, &resourceInstance); err != nil {
-			return utils.GetRequeueResult(), err
-		}
-
-		targetInstance = resourceInstance.Spec
+	targetInstance, err := r.getTargetInstance(&index, index.Spec.CommonConfig, ctx, req.Namespace)
+	if err != nil {
+		return utils.GetRequeueResult(), err
 	}
 
-	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, targetInstance, req)
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
@@ -160,4 +155,18 @@ func (r *IndexReconciler) addFinalizer(o client.Object, finalizer string, ctx co
 		}
 	}
 	return nil
+}
+
+func (r *IndexReconciler) getTargetInstance(object runtime.Object, commonConfig *eseckv1alpha1.CommonElasticsearchConfig, ctx context.Context, namespace string) (*configv2.ElasticsearchSpec, error) {
+	targetInstance := r.ProjectConfig.Elasticsearch
+	if commonConfig != nil && commonConfig.ElasticsearchInstance != nil {
+		var resourceInstance eseckv1alpha1.ElasticsearchInstance
+		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, namespace, *commonConfig.ElasticsearchInstance, &resourceInstance); err != nil {
+			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			return nil, err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+	return &targetInstance, nil
 }
