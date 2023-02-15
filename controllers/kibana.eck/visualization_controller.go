@@ -62,7 +62,7 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance, err := r.getTargetInstance(&visualization, visualization.Spec.CommonConfig, ctx, req.Namespace)
+	targetInstance, err := r.getTargetInstance(&visualization, visualization.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -125,11 +125,11 @@ func (r *VisualizationReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *VisualizationReconciler) getTargetInstance(object runtime.Object, commonConfig *kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
+func (r *VisualizationReconciler) getTargetInstance(object runtime.Object, TargetConfig kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
 	targetInstance := r.ProjectConfig.Kibana
-	if commonConfig != nil && commonConfig.KibanaInstance != nil {
+	if TargetConfig.KibanaInstance != "" {
 		var resourceInstance kibanaeckv1alpha1.KibanaInstance
-		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, *commonConfig.KibanaInstance, &resourceInstance); err != nil {
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, TargetConfig.KibanaInstance, &resourceInstance); err != nil {
 			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}

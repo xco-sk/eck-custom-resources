@@ -50,7 +50,10 @@ spec:
                     type: array
                 type: object
               targetInstance:
-                type: string
+                properties:
+                  name:
+                    type: string
+                type: object
             required:
             - body
             type: object

@@ -3,7 +3,8 @@ kind: Lens
 metadata:
   name: lens-sample
 spec:
-  targetInstance: kibana-sample
+  targetInstance:
+    name: kibana-sample
   space: my-space
   dependencies:
     - type: index-pattern

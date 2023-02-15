@@ -12,7 +12,8 @@ kind: ElasticsearchUser
 metadata:
   name: elasticsearchuser-sample
 spec:
-  targetInstance: elasticsearch-sample
+  targetInstance:
+    name: elasticsearch-sample
   secretName: elasticsearchuser-secret
   body: |
     {

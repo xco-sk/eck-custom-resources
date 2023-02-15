@@ -62,7 +62,7 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance, err := r.getTargetInstance(&indexPattern, indexPattern.Spec.CommonConfig, ctx, req.Namespace)
+	targetInstance, err := r.getTargetInstance(&indexPattern, indexPattern.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -127,11 +127,11 @@ func (r *IndexPatternReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *IndexPatternReconciler) getTargetInstance(object runtime.Object, commonConfig *kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
+func (r *IndexPatternReconciler) getTargetInstance(object runtime.Object, TargetConfig kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
 	targetInstance := r.ProjectConfig.Kibana
-	if commonConfig != nil && commonConfig.KibanaInstance != nil {
+	if TargetConfig.KibanaInstance != "" {
 		var resourceInstance kibanaeckv1alpha1.KibanaInstance
-		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, *commonConfig.KibanaInstance, &resourceInstance); err != nil {
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, TargetConfig.KibanaInstance, &resourceInstance); err != nil {
 			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}

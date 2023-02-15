@@ -23,7 +23,7 @@ import (
 // SnapshotLifecyclePolicySpec defines the desired state of SnapshotLifecyclePolicy
 type SnapshotLifecyclePolicySpec struct {
 	// +optional
-	CommonConfig *CommonElasticsearchConfig `json:",inline"`
+	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
 
 	// +kubebuilder:validation:MinLength=0
 	// +required

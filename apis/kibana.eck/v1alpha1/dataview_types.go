@@ -23,7 +23,7 @@ import (
 // DataViewSpec defines the desired state of DataView
 type DataViewSpec struct {
 	// +optional
-	CommonConfig *CommonKibanaConfig `json:",inline"`
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
 
 	SavedObject `json:",inline"`
 }

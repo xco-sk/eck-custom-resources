@@ -23,7 +23,7 @@ import (
 // DashboardSpec defines the desired state of Dashboard
 type DashboardSpec struct {
 	// +optional
-	CommonConfig *CommonKibanaConfig `json:",inline"`
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
 
 	SavedObject `json:",inline"`
 }

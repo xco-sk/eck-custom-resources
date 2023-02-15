@@ -23,7 +23,7 @@ import (
 // SavedSearchSpec defines the desired state of SavedSearch
 type SavedSearchSpec struct {
 	// +optional
-	CommonConfig *CommonKibanaConfig `json:",inline"`
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
 
 	SavedObject `json:",inline"`
 }

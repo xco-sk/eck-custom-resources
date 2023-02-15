@@ -61,7 +61,7 @@ func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance, err := r.getTargetInstance(&dataView, dataView.Spec.CommonConfig, ctx, req.Namespace)
+	targetInstance, err := r.getTargetInstance(&dataView, dataView.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -125,11 +125,11 @@ func (r *DataViewReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func (r *DataViewReconciler) getTargetInstance(object runtime.Object, commonConfig *kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
+func (r *DataViewReconciler) getTargetInstance(object runtime.Object, TargetConfig kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
 	targetInstance := r.ProjectConfig.Kibana
-	if commonConfig != nil && commonConfig.KibanaInstance != nil {
+	if TargetConfig.KibanaInstance != "" {
 		var resourceInstance kibanaeckv1alpha1.KibanaInstance
-		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, *commonConfig.KibanaInstance, &resourceInstance); err != nil {
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, TargetConfig.KibanaInstance, &resourceInstance); err != nil {
 			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}

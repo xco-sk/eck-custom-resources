@@ -23,7 +23,7 @@ import (
 // IndexPatternSpec defines the desired state of IndexPattern
 type IndexPatternSpec struct {
 	// +optional
-	CommonConfig *CommonKibanaConfig `json:",inline"`
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
 
 	SavedObject `json:",inline"`
 }

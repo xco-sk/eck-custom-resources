@@ -1,9 +1,10 @@
 apiVersion: es.eck.github.com/v1alpha1
 kind: IndexTemplate
 metadata:
-  name: indextemplate-sample
+  name: indextemplate-slowstart
 spec:
-  targetInstance: elasticsearch-sample
+  targetInstance:
+    name: elasticsearch-slowstart
   body: |
     {
       "index_patterns" : ["index-*"],

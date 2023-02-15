@@ -48,10 +48,11 @@ spec:
                       type: string
                     type: array
                 type: object
-              target:
-                type: string
               targetInstance:
-                type: string
+                properties:
+                  name:
+                    type: string
+                type: object
             required:
             - body
             type: object

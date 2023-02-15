@@ -23,7 +23,7 @@ import (
 // IngestPipelineSpec defines the desired state of IngestPipeline
 type IngestPipelineSpec struct {
 	// +optional
-	CommonConfig *CommonElasticsearchConfig `json:",inline"`
+	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
 
 	Body string `json:"body"`
 }

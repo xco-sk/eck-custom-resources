@@ -40,7 +40,10 @@ spec:
               secretName:
                 type: string
               targetInstance:
-                type: string
+                properties:
+                  name:
+                    type: string
+                type: object
             required:
             - body
             - secretName

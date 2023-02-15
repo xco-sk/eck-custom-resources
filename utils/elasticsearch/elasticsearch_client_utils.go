@@ -20,7 +20,7 @@ import (
 func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec configv2.ElasticsearchSpec, req ctrl.Request) (*elasticsearch.Client, error) {
 	logger := log.FromContext(ctx)
 
-	logger.Info("Elasticsearch client not initialized, initializing.")
+	logger.Info("Elasticsearch client not initialized, initializing.", "Spec", esSpec)
 
 	config := elasticsearch.Config{
 		Addresses: []string{esSpec.Url},

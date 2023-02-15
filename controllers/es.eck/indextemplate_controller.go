@@ -49,6 +49,7 @@ type IndexTemplateReconciler struct {
 func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	// @TODO move below
 	if !r.ProjectConfig.Elasticsearch.Enabled {
 		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
 		return ctrl.Result{}, nil
@@ -61,7 +62,9 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	targetInstance, err := r.getTargetInstance(&indexTemplate, indexTemplate.Spec.CommonConfig, ctx, req.Namespace)
+	logger.Info("Getting target instance", "tpl", indexTemplate)
+	logger.Info("Getting target instance", "spec", indexTemplate.Spec)
+	targetInstance, err := r.getTargetInstance(&indexTemplate, indexTemplate.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -130,11 +133,11 @@ func (r *IndexTemplateReconciler) addFinalizer(o client.Object, finalizer string
 	return nil
 }
 
-func (r *IndexTemplateReconciler) getTargetInstance(object runtime.Object, commonConfig *eseckv1alpha1.CommonElasticsearchConfig, ctx context.Context, namespace string) (*configv2.ElasticsearchSpec, error) {
+func (r *IndexTemplateReconciler) getTargetInstance(object runtime.Object, TargetConfig eseckv1alpha1.CommonElasticsearchConfig, ctx context.Context, namespace string) (*configv2.ElasticsearchSpec, error) {
 	targetInstance := r.ProjectConfig.Elasticsearch
-	if commonConfig != nil && commonConfig.ElasticsearchInstance != nil {
+	if TargetConfig.ElasticsearchInstance != "" {
 		var resourceInstance eseckv1alpha1.ElasticsearchInstance
-		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, namespace, *commonConfig.ElasticsearchInstance, &resourceInstance); err != nil {
+		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, namespace, TargetConfig.ElasticsearchInstance, &resourceInstance); err != nil {
 			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}

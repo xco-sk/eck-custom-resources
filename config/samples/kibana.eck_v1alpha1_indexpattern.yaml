@@ -3,7 +3,8 @@ kind: IndexPattern
 metadata:
   name: indexpattern-sample
 spec:
-  targetInstance: kibana-sample
+  targetInstance:
+    name: kibana-sample
   body: |
     {
         "attributes": {
