@@ -4,7 +4,7 @@ metadata:
   name: indexlifecyclepolicy-sample
 spec:
   targetInstance:
-    name: elasticsearch-sample
+    name: elasticsearch-quickstart
   body: |
     {
       "policy": {

@@ -111,7 +111,7 @@ metrics:
     # -- Metrics service port
     port: 8080
 
-# Configuration of Elasticsearch cluster to which the Custom resources are deployed
+# Configuration of Default Elasticsearch cluster to which the Custom resources are deployed. Can stay empty if you want to only use the ElasticsearchInstance CRD approach
 elasticsearch:
   # -- Flag to define if the Elasticsearch reconciler is enabled or not
   enabled: true
@@ -130,7 +130,7 @@ elasticsearch:
       # -- Username of user that is used to manage deployed resources
       userName: elastic
 
-# Configuration of Kibana to which the Custom resources are deployed
+# Configuration of Default Kibana to which the Custom resources are deployed. Can stay empty if you want to only use the KibanaInstance CRD approach
 kibana:
   # -- Flag to define if the Kibana reconciler is enabled or not
   enabled: true

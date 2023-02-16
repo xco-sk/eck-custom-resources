@@ -4,7 +4,7 @@ metadata:
   name: space-sample
 spec:
   targetInstance:
-    name: kibana-sample
+    name: kibana-quickstart
   body: |
     {
       "name": "ECK Space sample",

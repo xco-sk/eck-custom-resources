@@ -1,7 +1,7 @@
 apiVersion: es.eck.github.com/v1alpha1
 kind: ElasticsearchInstance
 metadata:
-  name: elasticsearch-sample
+  name: elasticsearch-quickstart
 spec:  
   enabled: true
   url: https://quickstart-es-http:9200

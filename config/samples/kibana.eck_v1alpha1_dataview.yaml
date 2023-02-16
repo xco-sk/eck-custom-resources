@@ -4,7 +4,7 @@ metadata:
   name: dataview-sample
 spec:
   targetInstance:
-    name: kibana-sample
+    name: kibana-quickstart
   space: space-sample
   dependencies:
     - type: lens

@@ -1,7 +1,7 @@
 apiVersion: kibana.eck.github.com/v1alpha1
 kind: KibanaInstance
 metadata:
-  name: kibana-sample
+  name: kibana-quickstart
 spec:
   enabled: true
   url: https://quickstart-kb-http:5601

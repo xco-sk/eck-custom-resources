@@ -4,7 +4,7 @@ metadata:
   name: elasticsearchrole-sample
 spec:
   targetInstance:
-    name: elasticsearch-sample
+    name: elasticsearch-quickstart
   body: |
     {
       "cluster": ["all"],

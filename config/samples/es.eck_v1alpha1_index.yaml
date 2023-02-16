@@ -4,7 +4,7 @@ metadata:
   name: index-sample
 spec:
   targetInstance:
-    name: elasticsearch-sample
+    name: elasticsearch-quickstart
   dependencies:
     indexTemplates:
       - indextemplate-sample

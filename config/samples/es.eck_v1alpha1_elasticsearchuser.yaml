@@ -13,7 +13,7 @@ metadata:
   name: elasticsearchuser-sample
 spec:
   targetInstance:
-    name: elasticsearch-sample
+    name: elasticsearch-quickstart
   secretName: elasticsearchuser-secret
   body: |
     {
