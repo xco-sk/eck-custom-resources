@@ -1,12 +1,12 @@
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
-  name: slowstart
+  name: quickstart
 spec:
   version: 8.1.0
   count: 1
   elasticsearchRef:
-    name: "slowstart"
+    name: "quickstart"
   podTemplate:
     spec:
       containers:

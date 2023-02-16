@@ -49,11 +49,6 @@ type IngestPipelineReconciler struct {
 func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Elasticsearch.Enabled {
-		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	finalizer := "ingestpipelines.es.eck.github.com/finalizer"
 
 	var ingestPipeline eseckv1alpha1.IngestPipeline
@@ -64,6 +59,11 @@ func (r *IngestPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	targetInstance, err := r.getTargetInstance(&ingestPipeline, ingestPipeline.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)

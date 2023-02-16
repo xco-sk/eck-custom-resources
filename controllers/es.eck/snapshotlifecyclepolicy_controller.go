@@ -49,11 +49,6 @@ type SnapshotLifecyclePolicyReconciler struct {
 func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Elasticsearch.Enabled {
-		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	finalizer := "snapshotlifecyclepolicies.es.eck.github.com/finalizer"
 
 	var snapshotLifecyclePolicy eseckv1alpha1.SnapshotLifecyclePolicy
@@ -64,6 +59,11 @@ func (r *SnapshotLifecyclePolicyReconciler) Reconcile(ctx context.Context, req c
 	targetInstance, err := r.getTargetInstance(&snapshotLifecyclePolicy, snapshotLifecyclePolicy.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)

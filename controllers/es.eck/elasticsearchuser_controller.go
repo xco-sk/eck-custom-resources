@@ -49,11 +49,6 @@ type ElasticsearchUserReconciler struct {
 func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Elasticsearch.Enabled {
-		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	finalizer := "elasticsearchusers.es.eck.github.com/finalizer"
 
 	var user eseckv1alpha1.ElasticsearchUser
@@ -64,6 +59,11 @@ func (r *ElasticsearchUserReconciler) Reconcile(ctx context.Context, req ctrl.Re
 	targetInstance, err := r.getTargetInstance(&user, user.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)

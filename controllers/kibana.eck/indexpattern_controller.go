@@ -49,11 +49,6 @@ type IndexPatternReconciler struct {
 func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	indexPatternFinalizer := "indexpatterns.kibana.eck.github.com/finalizer"
 	savedObjectType := "index-pattern"
 
@@ -65,6 +60,11 @@ func (r *IndexPatternReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	targetInstance, err := r.getTargetInstance(&indexPattern, indexPattern.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)

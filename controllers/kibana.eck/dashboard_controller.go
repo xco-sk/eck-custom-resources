@@ -48,11 +48,6 @@ type DashboardReconciler struct {
 func (r *DashboardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	dashboardFinalizer := "dashboards.kibana.eck.github.com/finalizer"
 	savedObjectType := "dashboard"
 
@@ -64,6 +59,11 @@ func (r *DashboardReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	targetInstance, err := r.getTargetInstance(&dashboard, dashboard.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	kibanaClient := kibanaUtils.Client{

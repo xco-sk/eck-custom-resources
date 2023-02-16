@@ -49,11 +49,6 @@ type DataViewReconciler struct {
 func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	dataViewFinalizer := "dataview.kibana.eck.github.com/finalizer"
 
 	var dataView kibanaeckv1alpha1.DataView
@@ -64,6 +59,11 @@ func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	targetInstance, err := r.getTargetInstance(&dataView, dataView.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)

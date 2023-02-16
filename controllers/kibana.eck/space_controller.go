@@ -49,11 +49,6 @@ type SpaceReconciler struct {
 func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	spaceFinalizer := "spaces.kibana.eck.github.com/finalizer"
 
 	var space kibanaeckv1alpha1.Space
@@ -64,6 +59,11 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	targetInstance, err := r.getTargetInstance(&space, space.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)

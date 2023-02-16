@@ -49,12 +49,6 @@ type IndexTemplateReconciler struct {
 func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	// @TODO move below
-	if !r.ProjectConfig.Elasticsearch.Enabled {
-		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	finalizer := "indextemplates.es.eck.github.com/finalizer"
 
 	var indexTemplate eseckv1alpha1.IndexTemplate
@@ -62,11 +56,14 @@ func (r *IndexTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	logger.Info("Getting target instance", "tpl", indexTemplate)
-	logger.Info("Getting target instance", "spec", indexTemplate.Spec)
 	targetInstance, err := r.getTargetInstance(&indexTemplate, indexTemplate.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)

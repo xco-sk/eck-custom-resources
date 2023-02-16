@@ -49,11 +49,6 @@ type VisualizationReconciler struct {
 func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	visualizationFinalizer := "visualizations.kibana.eck.github.com/finalizer"
 	savedObjectType := "visualization"
 
@@ -65,6 +60,11 @@ func (r *VisualizationReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	targetInstance, err := r.getTargetInstance(&visualization, visualization.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)

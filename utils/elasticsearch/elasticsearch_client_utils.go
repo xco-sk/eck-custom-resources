@@ -3,8 +3,10 @@ package elasticsearch
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
+	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
@@ -23,7 +25,9 @@ func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec confi
 	logger.Info("Elasticsearch client not initialized, initializing.", "Spec", esSpec)
 
 	config := elasticsearch.Config{
-		Addresses: []string{esSpec.Url},
+		Addresses:         []string{esSpec.Url},
+		EnableDebugLogger: true,
+		Logger:            &elastictransport.TextLogger{Output: os.Stdout},
 	}
 
 	if esSpec.Authentication != nil && esSpec.Authentication.UsernamePassword != nil {

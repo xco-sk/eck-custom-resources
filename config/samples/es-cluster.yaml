@@ -1,7 +1,7 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: slowstart
+  name: quickstart
 spec:
   nodeSets:
     - name: default
@@ -11,4 +11,13 @@ spec:
         xpack.ml.enabled: true
         node.store.allow_mmap: false
         path.repo: ["/tmp"]
+      podTemplate:
+        spec:
+          containers:
+          - name: elasticsearch
+            resources:
+              requests:
+                memory: 1Gi
+              limits:
+                memory: 2Gi
   version: 8.1.0

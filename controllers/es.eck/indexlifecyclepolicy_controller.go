@@ -49,11 +49,6 @@ type IndexLifecyclePolicyReconciler struct {
 func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Elasticsearch.Enabled {
-		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	finalizer := "indexlifecyclepolicies.es.eck.github.com/finalizer"
 
 	var indexLifecyclePolicy eseckv1alpha1.IndexLifecyclePolicy
@@ -64,6 +59,11 @@ func (r *IndexLifecyclePolicyReconciler) Reconcile(ctx context.Context, req ctrl
 	targetInstance, err := r.getTargetInstance(&indexLifecyclePolicy, indexLifecyclePolicy.Spec.TargetConfig, ctx, req.Namespace)
 	if err != nil {
 		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
 	}
 
 	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)

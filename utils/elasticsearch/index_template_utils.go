@@ -1,15 +1,16 @@
 package elasticsearch
 
 import (
+	"strings"
+
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"strings"
 )
 
 func DeleteIndexTemplate(esClient *elasticsearch.Client, indexTemplateName string) (ctrl.Result, error) {
-	res, err := esClient.Indices.DeleteTemplate(indexTemplateName)
+	res, err := esClient.Indices.DeleteIndexTemplate(indexTemplateName)
 	if err != nil || res.IsError() {
 		return utils.GetRequeueResult(), err
 	}
