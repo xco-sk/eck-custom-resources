@@ -129,7 +129,7 @@ func (r *ElasticsearchUserReconciler) getTargetInstance(object runtime.Object, T
 	if TargetConfig.ElasticsearchInstance != "" {
 		var resourceInstance eseckv1alpha1.ElasticsearchInstance
 		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, namespace, TargetConfig.ElasticsearchInstance, &resourceInstance); err != nil {
-			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			r.Recorder.Event(object, "Warning", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}
 

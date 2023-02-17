@@ -75,7 +75,7 @@ func (r *SpaceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	}
 
 	if space.ObjectMeta.DeletionTimestamp.IsZero() {
-		logger.Info("Creating/Updating saved search", "id", req.Name)
+		logger.Info("Creating/Updating kibana space", "id", req.Name)
 		res, err := kibanaUtils.UpsertSpace(kibanaClient, space)
 
 		if err == nil {
@@ -123,7 +123,7 @@ func (r *SpaceReconciler) getTargetInstance(object runtime.Object, TargetConfig 
 	if TargetConfig.KibanaInstance != "" {
 		var resourceInstance kibanaeckv1alpha1.KibanaInstance
 		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, TargetConfig.KibanaInstance, &resourceInstance); err != nil {
-			r.Recorder.Event(object, "Error", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			r.Recorder.Event(object, "Warning", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
 			return nil, err
 		}
 
