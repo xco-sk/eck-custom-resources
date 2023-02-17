@@ -18,6 +18,7 @@ in official documentation.
 | Key             | Type   | Description                                                               |
 |-----------------|--------|---------------------------------------------------------------------------|
 | `metadata.name` | string | Name of the Snapshot Lifecycle Policy                                     |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this ElasticsearchRole will be deployed to |
 | `spec.body`     | string | Role definition - same you would use when creating role using ES REST API |
 
 ## Example
@@ -28,6 +29,8 @@ kind: ElasticsearchRole
 metadata:
   name: elasticsearchrole-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "cluster": ["all"],

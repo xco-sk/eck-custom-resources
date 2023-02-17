@@ -7,6 +7,7 @@ Elasticsearch and Kibana.
 
 Currently supported resources: 
 - For Elasticsearch:
+  - [Elasticsearch Instance](docs/cr_elasticsearch_instance.md)
   - [Index](docs/cr_index.md)
   - [Index template](docs/cr_index_template.md)
   - [Index lifecycle policy](docs/cr_index_lifecycle_policy.md)
@@ -16,6 +17,7 @@ Currently supported resources:
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
 - For Kibana:
+  - [Kibana Instance](docs/cr_kibana_instance.md)
   - [Space](docs/cr_space.md)
   - [Index pattern](docs/cr_index_pattern.md)
   - [Saved search](docs/cr_saved_search.md)
@@ -58,12 +60,13 @@ kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-cust
 kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.5.0/config/crd/bases/kibana.eck.github.com_savedsearches.yaml
 kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.5.0/config/crd/bases/kibana.eck.github.com_spaces.yaml
 kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.5.0/config/crd/bases/kibana.eck.github.com_visualizations.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.5.0/config/crd/bases/kibana.eck.github.com_dataviews.yaml
 ```
 
 There are 2 new CRDs, `ElasticsearchInstance` and `KibanaInstance` that allows you to deploy the target configuration for
 both Kibana and Elasticsearch. The rest of the CRDs were extended with optional `targetInstance.name` field, that should reference
 the `ElasticsearchInstance`/`KibanaInstance`. If `targetInstance` field is not present, the default operator configuration (`elasticsearch` and `kibana`
-fields) is used. These two fields of operator configuration can stay empty if you want to ake use of fail-fast principle. 
+fields) is used.
 This approach should ensure the backward compatibility with previously deployed CRDs.
 See [samples](config/samples).
 

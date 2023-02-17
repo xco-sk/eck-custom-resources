@@ -12,10 +12,11 @@ in official documentation.
 
 ## Fields
 
-| Key             | Type   | Description                                                                                       |
-|-----------------|--------|---------------------------------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Index Lifecycle Policy                                                                |
-| `spec.body`     | string | Index Lifecycle Policy definition - same you would use when creating ILM policy using ES REST API |
+| Key                       | Type   | Description                                                                                       |
+|---------------------------|--------|---------------------------------------------------------------------------------------------------|
+| `metadata.name`           | string | Name of the Index Lifecycle Policy                                                                |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IndexLifecyclePolicy will be deployed to |
+| `spec.body`               | string | Index Lifecycle Policy definition - same you would use when creating ILM policy using ES REST API |
 
 ## Example
 
@@ -25,6 +26,8 @@ kind: IndexLifecyclePolicy
 metadata:
   name: indexlifecyclepolicy-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "policy": {

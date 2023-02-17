@@ -5,7 +5,7 @@ metadata:
 spec:
   targetInstance:
     name: kibana-quickstart
-  space: my-space
+  space: space-sample
   dependencies:
     - type: index-pattern
       name: indexpattern-sample

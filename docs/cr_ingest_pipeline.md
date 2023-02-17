@@ -12,10 +12,11 @@ in official documentation.
 
 ## Fields
 
-| Key             | Type   | Description                                                                                     |
-|-----------------|--------|-------------------------------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Ingest Pipeline                                                                     |
-| `spec.body`     | string | Ingest Pipeline definition - same you would use when creating ingest pipeline using ES REST API |
+| Key                       | Type   | Description                                                                                     |
+|---------------------------|--------|-------------------------------------------------------------------------------------------------|
+| `metadata.name`           | string | Name of the Ingest Pipeline                                                                     |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IngestPipeline will be deployed to |
+| `spec.body`               | string | Ingest Pipeline definition - same you would use when creating ingest pipeline using ES REST API |
 
 ## Example
 
@@ -25,6 +26,8 @@ kind: IngestPipeline
 metadata:
   name: ingestpipeline-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "description" : "Ingest pipeline sample",

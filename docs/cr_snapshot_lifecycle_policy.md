@@ -13,10 +13,11 @@ in official documentation.
 
 ## Fields
 
-| Key             | Type   | Description                                                                                      |
-|-----------------|--------|--------------------------------------------------------------------------------------------------|
-| `metadata.name` | string | Name of the Snapshot Lifecycle Policy                                                            |
-| `spec.body`     | string | Snapshot Lifecycle Policy definition - same you would use when creating policy using ES REST API |
+| Key                       | Type   | Description                                                                                      |
+|---------------------------|--------|--------------------------------------------------------------------------------------------------|
+| `metadata.name`           | string | Name of the Snapshot Lifecycle Policy                                                            |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this SnapshotLifecyclePolicy will be deployed to |
+| `spec.body`               | string | Snapshot Lifecycle Policy definition - same you would use when creating policy using ES REST API |
 
 ## Example
 
@@ -26,6 +27,8 @@ kind: SnapshotLifecyclePolicy
 metadata:
   name: snapshotlifecyclepolicy-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "schedule": "0 30 1 * * ?", 

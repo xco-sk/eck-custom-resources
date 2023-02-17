@@ -16,6 +16,7 @@ in official documentation.
 | Key               | Type   | Description                                                                                                                                   |
 |-------------------|--------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | `metadata.name`   | string | Name of the Index Lifecycle Policy                                                                                                            |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this ElasticsearchUser will be deployed to |
 | `spec.secretName` | string | The name of the secret, from where the password is taken during create or update, the key has to be equal to username (`metadata.name` field) |
 | `spec.body`       | string | User definition - same you would use when creating User using ES REST API                                                                     |
 
@@ -38,6 +39,8 @@ kind: ElasticsearchUser
 metadata:
   name: elasticsearchuser-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   secretName: elasticsearchuser-secret
   body: |
     {

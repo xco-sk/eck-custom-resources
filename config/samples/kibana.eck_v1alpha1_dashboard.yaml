@@ -5,7 +5,7 @@ metadata:
 spec:
   targetInstance:
     name: kibana-quickstart
-  space: my-space
+  space: space-sample
   dependencies:
     - type: lens
       name: lens-sample
