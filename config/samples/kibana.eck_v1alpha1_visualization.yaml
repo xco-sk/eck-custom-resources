@@ -3,6 +3,8 @@ kind: Visualization
 metadata:
   name: visualization-sample
 spec:
+  targetInstance:
+    name: kibana-quickstart
   dependencies:
     - type: index-pattern
       name: indexpattern-sample

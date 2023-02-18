@@ -24,12 +24,14 @@ import (
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
+	v2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	kibanaeckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/kibana.eck/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
@@ -39,6 +41,7 @@ import (
 
 var cfg *rest.Config
 var k8sClient client.Client
+var k8sManager ctrl.Manager
 var testEnv *envtest.Environment
 
 func TestAPIs(t *testing.T) {
@@ -67,9 +70,70 @@ var _ = BeforeSuite(func() {
 
 	//+kubebuilder:scaffold:scheme
 
+	k8sManager, err = ctrl.NewManager(cfg, ctrl.Options{
+		Scheme: scheme.Scheme,
+	})
+	Expect(err).ToNot(HaveOccurred())
+
 	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
+
+	err = (&DashboardReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("dashboard"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&DataViewReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("data-view"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IndexPatternReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("index-pattern"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&LensReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("lens"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SavedSearchReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("saved-search"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SpaceReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("space"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&VisualizationReconciler{
+		Client:        k8sManager.GetClient(),
+		Scheme:        scheme.Scheme,
+		ProjectConfig: v2.ProjectConfig{},
+		Recorder:      k8sManager.GetEventRecorderFor("visualization"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
 
 }, 60)
 

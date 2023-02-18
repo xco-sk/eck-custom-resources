@@ -37,6 +37,11 @@ spec:
             properties:
               body:
                 type: string
+              targetInstance:
+                properties:
+                  name:
+                    type: string
+                type: object
             type: object
           status:
             description: SpaceStatus defines the observed state of Space

@@ -1,6 +1,7 @@
 # List of supported resources 
 
 ## Elasticsearch:
+- [Elasticsearch Instance](cr_elasticsearch_instance.md)
 - [Index](cr_index.md)
 - [Index template](cr_index_template.md)
 - [Index lifecycle policy](cr_index_lifecycle_policy.md)
@@ -11,6 +12,7 @@
 - [Role](cr_role.md)
 
 ## Kibana:
+- [Kibana Instance](cr_kibana_instance.md)
 - [Space](cr_space.md)
 - [Index pattern](cr_index_pattern.md)
 - [Saved search](cr_saved_search.md)

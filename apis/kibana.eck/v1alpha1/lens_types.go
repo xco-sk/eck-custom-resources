@@ -22,6 +22,9 @@ import (
 
 // LensSpec defines the desired state of Lens
 type LensSpec struct {
+	// +optional
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
+
 	SavedObject `json:",inline"`
 }
 

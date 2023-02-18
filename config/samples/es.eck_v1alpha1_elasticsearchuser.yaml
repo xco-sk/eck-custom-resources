@@ -4,7 +4,7 @@ metadata:
   name: elasticsearchuser-secret
 type: Opaque
 data:
-  elasticsearchuser-sample: sample.password
+  elasticsearchuser-sample: c2FtcGxlLnBhc3N3b3JkCg==
 
 ---
 apiVersion: es.eck.github.com/v1alpha1
@@ -12,6 +12,8 @@ kind: ElasticsearchUser
 metadata:
   name: elasticsearchuser-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   secretName: elasticsearchuser-secret
   body: |
     {

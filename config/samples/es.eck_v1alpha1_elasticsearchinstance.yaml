@@ -1,0 +1,14 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchInstance
+metadata:
+  name: elasticsearch-quickstart
+spec:  
+  enabled: true
+  url: https://quickstart-es-http:9200
+  certificate:
+    secretName: quickstart-es-http-certs-public
+    certificateKey: ca.crt
+  authentication:
+    usernamePasswordSecret:
+      secretName: quickstart-es-elastic-user
+      userName: elastic

@@ -1,0 +1,24 @@
+# permissions for end users to edit elasticsearchinstances.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: elasticsearchinstance-editor-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchinstances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchinstances/status
+  verbs:
+  - get

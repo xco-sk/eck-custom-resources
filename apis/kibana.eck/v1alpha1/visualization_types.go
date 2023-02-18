@@ -22,6 +22,9 @@ import (
 
 // VisualizationSpec defines the desired state of Visualization
 type VisualizationSpec struct {
+	// +optional
+	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
+
 	SavedObject `json:",inline"`
 }
 

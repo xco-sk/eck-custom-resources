@@ -3,6 +3,8 @@ kind: SavedSearch
 metadata:
   name: savedsearch-sample
 spec:
+  targetInstance:
+    name: kibana-quickstart
   dependencies:
     - type: index-pattern
       name: indexpattern-sample

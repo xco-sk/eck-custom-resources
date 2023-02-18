@@ -1,0 +1,14 @@
+apiVersion: kibana.eck.github.com/v1alpha1
+kind: KibanaInstance
+metadata:
+  name: kibana-quickstart
+spec:
+  enabled: true
+  url: https://quickstart-kb-http:5601
+  certificate:
+    secretName: quickstart-kb-http-certs-public
+    certificateKey: ca.crt
+  authentication:
+    usernamePasswordSecret:
+      secretName: quickstart-es-elastic-user
+      userName: elastic

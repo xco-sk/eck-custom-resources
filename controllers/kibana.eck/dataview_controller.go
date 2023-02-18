@@ -19,6 +19,7 @@ package kibanaeck
 import (
 	"context"
 	"fmt"
+
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	kibanaUtils "github.com/xco-sk/eck-custom-resources/utils/kibana"
@@ -48,23 +49,29 @@ type DataViewReconciler struct {
 func (r *DataViewReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Kibana.Enabled {
-		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
-		return ctrl.Result{}, nil
-	}
-
 	dataViewFinalizer := "dataview.kibana.eck.github.com/finalizer"
-
-	kibanaClient := kibanaUtils.Client{
-		Cli:        r.Client,
-		Ctx:        ctx,
-		KibanaSpec: r.ProjectConfig.Kibana,
-		Req:        req,
-	}
 
 	var dataView kibanaeckv1alpha1.DataView
 	if err := r.Get(ctx, req.NamespacedName, &dataView); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance, err := r.getTargetInstance(&dataView, dataView.Spec.TargetConfig, ctx, req.Namespace)
+	if err != nil {
+		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
+		logger.Info("Kibana reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
+		return ctrl.Result{}, nil
+	}
+
+	// Get the ElasticsearchInstance defined in target (if present and pass to the kibanaUtils.Client)
+	kibanaClient := kibanaUtils.Client{
+		Cli:        r.Client,
+		Ctx:        ctx,
+		KibanaSpec: *targetInstance,
+		Req:        req,
 	}
 
 	if dataView.ObjectMeta.DeletionTimestamp.IsZero() {
@@ -116,4 +123,18 @@ func (r *DataViewReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&kibanaeckv1alpha1.DataView{}).
 		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
+}
+
+func (r *DataViewReconciler) getTargetInstance(object runtime.Object, TargetConfig kibanaeckv1alpha1.CommonKibanaConfig, ctx context.Context, namespace string) (*configv2.KibanaSpec, error) {
+	targetInstance := r.ProjectConfig.Kibana
+	if TargetConfig.KibanaInstance != "" {
+		var resourceInstance kibanaeckv1alpha1.KibanaInstance
+		if err := kibanaUtils.GetTargetInstance(r.Client, ctx, namespace, TargetConfig.KibanaInstance, &resourceInstance); err != nil {
+			r.Recorder.Event(object, "Warning", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			return nil, err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+	return &targetInstance, nil
 }

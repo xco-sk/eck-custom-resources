@@ -15,6 +15,7 @@ in official documentation.
 | Key                                | Type   | Description                                                                                     |
 |------------------------------------|--------|-------------------------------------------------------------------------------------------------|
 | `metadata.name`                    | string | Name of the Index Template                                                                      |
+| `spec.targetInstance.name`         | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IndexTemplate will be deployed to |
 | `spec.body`                        | string | Index template definition - same you would use when creating index template using ES REST API   |
 | `spec.dependencies.indexTemplates` | list   | List of index templates that have to be present in ES cluster before index is created / updated |
 | `spec.dependencies.indices`        | list   | List of indices that have to be present in ES cluster before index created / updated            |
@@ -27,6 +28,8 @@ kind: IndexTemplate
 metadata:
   name: indextemplate-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   dependencies:
     indexTemplates:
       - indextemplate-base

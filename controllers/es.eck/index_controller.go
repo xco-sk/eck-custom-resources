@@ -19,6 +19,7 @@ package eseck
 import (
 	"context"
 	"fmt"
+
 	"github.com/elastic/go-elasticsearch/v8"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
@@ -28,6 +29,7 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -47,29 +49,58 @@ type IndexReconciler struct {
 func (r *IndexReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	if !r.ProjectConfig.Elasticsearch.Enabled {
+	finalizer := "indices.es.eck.github.com/finalizer"
+
+	var index eseckv1alpha1.Index
+	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+
+	targetInstance, err := r.getTargetInstance(&index, index.Spec.TargetConfig, ctx, req.Namespace)
+	if err != nil {
+		return utils.GetRequeueResult(), err
+	}
+
+	if !targetInstance.Enabled {
 		logger.Info("Elasticsearch reconciler disabled, not reconciling.", "Resource", req.NamespacedName)
 		return ctrl.Result{}, nil
 	}
 
-	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, r.ProjectConfig.Elasticsearch, req)
+	esClient, createClientErr := esutils.GetElasticsearchClient(r.Client, ctx, *targetInstance, req)
 	if createClientErr != nil {
 		logger.Error(createClientErr, "Failed to create Elasticsearch client")
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
 	}
 
-	var index eseckv1alpha1.Index
-	if err := r.Get(ctx, req.NamespacedName, &index); err != nil {
-		return esutils.DeleteIndexIfEmpty(esClient, req.Name)
-	}
+	if index.ObjectMeta.DeletionTimestamp.IsZero() {
+		res, err := r.createUpdate(ctx, req, esClient, index)
 
-	res, err := r.createUpdate(ctx, req, esClient, index)
-	return utils.RecordEventAndReturn(res, err, r.Recorder, utils.Event{
-		Object:  &index,
-		Name:    req.Name,
-		Reason:  "Create/Update",
-		Message: "",
-	})
+		if err := r.addFinalizer(&index, finalizer, ctx); err != nil {
+			return ctrl.Result{}, err
+		}
+
+		return utils.RecordEventAndReturn(res, err, r.Recorder, utils.Event{
+			Object:  &index,
+			Name:    req.Name,
+			Reason:  "Create/Update",
+			Message: "",
+		})
+	} else {
+		// The object is being deleted
+		if controllerutil.ContainsFinalizer(&index, finalizer) {
+			logger.Info("Deleting object", "index", index.Name)
+			if _, err := esutils.DeleteIndexIfEmpty(esClient, req.Name); err != nil {
+				return ctrl.Result{}, err
+			}
+
+			controllerutil.RemoveFinalizer(&index, finalizer)
+			if err := r.Update(ctx, &index); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 }
 
 func (r *IndexReconciler) createUpdate(ctx context.Context, req ctrl.Request, esClient *elasticsearch.Client, index eseckv1alpha1.Index) (ctrl.Result, error) {
@@ -114,4 +145,28 @@ func (r *IndexReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&eseckv1alpha1.Index{}).
 		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
+}
+
+func (r *IndexReconciler) addFinalizer(o client.Object, finalizer string, ctx context.Context) error {
+	if !controllerutil.ContainsFinalizer(o, finalizer) {
+		controllerutil.AddFinalizer(o, finalizer)
+		if err := r.Update(ctx, o); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *IndexReconciler) getTargetInstance(object runtime.Object, TargetConfig eseckv1alpha1.CommonElasticsearchConfig, ctx context.Context, namespace string) (*configv2.ElasticsearchSpec, error) {
+	targetInstance := r.ProjectConfig.Elasticsearch
+	if TargetConfig.ElasticsearchInstance != "" {
+		var resourceInstance eseckv1alpha1.ElasticsearchInstance
+		if err := esutils.GetTargetElasticsearchInstance(r.Client, ctx, namespace, TargetConfig.ElasticsearchInstance, &resourceInstance); err != nil {
+			r.Recorder.Event(object, "Warning", "Failed to load target instance", fmt.Sprintf("Target instance not found: %s", err.Error()))
+			return nil, err
+		}
+
+		targetInstance = resourceInstance.Spec
+	}
+	return &targetInstance, nil
 }

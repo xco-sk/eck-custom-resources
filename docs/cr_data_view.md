@@ -18,6 +18,7 @@ See [Data Views APIs](https://www.elastic.co/guide/en/kibana/current/data-views-
 |-----------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
 | `metadata.name`             | string          | Name of the Data View visualization, used also as its ID in Kibana                                                                                   | No default                                           |
 | `spec.space`                | string          | Name of the Kibana namespace to which the Data View is deployed to                                                                                   | No default (will be deployed to "default" namespace) |
+| `spec.targetInstance.name`  | string         | Name of the [Kibana Instance](cr_kibana_instance.md) to which this DataView will be deployed to | The operator configuration |
 | `spec.body`                 | string          | Data View definition (the inner part of the requests) json                                                                                                                            | No default                                           |
 | `spec.dependencies`         | List of objects | List of dependencies - the reconciler will wait for all resources from the list to be present in Kibana before deploying/updating this resource | -                                                    |                                                 |
 | `spec.dependencies[].space` | string          | Kibana Space where to look for given resource                                                                                                   | -                                                    |
@@ -32,6 +33,8 @@ kind: DataView
 metadata:
   name: dataview-sample
 spec:
+  targetInstance:
+    name: kibana-quickstart
   space: space-sample
   dependencies:
     - type: lens

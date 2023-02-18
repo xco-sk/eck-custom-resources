@@ -22,6 +22,9 @@ import (
 
 // ElasticsearchRoleSpec defines the desired state of ElasticsearchRole
 type ElasticsearchRoleSpec struct {
+	// +optional
+	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
+
 	// +kubebuilder:validation:MinLength=0
 	// +required
 	Body string `json:"body"`

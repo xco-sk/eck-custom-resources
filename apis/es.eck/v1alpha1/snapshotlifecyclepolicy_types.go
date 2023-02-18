@@ -20,11 +20,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // SnapshotLifecyclePolicySpec defines the desired state of SnapshotLifecyclePolicy
 type SnapshotLifecyclePolicySpec struct {
+	// +optional
+	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
+
 	// +kubebuilder:validation:MinLength=0
 	// +required
 	Body string `json:"body"`
@@ -32,8 +32,6 @@ type SnapshotLifecyclePolicySpec struct {
 
 // SnapshotLifecyclePolicyStatus defines the observed state of SnapshotLifecyclePolicy
 type SnapshotLifecyclePolicyStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
 }
 
 //+kubebuilder:object:root=true

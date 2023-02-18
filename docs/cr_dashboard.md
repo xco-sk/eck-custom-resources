@@ -17,6 +17,7 @@ See [Saved objects APIs](https://www.elastic.co/guide/en/kibana/master/saved-obj
 |-----------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
 | `metadata.name`             | string          | Name of the Dashboard, used also as its ID in Kibana                                                                                            | No default                                           |
 | `spec.space`                | string          | Name of the Kibana namespace to which the Dashboard is deployed to                                                                              | No default (will be deployed to "default" namespace) |
+| `spec.targetInstance.name`  | string         | Name of the [Kibana Instance](cr_kibana_instance.md) to which this Dashboard will be deployed to | The operator configuration |
 | `spec.body`                 | string          | Dashboard definition json (omitting everything except attributes and references)                                                                | No default                                           |
 | `spec.dependencies`         | List of objects | List of dependencies - the reconciler will wait for all resources from the list to be present in Kibana before deploying/updating this resource | -                                                    |                                                 |
 | `spec.dependencies[].space` | string          | Kibana Space where to look for given resource                                                                                                   | -                                                    |
@@ -31,6 +32,8 @@ kind: Dashboard
 metadata:
   name: dashboard-sample
 spec:
+  targetInstance:
+    name: kibana-quickstart
   space: my-space
   dependencies:
     - type: lens

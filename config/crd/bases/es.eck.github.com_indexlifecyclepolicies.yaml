@@ -39,6 +39,11 @@ spec:
               body:
                 minLength: 0
                 type: string
+              targetInstance:
+                properties:
+                  name:
+                    type: string
+                type: object
             required:
             - body
             type: object

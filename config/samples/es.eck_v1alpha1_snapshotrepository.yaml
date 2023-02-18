@@ -3,6 +3,8 @@ kind: SnapshotRepository
 metadata:
   name: snapshotrepository-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "type": "fs",

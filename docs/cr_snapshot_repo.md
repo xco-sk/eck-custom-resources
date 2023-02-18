@@ -17,6 +17,7 @@ in official documentation.
 | Key             | Type   | Description                                                                              |
 |-----------------|--------|------------------------------------------------------------------------------------------|
 | `metadata.name` | string | Name of the Snapshot Repository                                                          |
+| `spec.targetInstance.name`| string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this SnapshotRepository will be deployed to |
 | `spec.body`     | string | Snapshot repository definition - same you would use when creating repo using ES REST API |
 
 Please keep in mind, the repository location has to be accessible from each and
@@ -31,6 +32,8 @@ kind: SnapshotRepository
 metadata:
   name: snapshotrepository-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "type": "fs",

@@ -3,6 +3,8 @@ kind: IndexLifecyclePolicy
 metadata:
   name: indexlifecyclepolicy-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "policy": {

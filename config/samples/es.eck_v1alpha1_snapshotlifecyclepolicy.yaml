@@ -3,6 +3,8 @@ kind: SnapshotLifecyclePolicy
 metadata:
   name: snapshotlifecyclepolicy-sample
 spec:
+  targetInstance:
+    name: elasticsearch-quickstart
   body: |
     {
       "schedule": "0 30 1 * * ?", 

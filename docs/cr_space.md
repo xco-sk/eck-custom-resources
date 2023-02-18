@@ -18,6 +18,7 @@ See [Spaces APIs](https://www.elastic.co/guide/en/kibana/master/spaces-api.html)
 | Key             | Type   | Description                                                                                     | Default    |
 |-----------------|--------|-------------------------------------------------------------------------------------------------|------------|
 | `metadata.name` | string | Name of the Visualization, used also as its ID in Kibana                                        | No default |
+| `spec.targetInstance.name`| string         | Name of the [Kibana Instance](cr_kibana_instance.md) to which this Space will be deployed to | The operator configuration |
 | `spec.body`     | string | Space definition json, `id` field value is added/replaced with value from `metadata.name` field | No default |
 
 ## Example
@@ -28,6 +29,8 @@ kind: Space
 metadata:
   name: space-sample
 spec:
+  targetInstance:
+    name: kibana-quickstart
   body: |
     {
       "name": "ECK Space sample",

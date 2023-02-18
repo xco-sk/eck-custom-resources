@@ -3,7 +3,9 @@ kind: Dashboard
 metadata:
   name: dashboard-sample
 spec:
-  space: my-space
+  targetInstance:
+    name: kibana-quickstart
+  space: space-sample
   dependencies:
     - type: lens
       name: lens-sample
