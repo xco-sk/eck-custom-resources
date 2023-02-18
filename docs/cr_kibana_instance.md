@@ -10,8 +10,7 @@ This resource is not reconciled, it is used only to hold the data about the targ
 
 | Key                                                     | Type   | Description                                                                                       |
 |---------------------------------------------------------|--------|---------------------------------------------------------------------------------------------------|
-| `metadata.name`                                         | string | Name of the Kibana instance, used in `targetInstance.name` field, that is present in other
-Kibana CRDs to reference the target Kibana instance |
+| `metadata.name`                                         | string | Name of the Kibana instance, used in `targetInstance.name` field, that is present in other Kibana CRDs to reference the target Kibana instance |
 | `spec.enabled`                                          | bool   | Defines whether this instance is enabled for resource reconciliation                              |
 | `spec.url    `                                          | string | The URL of Kibana instance                                      |
 | `spec.certificate.secretName`                           | string | Name of the secret with CA used for HTTPS communication with Kibana, optional in case of "http://" prefixed URLs |
