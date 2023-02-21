@@ -1,6 +1,6 @@
 # Helm chart for eck-custom-resources
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
+![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.5.1](https://img.shields.io/badge/AppVersion-0.5.1-informational?style=flat-square)
 
 Helm chart for eck-custom-resources operator
 
@@ -57,7 +57,7 @@ helm uninstall eck-cr
 | image.repository | string | `"xcosk/eck-custom-resources"` | ECK Custom resources docker image registry |
 | image.tag | string | `""` | Docker image tag. Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` | Docker image pull secrets |
-| kibana | object | ``{}`` | Configuration of Default Kibana to which the Custom resources are deployed. Can stay empty if you want to only use the KibanaInstance CRD approach |
+| kibana | object | `{}` | Configuration of Default Kibana to which the Custom resources are deployed. Can stay empty if you want to only use the KibanaInstance CRD approach |
 | kibana.authentication.usernamePasswordSecret.secretName | string | `"quickstart-es-elastic-user"` | Name of the Secret containing password for user that is used to manage deployed resources. Should be in the `username: password` format. |
 | kibana.authentication.usernamePasswordSecret.userName | string | `"elastic"` | Username of user that is used to manage deployed resources |
 | kibana.certificate.certificateKey | string | `"ca.crt"` | Key in Secret that contain the PEM-encoded certificate |

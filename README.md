@@ -64,7 +64,7 @@ kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-cust
 ```
 
 There are 2 new CRDs, `ElasticsearchInstance` and `KibanaInstance` that allows you to deploy the target configuration for
-both Kibana and Elasticsearch. The rest of the CRDs were extended with optional `targetInstance.name` field, that should reference
+both Kibana and Elasticsearch. The rest of the CRDs were extended with optional `spec.targetInstance.name` field, that should reference
 the `ElasticsearchInstance`/`KibanaInstance`. If `targetInstance` field is not present, the default operator configuration (`elasticsearch` and `kibana`
 fields) is used.
 This approach should ensure the backward compatibility with previously deployed CRDs.
@@ -90,7 +90,8 @@ This removes all resources related to eck-custom-resources operator. It won't re
 ## Working with custom resources
 After the operator is installed, you can deploy Elasticsearch/Kibana resources from the list above. The reconciler
 will take care of propagating the change to Elasticsearch or Kibana, whether it is creation of new resource, deletion
-or update.
+or update. Definition of target Elasticsearch/Kibana is done using [Elasticsearch Instance](docs/cr_elasticsearch_instance.md) and 
+[Kibana Instance](docs/cr_kibana_instance.md) resources. These are then referenced (by name) from other resources through `spec.targetInstance.name` field.
 
 For detailed documentation for each resource, see [List of supported resources](docs/cr_list.md)
 
