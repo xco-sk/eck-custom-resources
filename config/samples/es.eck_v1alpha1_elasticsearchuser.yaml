@@ -4,7 +4,7 @@ metadata:
   name: elasticsearchuser-secret
 type: Opaque
 data:
-  elasticsearchuser-sample: c2FtcGxlLnBhc3N3b3JkCg==
+  elasticsearchuser-sample: c2FtcGxlLnBhc3N3b3Jk
 
 ---
 apiVersion: es.eck.github.com/v1alpha1
