@@ -110,6 +110,14 @@ metrics:
     type: ClusterIP
     # -- Metrics service port
     port: 8080
+  serviceMonitor:
+    # --  Extra labels for the ServiceMonitor
+    # --  Normally used for prometheus operator to detect the servicemonitor if deployed to different namespace
+    # labels:
+    #   release: prometheus-operator
+    labels: {}
+    # -- Namespace of the ServiceMonitor
+    namespace: ""
 
 # -- Configuration of Default Elasticsearch cluster to which the Custom resources are deployed. Can stay empty if you want to only use the ElasticsearchInstance CRD approach
 elasticsearch:

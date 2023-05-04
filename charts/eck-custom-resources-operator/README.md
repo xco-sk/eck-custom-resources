@@ -70,6 +70,8 @@ helm uninstall eck-cr
 | metrics.enabled | bool | `false` | Flag to indicate if prometheus metrics are exported. If true, the Service and ServiceMonitor resources are deployed alongside the application |
 | metrics.service.port | int | `8080` | Metrics service port |
 | metrics.service.type | string | `"ClusterIP"` | Metrics service type |
+| metrics.serviceMonitor.labels | object | `{}` | Labels to add to the ServiceMonitor |
+| metrics.serviceMonitor.namespace | string | `""` | Namespace of the ServiceMonitor |
 | nameOverride | string | `""` | Override for Chart.Name default value |
 | nodeSelector | object | `{}` | Node selector |
 | podAnnotations | object | `{}` | Pod annotation |
