@@ -24,7 +24,8 @@ import (
 type DataViewSpec struct {
 	// +optional
 	TargetConfig CommonKibanaConfig `json:"targetInstance,omitempty"`
-
+	// DefaultView defines if this DataView is configured as default in Kibana
+	DefaultView *bool `json:"defaultView,omitempty"`
 	SavedObject `json:",inline"`
 }
 

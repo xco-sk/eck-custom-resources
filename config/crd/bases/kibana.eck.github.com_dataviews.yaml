@@ -41,6 +41,10 @@ spec:
             properties:
               body:
                 type: string
+              defaultView:
+                description: DefaultView defines if this DataView is configured as
+                  default in Kibana
+                type: boolean
               dependencies:
                 items:
                   properties:

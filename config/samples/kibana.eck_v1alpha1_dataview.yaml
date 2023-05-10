@@ -9,6 +9,7 @@ spec:
   dependencies:
     - type: lens
       name: lens-sample
+  defaultView: true
   body: |
     {
       "title": "sample-index-*",

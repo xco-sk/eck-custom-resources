@@ -193,6 +193,11 @@ func (in *DataViewList) DeepCopyObject() runtime.Object {
 func (in *DataViewSpec) DeepCopyInto(out *DataViewSpec) {
 	*out = *in
 	out.TargetConfig = in.TargetConfig
+	if in.DefaultView != nil {
+		in, out := &in.DefaultView, &out.DefaultView
+		*out = new(bool)
+		**out = **in
+	}
 	in.SavedObject.DeepCopyInto(&out.SavedObject)
 }
 
