@@ -194,6 +194,15 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchUser")
 		os.Exit(1)
 	}
+	if err = (&eseckcontrollers.ElasticsearchApikeyReconciler{
+		Client:        mgr.GetClient(),
+		Scheme:        mgr.GetScheme(),
+		ProjectConfig: ctrlConfig,
+		Recorder:      mgr.GetEventRecorderFor("elasticsearchapikey_controller"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "ElasticsearchApikey")
+		os.Exit(1)
+	}
 	if err = (&kibanaeckcontrollers.SpaceReconciler{
 		Client:        mgr.GetClient(),
 		Scheme:        mgr.GetScheme(),

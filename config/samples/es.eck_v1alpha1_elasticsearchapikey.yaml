@@ -1,0 +1,11 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchApikey
+metadata:
+  name: elasticsearchapikey-sample
+spec:
+  targetInstance:
+    name: elasticsearch-quickstart
+  body: |
+    {
+      "name" : "elasticsearchapikey-sample"
+    }
