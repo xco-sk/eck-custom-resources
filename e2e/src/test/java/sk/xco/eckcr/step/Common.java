@@ -1,4 +1,4 @@
-package sk.xco.eckcr.steps;
+package sk.xco.eckcr.step;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static sk.xco.eckcr.util.K8sClient.withK8sClient;
 
 @Slf4j
-public class CommonStepDefinitions {
+public class Common {
 
     private static final String ECK_CR_POD_NAME = "eck-custom-resources-operator";
     private static final String ES_POD_NAME_PATTERN = "%s-es";
