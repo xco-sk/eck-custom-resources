@@ -1,7 +1,7 @@
 apiVersion: es.eck.github.com/v1alpha1
 kind: Index
 metadata:
-  name: index-test
+  name: test
 spec:
   targetInstance:
     name: elasticsearch-quickstart

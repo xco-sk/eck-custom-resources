@@ -5,26 +5,50 @@ import co.elastic.clients.elasticsearch.indices.GetIndexRequest;
 import co.elastic.clients.elasticsearch.indices.IndexState;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.TransportUtils;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import javax.net.ssl.SSLContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 
-import java.io.IOException;
-
+@Slf4j
 public class ESClient {
 
-    public static IndexState getIndexState(String indexName) throws IOException {
-        return getClient().indices().get(new GetIndexRequest.Builder().index(indexName).build()).get(indexName);
-    }
+  private static final String DEFAULT_ES_NAME = "quickstart";
 
-    private static ElasticsearchClient getClient() {
+  public static IndexState getIndexState(String indexName) throws IOException {
+    return getClient()
+        .indices()
+        .get(new GetIndexRequest.Builder().index(indexName).build())
+        .get(indexName);
+  }
 
-        RestClient restClient = RestClient.builder(
-                new HttpHost("localhost", 9200)).build();
+  private static ElasticsearchClient getClient() {
+    var user = K8sClient.getElasticsearchUserFromSecret(DEFAULT_ES_NAME);
+    var caCrt = K8sClient.getElasticsearchCACertFromSecret(DEFAULT_ES_NAME);
 
-        ElasticsearchTransport transport = new RestClientTransport(
-                restClient, new JacksonJsonpMapper());
+    BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
+    credsProv.setCredentials(
+        AuthScope.ANY, new UsernamePasswordCredentials(user.username(), user.password()));
 
-        return new ElasticsearchClient(transport);
-    }
+    SSLContext sslContext =
+        TransportUtils.sslContextFromHttpCaCrt(new ByteArrayInputStream(caCrt.getBytes()));
+
+    RestClient restClient =
+        RestClient.builder(new HttpHost("quickstart-es-http", 9200, "https"))
+            .setHttpClientConfigCallback(
+                hc -> hc.setSSLContext(sslContext).setDefaultCredentialsProvider(credsProv))
+            .build();
+
+    ElasticsearchTransport transport =
+        new RestClientTransport(restClient, new JacksonJsonpMapper());
+
+    return new ElasticsearchClient(transport);
+  }
 }

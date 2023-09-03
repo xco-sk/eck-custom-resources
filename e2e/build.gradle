@@ -18,6 +18,7 @@ dependencies {
     testImplementation 'co.elastic.clients:elasticsearch-java:8.7.1'
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     testImplementation 'org.assertj:assertj-core:3.19.0'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
