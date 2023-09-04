@@ -55,7 +55,11 @@ public class K8sClient {
                                     () ->
                                         new IllegalArgumentException(
                                             "Secret does not contain data")))
-                    .map(entry -> new ElasticsearchUser(entry.getKey(), new String(Base64.getDecoder().decode(entry.getValue()))))
+                    .map(
+                        entry ->
+                            new ElasticsearchUser(
+                                entry.getKey(),
+                                new String(Base64.getDecoder().decode(entry.getValue()))))
                     .orElseThrow(
                         () -> new IllegalArgumentException("No secret with ES user data found")));
   }

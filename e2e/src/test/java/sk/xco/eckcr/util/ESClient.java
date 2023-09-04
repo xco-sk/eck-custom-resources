@@ -20,7 +20,7 @@ import org.elasticsearch.client.RestClient;
 @Slf4j
 public class ESClient {
 
-  private static final String DEFAULT_ES_NAME = "quickstart";
+  public static final String DEFAULT_ES_NAME = "quickstart";
 
   public static IndexState getIndexState(String indexName) throws IOException {
     return getClient()
