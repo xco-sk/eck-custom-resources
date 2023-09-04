@@ -1,8 +1,8 @@
 package sk.xco.eckcr.util;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.indices.GetIndexRequest;
-import co.elastic.clients.elasticsearch.indices.IndexState;
+import co.elastic.clients.elasticsearch.indices.*;
+import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
@@ -27,6 +27,16 @@ public class ESClient {
         .indices()
         .get(new GetIndexRequest.Builder().index(indexName).build())
         .get(indexName);
+  }
+
+  public static IndexTemplateItem getTemplate(String templateName) throws IOException {
+    return getClient()
+        .indices()
+        .getIndexTemplate(new GetIndexTemplateRequest.Builder().name(templateName).build())
+        .indexTemplates()
+        .stream()
+        .findFirst()
+        .get();
   }
 
   private static ElasticsearchClient getClient() {

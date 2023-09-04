@@ -15,6 +15,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 import sk.xco.eckcr.step.es.Index;
+import sk.xco.eckcr.step.es.IndexTemplate;
 import sk.xco.eckcr.util.ApiType;
 
 @Slf4j
@@ -61,6 +62,7 @@ public class K8sResource {
   private void waitForResource(ApiType apiType, String resourceName) {
     switch (apiType) {
       case Index -> Index.waitForIndex(resourceName);
+      case IndexTemplate -> IndexTemplate.waitForIndexTemplate(resourceName);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }
@@ -128,9 +130,12 @@ public class K8sResource {
     toCleanup.clear();
   }
 
-  @ParameterType("Index")
+  @ParameterType("Index|Index Template")
   public ApiType ApiType(String stringifiedApiType) {
-    return ApiType.valueOf(stringifiedApiType);
+    return switch (stringifiedApiType) {
+      case "Index Template" -> ApiType.IndexTemplate;
+      default -> ApiType.valueOf(stringifiedApiType);
+    };
   }
 
   private String getResourcePath(String resourceName) {
