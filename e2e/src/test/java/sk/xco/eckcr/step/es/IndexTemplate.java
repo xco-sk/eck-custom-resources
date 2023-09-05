@@ -31,7 +31,7 @@ public class IndexTemplate {
   @Then("the Index Template with name {string} is not present in {string} Elasticsearch")
   public void indexTemplateNotPresent(String templateName, String elasticsearchName) {
     Awaitility.await()
-        .atMost(30, TimeUnit.SECONDS)
+        .atMost(5, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
               try {

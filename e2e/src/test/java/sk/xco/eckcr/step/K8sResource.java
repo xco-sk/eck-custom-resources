@@ -23,40 +23,45 @@ public class K8sResource {
   private final Set<String> toCleanup = new HashSet<>();
 
   @When("the {string} is applied")
-  public void applyResource(String resourceName) throws IOException {
+  public void applyResource(String fileName) throws IOException {
 
     var resource =
-        new String(
-            K8sResource.class.getResourceAsStream(getResourcePath(resourceName)).readAllBytes());
+        new String(K8sResource.class.getResourceAsStream(getResourcePath(fileName)).readAllBytes());
 
-    apply(resourceName, resource);
+    apply(fileName, resource);
   }
 
   @When("the {string} is applied with {string} set to {string}")
   public void applyResourceWithReplacement(
-      String resourceName, String replaceKey, String replaceValue) {
-    String modified = getModifiedResource(resourceName, replaceKey, replaceValue);
+      String fileName, String replaceKey, String replaceValue) {
+    String modified = getModifiedResource(fileName, replaceKey, replaceValue);
 
-    apply(resourceName, modified);
+    apply(fileName, modified);
   }
 
-  @Given("the {ApiType} {string} is present")
-  public void givenResource(ApiType apiType, String resourceName) throws IOException {
+  @Given("the {ApiType} {string} defined in {string} is present")
+  public void givenResource(ApiType apiType, String resourceName, String fileName)
+      throws IOException {
     var resource =
-        new String(
-            K8sResource.class.getResourceAsStream(getResourcePath(resourceName)).readAllBytes());
+        new String(K8sResource.class.getResourceAsStream(getResourcePath(fileName)).readAllBytes());
 
     apply(resourceName, resource);
 
     waitForResource(apiType, resourceName);
   }
 
-  @Given("the {ApiType} {string} is present with {string} set to {string}")
+  @Given("the {ApiType} {string} defined in {string} is present with {string} set to {string}")
   public void givenResourceWithReplacement(
-      ApiType apiType, String resourceName, String replaceKey, String replaceValue) {
-    String modified = getModifiedResource(resourceName, replaceKey, replaceValue);
+      ApiType apiType,
+      String resourceName,
+      String fileName,
+      String replaceKey,
+      String replaceValue) {
+    String modified = getModifiedResource(fileName, replaceKey, replaceValue);
 
-    apply(resourceName, modified);
+    apply(fileName, modified);
+
+    waitForResource(apiType, resourceName);
   }
 
   private void waitForResource(ApiType apiType, String resourceName) {
@@ -67,7 +72,7 @@ public class K8sResource {
     }
   }
 
-  private void apply(String resourceName, String resource) {
+  private void apply(String fileName, String resource) {
     withK8sClient()
         .run(
             client -> {
@@ -75,15 +80,15 @@ public class K8sResource {
                   .load(new ByteArrayInputStream(resource.getBytes()))
                   .inNamespace("default")
                   .serverSideApply();
-              toCleanup.add(resourceName);
+              toCleanup.add(fileName);
               return null;
             });
   }
 
-  private String getModifiedResource(String resourceName, String replaceKey, String replaceValue) {
+  private String getModifiedResource(String fileName, String replaceKey, String replaceValue) {
     Yaml yaml = new Yaml();
     Map<String, Object> input =
-        yaml.load(K8sResource.class.getResourceAsStream(getResourcePath(resourceName)));
+        yaml.load(K8sResource.class.getResourceAsStream(getResourcePath(fileName)));
     ((Map<String, Object>) input.get("spec"))
         .put(
             "body",
@@ -94,16 +99,16 @@ public class K8sResource {
     return modified;
   }
 
-  @Given("the {string} is deleted")
-  public void deleteResource(String resourceName) {
+  @Given("the resource defined in {string} is deleted")
+  public void deleteResource(String fileName) {
     withK8sClient()
         .run(
             client -> {
               client
-                  .load(K8sResource.class.getResourceAsStream(getResourcePath(resourceName)))
+                  .load(K8sResource.class.getResourceAsStream(getResourcePath(fileName)))
                   .inNamespace("default")
                   .delete();
-              toCleanup.remove(resourceName);
+              toCleanup.remove(fileName);
               return null;
             });
   }
@@ -139,6 +144,6 @@ public class K8sResource {
   }
 
   private String getResourcePath(String resourceName) {
-    return "/resources/%s.yaml".formatted(resourceName);
+    return "/resources/%s".formatted(resourceName);
   }
 }
