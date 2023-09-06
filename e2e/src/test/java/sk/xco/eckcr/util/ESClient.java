@@ -1,6 +1,8 @@
 package sk.xco.eckcr.util;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.ilm.GetLifecycleRequest;
+import co.elastic.clients.elasticsearch.ilm.IlmPolicy;
 import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
@@ -37,6 +39,14 @@ public class ESClient {
         .stream()
         .findFirst()
         .get();
+  }
+
+  public static IlmPolicy getIlmPolicy(String policyName) throws IOException {
+    return getClient()
+        .ilm()
+        .getLifecycle(new GetLifecycleRequest.Builder().name(policyName).build())
+        .get(policyName)
+        .policy();
   }
 
   private static ElasticsearchClient getClient() {
