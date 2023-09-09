@@ -17,6 +17,7 @@ import org.yaml.snakeyaml.Yaml;
 import sk.xco.eckcr.step.es.Index;
 import sk.xco.eckcr.step.es.IndexLifecyclePolicy;
 import sk.xco.eckcr.step.es.IndexTemplate;
+import sk.xco.eckcr.step.es.IngestPipeline;
 import sk.xco.eckcr.util.ApiType;
 
 @Slf4j
@@ -70,6 +71,7 @@ public class K8sResource {
       case Index -> Index.waitForIndex(resourceName);
       case IndexTemplate -> IndexTemplate.waitForIndexTemplate(resourceName);
       case IndexLifecyclePolicy -> IndexLifecyclePolicy.waitForIndexLifecyclePolicy(resourceName);
+      case IngestPipeline -> IngestPipeline.waitForIngestPipeline(resourceName);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }
@@ -137,11 +139,12 @@ public class K8sResource {
     toCleanup.clear();
   }
 
-  @ParameterType("Index|Index Template|Index Lifecycle Policy")
+  @ParameterType("Index|Index Template|Index Lifecycle Policy|Ingest Pipeline")
   public ApiType ApiType(String stringifiedApiType) {
     return switch (stringifiedApiType) {
       case "Index Template" -> ApiType.IndexTemplate;
       case "Index Lifecycle Policy" -> ApiType.IndexLifecyclePolicy;
+      case "Ingest Pipeline" -> ApiType.IngestPipeline;
       default -> ApiType.valueOf(stringifiedApiType);
     };
   }

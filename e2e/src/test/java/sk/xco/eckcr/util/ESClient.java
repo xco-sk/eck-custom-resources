@@ -5,6 +5,8 @@ import co.elastic.clients.elasticsearch.ilm.GetLifecycleRequest;
 import co.elastic.clients.elasticsearch.ilm.IlmPolicy;
 import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
+import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
+import co.elastic.clients.elasticsearch.ingest.Pipeline;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
@@ -47,6 +49,13 @@ public class ESClient {
         .getLifecycle(new GetLifecycleRequest.Builder().name(policyName).build())
         .get(policyName)
         .policy();
+  }
+
+  public static Pipeline getIngestPipeline(String pipelineName) throws IOException {
+    return getClient()
+        .ingest()
+        .getPipeline(new GetPipelineRequest.Builder().id(pipelineName).build())
+        .get(pipelineName);
   }
 
   private static ElasticsearchClient getClient() {
