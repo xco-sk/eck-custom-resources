@@ -21,7 +21,7 @@ public class IndexLifecyclePolicy {
                 var ilmPolicy = getIlmPolicy(policyName);
                 assertThat(ilmPolicy).isNotNull();
               } catch (ElasticsearchException e) {
-                fail("Failed to get Index Template", e);
+                fail("Failed to get resource", e);
               }
             });
   }
@@ -36,7 +36,7 @@ public class IndexLifecyclePolicy {
                 var ilmPolicy = getIlmPolicy(policyName);
                 assertThat(ilmPolicy.phases().delete().minAge().time()).isEqualTo(minAge);
               } catch (ElasticsearchException e) {
-                fail("Failed to get Index Template", e);
+                fail("Failed to get resource", e);
               }
             });
   }

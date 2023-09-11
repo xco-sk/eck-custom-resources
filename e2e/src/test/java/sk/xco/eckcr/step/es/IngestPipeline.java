@@ -22,7 +22,7 @@ public class IngestPipeline {
                 var pipeline = getIngestPipeline(resourceName);
                 assertThat(pipeline).isNotNull();
               } catch (ElasticsearchException e) {
-                fail("Failed to get Index Template", e);
+                fail("Failed to get resource", e);
               }
             });
   }
@@ -40,7 +40,7 @@ public class IngestPipeline {
                 assertThat(pipeline.processors().get(0).set().value().toJson().toString())
                     .isEqualTo(value);
               } catch (ElasticsearchException e) {
-                fail("Failed to get Index Template", e);
+                fail("Failed to get resource", e);
               }
             });
   }
@@ -72,7 +72,7 @@ public class IngestPipeline {
                 var template = getIngestPipeline(resourceName);
                 assertThat(template).isNotNull();
               } catch (ElasticsearchException e) {
-                fail("Failed to get Index Template", e);
+                fail("Failed to get resource", e);
               }
             });
   }

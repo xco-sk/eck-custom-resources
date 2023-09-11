@@ -14,10 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
-import sk.xco.eckcr.step.es.Index;
-import sk.xco.eckcr.step.es.IndexLifecyclePolicy;
-import sk.xco.eckcr.step.es.IndexTemplate;
-import sk.xco.eckcr.step.es.IngestPipeline;
+import sk.xco.eckcr.step.es.*;
 import sk.xco.eckcr.util.ApiType;
 
 @Slf4j
@@ -72,6 +69,7 @@ public class K8sResource {
       case IndexTemplate -> IndexTemplate.waitForIndexTemplate(resourceName);
       case IndexLifecyclePolicy -> IndexLifecyclePolicy.waitForIndexLifecyclePolicy(resourceName);
       case IngestPipeline -> IngestPipeline.waitForIngestPipeline(resourceName);
+      case SnapshotRepo -> SnapshotRepo.waitForSnapshotRepo(resourceName);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }
@@ -139,12 +137,13 @@ public class K8sResource {
     toCleanup.clear();
   }
 
-  @ParameterType("Index|Index Template|Index Lifecycle Policy|Ingest Pipeline")
+  @ParameterType("Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository")
   public ApiType ApiType(String stringifiedApiType) {
     return switch (stringifiedApiType) {
       case "Index Template" -> ApiType.IndexTemplate;
       case "Index Lifecycle Policy" -> ApiType.IndexLifecyclePolicy;
       case "Ingest Pipeline" -> ApiType.IngestPipeline;
+      case "Snapshot Repository" -> ApiType.SnapshotRepo;
       default -> ApiType.valueOf(stringifiedApiType);
     };
   }

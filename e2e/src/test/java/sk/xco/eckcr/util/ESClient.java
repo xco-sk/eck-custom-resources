@@ -7,6 +7,8 @@ import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
 import co.elastic.clients.elasticsearch.ingest.Pipeline;
+import co.elastic.clients.elasticsearch.snapshot.GetRepositoryRequest;
+import co.elastic.clients.elasticsearch.snapshot.Repository;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
@@ -56,6 +58,13 @@ public class ESClient {
         .ingest()
         .getPipeline(new GetPipelineRequest.Builder().id(pipelineName).build())
         .get(pipelineName);
+  }
+
+  public static Repository getSnapshotRepo(String repoName) throws IOException {
+    return getClient()
+        .snapshot()
+        .getRepository(new GetRepositoryRequest.Builder().name(repoName).build())
+        .get(repoName);
   }
 
   private static ElasticsearchClient getClient() {
