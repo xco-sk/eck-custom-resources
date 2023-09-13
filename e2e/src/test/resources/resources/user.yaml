@@ -1,0 +1,18 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchUser
+metadata:
+  name: test
+spec:
+  targetInstance:
+    name: elasticsearch-quickstart
+  secretName: test-elasticsearchuser-secret
+  body: |
+    {
+      "roles" : [ "admin" ],
+      "full_name" : "$fullName",
+      "email" : "rfeynman@example.com",
+      "metadata" : {
+        "intelligence" : 7
+      }
+    }
+

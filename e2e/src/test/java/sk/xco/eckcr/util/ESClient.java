@@ -12,6 +12,8 @@ import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
 import co.elastic.clients.elasticsearch.ingest.Pipeline;
+import co.elastic.clients.elasticsearch.security.GetUserRequest;
+import co.elastic.clients.elasticsearch.security.User;
 import co.elastic.clients.elasticsearch.slm.SnapshotLifecycle;
 import co.elastic.clients.elasticsearch.snapshot.GetRepositoryRequest;
 import co.elastic.clients.elasticsearch.snapshot.Repository;
@@ -105,6 +107,17 @@ public class ESClient {
                   .policyId(policyName)
                   .build())
           .get(policyName);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static User getUser(String userName) {
+    try {
+      return getClient()
+          .security()
+          .getUser(new GetUserRequest.Builder().username(userName).build())
+          .get(userName);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
