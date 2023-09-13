@@ -9,7 +9,6 @@ import io.cucumber.java.en.When;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +28,6 @@ public class K8sResource {
         new String(K8sResource.class.getResourceAsStream(getResourcePath(fileName)).readAllBytes());
 
     apply(fileName, resource);
-    Thread.sleep(Duration.ofMillis(500).toMillis());
   }
 
   @When("the {string} is applied with {string} set to {string}")
@@ -38,7 +36,6 @@ public class K8sResource {
     String modified = getModifiedResource(fileName, replaceKey, replaceValue);
 
     apply(fileName, modified);
-    Thread.sleep(Duration.ofMillis(500).toMillis());
   }
 
   @Given("the {ApiType} {string} defined in {string} is present")
@@ -103,7 +100,7 @@ public class K8sResource {
   }
 
   @ParameterType(
-      "Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository|Snapshot Lifecycle Policy|User")
+      "Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository|Snapshot Lifecycle Policy|User|Role")
   public ApiType ApiType(String stringifiedApiType) {
     return switch (stringifiedApiType) {
       case "Index Template" -> ApiType.IndexTemplate;
@@ -125,6 +122,7 @@ public class K8sResource {
       case SnapshotLifecyclePolicy -> ESClient.waitForResource(
           resourceName, ESClient::getSnapshotLifecyclePolicy);
       case User -> ESClient.waitForResource(resourceName, ESClient::getUser);
+      case Role -> ESClient.waitForResource(resourceName, ESClient::getRole);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }

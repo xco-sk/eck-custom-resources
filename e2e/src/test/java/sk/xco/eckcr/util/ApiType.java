@@ -10,7 +10,8 @@ public enum ApiType {
   IngestPipeline("ingestpipeline.es.eck.github.com"),
   SnapshotRepo("snapshotrepository.es.eck.github.com"),
   SnapshotLifecyclePolicy("snapshotlifecyclepolicy.es.eck.github.com"),
-  User("elasticsearchuser.es.eck.github.com");
+  User("elasticsearchuser.es.eck.github.com"),
+  Role("elasticsearchrole.es.eck.github.com");
 
   private final String resourceType;
 

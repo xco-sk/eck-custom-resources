@@ -1,0 +1,20 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ElasticsearchRole
+metadata:
+  name: test
+spec:
+  targetInstance:
+    name: elasticsearch-quickstart
+  body: |
+    {
+      "cluster": ["all"],
+      "indices": [
+        {
+          "names": [ "$indexName"],
+          "privileges": ["all"]
+        }
+      ],
+      "metadata" : {
+        "version" : 1
+      }
+    }

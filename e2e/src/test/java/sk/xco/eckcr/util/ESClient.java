@@ -12,8 +12,10 @@ import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
 import co.elastic.clients.elasticsearch.ingest.Pipeline;
+import co.elastic.clients.elasticsearch.security.GetRoleRequest;
 import co.elastic.clients.elasticsearch.security.GetUserRequest;
 import co.elastic.clients.elasticsearch.security.User;
+import co.elastic.clients.elasticsearch.security.get_role.Role;
 import co.elastic.clients.elasticsearch.slm.SnapshotLifecycle;
 import co.elastic.clients.elasticsearch.snapshot.GetRepositoryRequest;
 import co.elastic.clients.elasticsearch.snapshot.Repository;
@@ -118,6 +120,17 @@ public class ESClient {
           .security()
           .getUser(new GetUserRequest.Builder().username(userName).build())
           .get(userName);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static Role getRole(String roleName) {
+    try {
+      return getClient()
+          .security()
+          .getRole(new GetRoleRequest.Builder().name(roleName).build())
+          .get(roleName);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
