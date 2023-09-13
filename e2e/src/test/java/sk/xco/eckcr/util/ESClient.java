@@ -12,6 +12,7 @@ import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
 import co.elastic.clients.elasticsearch.ingest.Pipeline;
+import co.elastic.clients.elasticsearch.slm.SnapshotLifecycle;
 import co.elastic.clients.elasticsearch.snapshot.GetRepositoryRequest;
 import co.elastic.clients.elasticsearch.snapshot.Repository;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
@@ -90,6 +91,20 @@ public class ESClient {
           .snapshot()
           .getRepository(new GetRepositoryRequest.Builder().name(repoName).build())
           .get(repoName);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static SnapshotLifecycle getSnapshotLifecyclePolicy(String policyName) {
+    try {
+      return getClient()
+          .slm()
+          .getLifecycle(
+              new co.elastic.clients.elasticsearch.slm.GetLifecycleRequest.Builder()
+                  .policyId(policyName)
+                  .build())
+          .get(policyName);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -1,14 +1,11 @@
 package sk.xco.eckcr.step;
 
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import lombok.extern.slf4j.Slf4j;
-
-
 import static org.junit.jupiter.api.Assertions.fail;
 import static sk.xco.eckcr.util.K8sClient.withK8sClient;
+
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Common {
@@ -49,26 +46,4 @@ public class Common {
             return null;
         });
     }
-
-    @When("I create a Pod with name {string} and image {string}")
-    public void iCreateAPodWithNameAndImage(String podName, String imageName) {
-        // Use Kubernetes client to create a Pod here
-    }
-
-    @When("I create a Service with name {string} and type {string}")
-    public void i_create_a_service_with_name_and_type(String string, String string2) {
-        // Write code here that turns the phrase above into concrete actions
-    }
-
-    @Then("the Pod {string} should be running")
-    public void thePodShouldBeRunning(String podName) {
-        // Use Kubernetes client to check if the Pod is running here
-        // Write assertions to verify the Pod's status
-    }
-
-    @Then("the Service {string} should be available")
-    public void the_service_should_be_available(String string) {
-        // Write code here that turns the phrase above into concrete actions
-    }
-
 }

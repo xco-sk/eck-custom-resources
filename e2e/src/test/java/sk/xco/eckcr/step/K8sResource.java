@@ -99,13 +99,15 @@ public class K8sResource {
     toCleanup.clear();
   }
 
-  @ParameterType("Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository")
+  @ParameterType(
+      "Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository|Snapshot Lifecycle Policy")
   public ApiType ApiType(String stringifiedApiType) {
     return switch (stringifiedApiType) {
       case "Index Template" -> ApiType.IndexTemplate;
       case "Index Lifecycle Policy" -> ApiType.IndexLifecyclePolicy;
       case "Ingest Pipeline" -> ApiType.IngestPipeline;
       case "Snapshot Repository" -> ApiType.SnapshotRepo;
+      case "Snapshot Lifecycle Policy" -> ApiType.SnapshotLifecyclePolicy;
       default -> ApiType.valueOf(stringifiedApiType);
     };
   }
@@ -117,6 +119,8 @@ public class K8sResource {
       case IndexLifecyclePolicy -> ESClient.waitForResource(resourceName, ESClient::getIlmPolicy);
       case IngestPipeline -> ESClient.waitForResource(resourceName, ESClient::getIngestPipeline);
       case SnapshotRepo -> ESClient.waitForResource(resourceName, ESClient::getSnapshotRepo);
+      case SnapshotLifecyclePolicy -> ESClient.waitForResource(
+          resourceName, ESClient::getSnapshotLifecyclePolicy);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }
