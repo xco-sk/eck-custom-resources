@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
-import sk.xco.eckcr.step.es.*;
 import sk.xco.eckcr.util.ApiType;
+import sk.xco.eckcr.util.ESClient;
 
 @Slf4j
 public class K8sResource {
@@ -63,44 +63,6 @@ public class K8sResource {
     waitForResource(apiType, resourceName);
   }
 
-  private void waitForResource(ApiType apiType, String resourceName) {
-    switch (apiType) {
-      case Index -> Index.waitForIndex(resourceName);
-      case IndexTemplate -> IndexTemplate.waitForIndexTemplate(resourceName);
-      case IndexLifecyclePolicy -> IndexLifecyclePolicy.waitForIndexLifecyclePolicy(resourceName);
-      case IngestPipeline -> IngestPipeline.waitForIngestPipeline(resourceName);
-      case SnapshotRepo -> SnapshotRepo.waitForSnapshotRepo(resourceName);
-      default -> throw new UnsupportedOperationException("Api type not supported");
-    }
-  }
-
-  private void apply(String fileName, String resource) {
-    withK8sClient()
-        .run(
-            client -> {
-              client
-                  .load(new ByteArrayInputStream(resource.getBytes()))
-                  .inNamespace("default")
-                  .serverSideApply();
-              toCleanup.add(fileName);
-              return null;
-            });
-  }
-
-  private String getModifiedResource(String fileName, String replaceKey, String replaceValue) {
-    Yaml yaml = new Yaml();
-    Map<String, Object> input =
-        yaml.load(K8sResource.class.getResourceAsStream(getResourcePath(fileName)));
-    ((Map<String, Object>) input.get("spec"))
-        .put(
-            "body",
-            ((String) ((Map<String, Object>) input.get("spec")).get("body"))
-                .replace("$" + replaceKey, replaceValue));
-
-    var modified = yaml.dump(input);
-    return modified;
-  }
-
   @Given("the resource defined in {string} is deleted")
   public void deleteResource(String fileName) {
     withK8sClient()
@@ -146,6 +108,44 @@ public class K8sResource {
       case "Snapshot Repository" -> ApiType.SnapshotRepo;
       default -> ApiType.valueOf(stringifiedApiType);
     };
+  }
+
+  private void waitForResource(ApiType apiType, String resourceName) {
+    switch (apiType) {
+      case Index -> ESClient.waitForResource(resourceName, ESClient::getIndexState);
+      case IndexTemplate -> ESClient.waitForResource(resourceName, ESClient::getTemplate);
+      case IndexLifecyclePolicy -> ESClient.waitForResource(resourceName, ESClient::getIlmPolicy);
+      case IngestPipeline -> ESClient.waitForResource(resourceName, ESClient::getIngestPipeline);
+      case SnapshotRepo -> ESClient.waitForResource(resourceName, ESClient::getSnapshotRepo);
+      default -> throw new UnsupportedOperationException("Api type not supported");
+    }
+  }
+
+  private void apply(String fileName, String resource) {
+    withK8sClient()
+        .run(
+            client -> {
+              client
+                  .load(new ByteArrayInputStream(resource.getBytes()))
+                  .inNamespace("default")
+                  .serverSideApply();
+              toCleanup.add(fileName);
+              return null;
+            });
+  }
+
+  private String getModifiedResource(String fileName, String replaceKey, String replaceValue) {
+    Yaml yaml = new Yaml();
+    Map<String, Object> input =
+        yaml.load(K8sResource.class.getResourceAsStream(getResourcePath(fileName)));
+    ((Map<String, Object>) input.get("spec"))
+        .put(
+            "body",
+            ((String) ((Map<String, Object>) input.get("spec")).get("body"))
+                .replace("$" + replaceKey, replaceValue));
+
+    var modified = yaml.dump(input);
+    return modified;
   }
 
   private String getResourcePath(String resourceName) {
