@@ -43,7 +43,7 @@ Configuration options are documented in [chart README file](charts/eck-custom-re
 ### From 0.5.0 to 0.6.0
 The Elasticsearch API Key support was introduced. To apply the CRD, run:
 ```
-kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.6.0/config/crd/bases/es.eck.github.com_elasticsearchapikeys.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/v0.6.0/config/crd/bases/es.eck.github.com_elasticsearchapikeys.yaml
 ```
 
 ### From 0.4.1 to 0.5.0
