@@ -16,6 +16,7 @@ Currently supported resources:
   - [Snapshot lifecycle policy](docs/cr_snapshot_lifecycle_policy.md)
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
+  - [API key](docs/cr_apikey.md)
 - For Kibana:
   - [Kibana Instance](docs/cr_kibana_instance.md)
   - [Space](docs/cr_space.md)
@@ -38,6 +39,12 @@ helm install eck-cr eck-custom-resources/eck-custom-resources-operator
 Configuration options are documented in [chart README file](charts/eck-custom-resources-operator/README.md)
 
 ## Upgrade guide
+
+### From 0.5.0 to 0.6.0
+The Elasticsearch API Key support was introduced. To apply the CRD, run:
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/eck-custom-resources-operator-0.6.0/config/crd/bases/es.eck.github.com_elasticsearchapikeys.yaml
+```
 
 ### From 0.4.1 to 0.5.0
 The Multi-target support was introduced. This changes is backward compatible, but in order to make use of the multi-target support
