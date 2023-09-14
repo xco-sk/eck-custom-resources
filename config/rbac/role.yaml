@@ -10,7 +10,39 @@ rules:
   resources:
   - secrets
   verbs:
+  - create
+  - delete
   - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchapikeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchapikeys/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - elasticsearchapikeys/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - es.eck.github.com
   resources:

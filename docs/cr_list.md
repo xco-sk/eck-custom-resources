@@ -10,6 +10,7 @@
 - [Snapshot lifecycle policy](cr_snapshot_lifecycle_policy.md)
 - [User](cr_user.md)
 - [Role](cr_role.md)
+- [API key](cr_apikey.md)
 
 ## Kibana:
 - [Kibana Instance](cr_kibana_instance.md)
