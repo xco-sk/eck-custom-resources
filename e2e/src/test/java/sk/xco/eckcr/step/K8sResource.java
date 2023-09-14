@@ -38,13 +38,19 @@ public class K8sResource {
     apply(fileName, modified);
   }
 
+  @When("the {string} is applied with {string}")
+  public void applyResourceWithVariable(String fileName, String replaceKey)
+      throws InterruptedException {
+    applyResourceWithReplacement(fileName, replaceKey, Common.VARIABLES.get(replaceKey));
+  }
+
   @Given("the {ApiType} {string} defined in {string} is present")
   public void givenResource(ApiType apiType, String resourceName, String fileName)
       throws IOException {
     var resource =
         new String(K8sResource.class.getResourceAsStream(getResourcePath(fileName)).readAllBytes());
 
-    apply(resourceName, resource);
+    apply(fileName, resource);
 
     waitForResource(apiType, resourceName);
   }
@@ -61,6 +67,20 @@ public class K8sResource {
     apply(fileName, modified);
 
     waitForResource(apiType, resourceName);
+  }
+
+  @Given(
+      "the {ApiType} {string} suffixed with {string} defined in {string} is present with {string}")
+  public void givenSuffixedResourceWithReplacement(
+      ApiType apiType,
+      String resourceName,
+      String variableName,
+      String fileName,
+      String replaceKey) {
+    var modifiedResourceName = resourceName + Common.VARIABLES.get(variableName);
+
+    givenResourceWithReplacement(
+        apiType, modifiedResourceName, fileName, replaceKey, Common.VARIABLES.get(replaceKey));
   }
 
   @Given("the resource defined in {string} is deleted")
@@ -100,7 +120,7 @@ public class K8sResource {
   }
 
   @ParameterType(
-      "Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository|Snapshot Lifecycle Policy|User|Role")
+      "Index|Index Template|Index Lifecycle Policy|Ingest Pipeline|Snapshot Repository|Snapshot Lifecycle Policy|User|Role|API Key")
   public ApiType ApiType(String stringifiedApiType) {
     return switch (stringifiedApiType) {
       case "Index Template" -> ApiType.IndexTemplate;
@@ -108,6 +128,7 @@ public class K8sResource {
       case "Ingest Pipeline" -> ApiType.IngestPipeline;
       case "Snapshot Repository" -> ApiType.SnapshotRepo;
       case "Snapshot Lifecycle Policy" -> ApiType.SnapshotLifecyclePolicy;
+      case "API Key" -> ApiType.ApiKey;
       default -> ApiType.valueOf(stringifiedApiType);
     };
   }
@@ -123,6 +144,7 @@ public class K8sResource {
           resourceName, ESClient::getSnapshotLifecyclePolicy);
       case User -> ESClient.waitForResource(resourceName, ESClient::getUser);
       case Role -> ESClient.waitForResource(resourceName, ESClient::getRole);
+      case ApiKey -> ESClient.waitForResource(resourceName, ESClient::getApiKey);
       default -> throw new UnsupportedOperationException("Api type not supported");
     }
   }

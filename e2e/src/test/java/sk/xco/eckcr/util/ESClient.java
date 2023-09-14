@@ -12,9 +12,7 @@ import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.elasticsearch.indices.get_index_template.IndexTemplateItem;
 import co.elastic.clients.elasticsearch.ingest.GetPipelineRequest;
 import co.elastic.clients.elasticsearch.ingest.Pipeline;
-import co.elastic.clients.elasticsearch.security.GetRoleRequest;
-import co.elastic.clients.elasticsearch.security.GetUserRequest;
-import co.elastic.clients.elasticsearch.security.User;
+import co.elastic.clients.elasticsearch.security.*;
 import co.elastic.clients.elasticsearch.security.get_role.Role;
 import co.elastic.clients.elasticsearch.slm.SnapshotLifecycle;
 import co.elastic.clients.elasticsearch.snapshot.GetRepositoryRequest;
@@ -136,6 +134,19 @@ public class ESClient {
     }
   }
 
+  public static ApiKey getApiKey(String apiKeyName) {
+    try {
+      log.info("Api keys: {}", getClient().security().getApiKey().apiKeys());
+      return getClient()
+          .security()
+          .getApiKey(new GetApiKeyRequest.Builder().name(apiKeyName).build())
+          .apiKeys()
+          .get(0);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private static ElasticsearchClient getClient() {
     var user = K8sClient.getElasticsearchUserFromSecret(DEFAULT_ES_NAME);
     var caCrt = K8sClient.getElasticsearchCACertFromSecret(DEFAULT_ES_NAME);
@@ -183,7 +194,7 @@ public class ESClient {
               try {
                 getResourceFunction.apply(resourceName);
                 return true;
-              } catch (ElasticsearchException e) {
+              } catch (Exception e) {
                 return false;
               }
             });

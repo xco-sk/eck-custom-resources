@@ -11,7 +11,8 @@ public enum ApiType {
   SnapshotRepo("snapshotrepository.es.eck.github.com"),
   SnapshotLifecyclePolicy("snapshotlifecyclepolicy.es.eck.github.com"),
   User("elasticsearchuser.es.eck.github.com"),
-  Role("elasticsearchrole.es.eck.github.com");
+  Role("elasticsearchrole.es.eck.github.com"),
+  ApiKey("elasticsearchapikey.es.eck.github.com");
 
   private final String resourceType;
 
