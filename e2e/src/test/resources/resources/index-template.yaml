@@ -1,0 +1,18 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: IndexTemplate
+metadata:
+  name: test
+spec:
+  targetInstance:
+    name: elasticsearch-quickstart
+  body: |
+    {
+      "index_patterns" : ["index-tpl-*"],
+      "priority" : 1,
+      "template": {
+        "settings" : {
+          "number_of_shards" : 1,
+          "number_of_replicas" : $replicas
+        }
+      }
+    }

@@ -1,0 +1,35 @@
+plugins {
+    // Apply the java-library plugin for API and implementation separation.
+    id 'java-library'
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'io.cucumber:cucumber-java:7.11.1'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.9.2'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.11.1'
+    testImplementation 'io.fabric8:kubernetes-client:6.6.2'
+    testImplementation 'org.slf4j:slf4j-api:2.0.5'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.7'
+    testImplementation 'co.elastic.clients:elasticsearch-java:8.7.1'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'org.yaml:snakeyaml:2.0'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+
+    // JUnit 5
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}

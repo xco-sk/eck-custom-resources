@@ -1,0 +1,21 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: Index
+metadata:
+  name: index-tpl-1
+spec:
+  targetInstance:
+    name: elasticsearch-quickstart
+  body: |
+    {
+      "settings": {
+        "number_of_shards": 1
+      },
+      "mappings": {
+          "properties": {
+            "field1": { "type": "text" }
+          }
+      },
+      "aliases": {
+          "index-sample-alias": {}
+      }
+    }
