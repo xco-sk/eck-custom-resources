@@ -31,14 +31,16 @@ public class Common {
 
   @And("ECK-CR operator is installed")
   public void eckCRInstalled() {
-            withK8sClient().run(client -> {
-                var pods = client.pods().inNamespace("default").list().getItems();
-                if (pods.stream().noneMatch(pod ->
-     pod.getMetadata().getName().contains(ECK_CR_POD_NAME))) {
-                    fail("ECK-CR not installed");
-                }
-                log.info("ECK-CR present");
-                return null;
+    withK8sClient()
+        .run(
+            client -> {
+              var pods = client.pods().inNamespace("default").list().getItems();
+              if (pods.stream()
+                  .noneMatch(pod -> pod.getMetadata().getName().contains(ECK_CR_POD_NAME))) {
+                fail("ECK-CR not installed");
+              }
+              log.info("ECK-CR present");
+              return null;
             });
   }
 
