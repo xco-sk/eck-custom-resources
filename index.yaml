@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   eck-custom-resources-operator:
   - apiVersion: v2
+    appVersion: 0.6.1
+    created: "2023-09-17T10:58:15.868283089Z"
+    description: Helm chart for eck-custom-resources operator
+    digest: 76fcc34264b1bea167f18cd361e5e6b2165db3f79017d93e1dd7b022c9dcbc86
+    home: https://github.com/xco-sk/eck-custom-resources
+    maintainers:
+    - email: marek@xco.sk
+      name: Marek Hornak
+      url: https://github.com/xco-sk
+    name: eck-custom-resources-operator
+    sources:
+    - https://github.com/xco-sk/eck-custom-resources
+    type: application
+    urls:
+    - https://github.com/xco-sk/eck-custom-resources/releases/download/eck-custom-resources-operator-0.6.1/eck-custom-resources-operator-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v2
     appVersion: 0.6.0
     created: "2023-09-14T14:01:06.128714416Z"
     description: Helm chart for eck-custom-resources operator
@@ -341,4 +358,4 @@ entries:
     urls:
     - https://github.com/xco-sk/eck-custom-resources/releases/download/eck-custom-resources-operator-0.1.3/eck-custom-resources-operator-0.1.3.tgz
     version: 0.1.3
-generated: "2023-09-14T14:01:06.129072348Z"
+generated: "2023-09-17T10:58:15.868555394Z"
