@@ -1,0 +1,27 @@
+# permissions for end users to view componenttemplates.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: componenttemplate-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: eck-custom-resources
+    app.kubernetes.io/part-of: eck-custom-resources
+    app.kubernetes.io/managed-by: kustomize
+  name: componenttemplate-viewer-role
+rules:
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - componenttemplates
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - es.eck.github.com
+  resources:
+  - componenttemplates/status
+  verbs:
+  - get

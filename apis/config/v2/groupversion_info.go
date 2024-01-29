@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v2 contains API Schema definitions for the es.eck v2 API group
-//+kubebuilder:object:generate=true
-//+groupName=config.github.com
+// +kubebuilder:object:generate=true
+// +groupName=config.github.com
 package v2
 
 import (
