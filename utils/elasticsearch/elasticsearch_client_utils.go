@@ -65,6 +65,7 @@ func GetClientErrorOrResponseError(err error, response *esapi.Response) error {
 func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1.Dependencies) error {
 
 	var missingIdxTemplates []string
+	var missingComponentTemplates []string
 	var missingIdx []string
 	var errors []string
 
@@ -78,6 +79,17 @@ func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1
 			missingIdxTemplates = append(missingIdxTemplates, idxTplDependency)
 		}
 	}
+
+	for _, componentTplDependency := range dependencies.ComponentTemplates {
+		exists, err := ComponentTemplateExists(esClient, componentTplDependency)
+		if err != nil {
+			errors = append(errors, err.Error())
+			continue
+		}
+		if !exists {
+			missingComponentTemplates = append(missingComponentTemplates, componentTplDependency)
+		}
+	}
 	for _, idxDependency := range dependencies.Indices {
 		exists, err := VerifyIndexExists(esClient, idxDependency)
 		if err != nil {
@@ -89,10 +101,11 @@ func DependenciesFulfilled(esClient *elasticsearch.Client, dependencies v1alpha1
 		}
 	}
 
-	if len(missingIdx) > 0 || len(missingIdxTemplates) > 0 || len(errors) > 0 {
-		return fmt.Errorf("dependencies not fulfilled. Missing indices:[%s]. Missing index templates:[%s]. Errors:[%s]",
+	if len(missingIdx) > 0 || len(missingIdxTemplates) > 0 || len(missingComponentTemplates) > 0 || len(errors) > 0 {
+		return fmt.Errorf("dependencies not fulfilled. Missing indices:[%s]. Missing index templates:[%s]. Missing component templates:[%s]. Errors:[%s]",
 			strings.Join(missingIdx[:], ","),
 			strings.Join(missingIdxTemplates[:], ","),
+			strings.Join(missingComponentTemplates[:], ","),
 			strings.Join(errors[:], ","))
 	}
 	return nil

@@ -20,7 +20,6 @@ func DeleteComponentTemplate(esClient *elasticsearch.Client, componentTemplateNa
 func UpsertComponentTemplate(esClient *elasticsearch.Client, componentTemplate v1alpha1.ComponentTemplate) (ctrl.Result, error) {
 
 	res, err := esClient.Cluster.PutComponentTemplate(componentTemplate.Name, strings.NewReader(componentTemplate.Spec.Body))
-
 	if err != nil || res.IsError() {
 		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}

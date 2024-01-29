@@ -27,6 +27,8 @@ import (
 type ComponentTemplateSpec struct {
 	// +optional
 	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
+	// +optional
+	Dependencies Dependencies `json:"dependencies,omitempty"`
 
 	Body string `json:"body"`
 }

@@ -45,22 +45,13 @@ type ComponentTemplateReconciler struct {
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=componenttemplates/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=es.eck.github.com,resources=componenttemplates/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the ComponentTemplate object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.4/pkg/reconcile
 func (r *ComponentTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
 	finalizer := "componenttemplate.es.eck.github.com/finalizer"
-	var comTem eseckv1alpha1.ComponentTemplate
 
-	if err := r.Get(ctx, req.NamespacedName, &comTem); err != err {
+	var comTem eseckv1alpha1.ComponentTemplate
+	if err := r.Get(ctx, req.NamespacedName, &comTem); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 	targetInstance, err := r.getTargetInstance(&comTem, comTem.Spec.TargetConfig, ctx, req.Namespace)
@@ -137,5 +128,6 @@ func (r *ComponentTemplateReconciler) addFinalizer(o client.Object, finalizer st
 func (r *ComponentTemplateReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&eseckv1alpha1.ComponentTemplate{}).
+		WithEventFilter(utils.CommonEventFilter()).
 		Complete(r)
 }
