@@ -1,6 +1,6 @@
 module github.com/xco-sk/eck-custom-resources
 
-go 1.17
+go 1.21
 
 require (
 	github.com/elastic/elastic-transport-go/v8 v8.0.0-alpha
