@@ -40,6 +40,12 @@ Configuration options are documented in [chart README file](charts/eck-custom-re
 
 ## Upgrade guide
 
+### From 0.6.0 to 0.7.0
+There is a new `ComponentTemplate` CRD present. To apply the CRD, run:
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/v0.7.0/config/crd/bases/es.eck.github.com_componenttemplates.yaml
+```
+
 ### From 0.5.0 to 0.6.0
 The Elasticsearch API Key support was introduced. To apply the CRD, run:
 ```
