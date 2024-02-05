@@ -1,18 +1,19 @@
 apiVersion: kibana.eck.github.com/v1alpha1
 kind: DataView
 metadata:
-  name: dataview-sample
+  name: dataview-test2
 spec:
   targetInstance:
     name: kibana-quickstart
-  space: space-sample
-  dependencies:
-    - type: lens
-      name: lens-sample
-  defaultView: true
+  # space: space-sample
+  # dependencies:
+  #   - type: lens
+
+  #     name: lens-sample
+  defaultView: false
   body: |
     {
-      "title": "sample-index-*",
+      "title": "sample-test2-*",
       "type": "rollup",
       "typeMeta": {
         "params": {

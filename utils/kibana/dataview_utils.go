@@ -17,13 +17,7 @@ const REFRESH_FIELDS = true
 
 func DeleteDataView(kClient Client, dataView kibanaeckv1alpha1.DataView) (ctrl.Result, error) {
 	_, deleteErr := kClient.DoDelete(formatExistingDataViewUrl(dataView.Name, dataView.Spec.Space))
-	if deleteErr != nil {
-		return ctrl.Result{}, deleteErr
-	}
-
-	defaultFlagErr := handleDefaultFlagOnDelete(dataView, kClient)
-
-	return ctrl.Result{}, defaultFlagErr
+	return ctrl.Result{}, deleteErr
 }
 
 func UpsertDataView(kClient Client, dataView kibanaeckv1alpha1.DataView) (ctrl.Result, error) {
@@ -142,21 +136,14 @@ func removeName(objectJson string, id string) (*string, error) {
 }
 
 func handleDefaultFlagOnUpsert(dataview kibanaeckv1alpha1.DataView, kClient Client) error {
-	if *dataview.Spec.DefaultView {
+	if dataview.Spec.DefaultView != nil && *dataview.Spec.DefaultView {
 		saveDefaultView(&dataview.Name, dataview.Spec.Space, kClient)
 	}
 	return nil
 }
 
-func handleDefaultFlagOnDelete(dataview kibanaeckv1alpha1.DataView, kClient Client) error {
-	if *dataview.Spec.DefaultView {
-		return saveDefaultView(nil, dataview.Spec.Space, kClient)
-	}
-	return nil
-}
-
 func saveDefaultView(dataViewName *string, space *string, kClient Client) error {
-	var body map[string]interface{}
+	body := make(map[string]interface{})
 	body["data_view_id"] = dataViewName
 	body["force"] = true
 
@@ -166,6 +153,11 @@ func saveDefaultView(dataViewName *string, space *string, kClient Client) error 
 	}
 	_, err = kClient.DoPost(formatDefaultDataViewUrl(space), string(marshalledBody))
 	return err
+}
+
+func getDefaultDataView(space *string, kClient Client) (*string, error) {
+	_, err = kClient.DoGet(formatDefaultDataViewUrl(space), string(marshalledBody))
+
 }
 
 func formatDefaultDataViewUrl(space *string) string {

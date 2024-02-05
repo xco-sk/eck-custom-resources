@@ -41,6 +41,12 @@ Configuration options are documented in [chart README file](charts/eck-custom-re
 
 ## Upgrade guide
 
+### From 0.7.0 to 0.8.0
+The CRD for Kibana DataView was changed - the `defaultView` field was added, to flag if the Data View should be configured as default in target instance Kibana. To update the CRD manually, run:
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/v0.8.0/config/crd/bases/kibana.eck.github.com_dataviews.yaml
+```
+
 ### From 0.6.0 to 0.7.0
 There is a new `ComponentTemplate` CRD present. To apply the CRD, run:
 ```
