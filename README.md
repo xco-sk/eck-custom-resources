@@ -17,6 +17,7 @@ Currently supported resources:
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
   - [API key](docs/cr_apikey.md)
+  - [Component template](docs/cr_component_template.md)
 - For Kibana:
   - [Kibana Instance](docs/cr_kibana_instance.md)
   - [Space](docs/cr_space.md)
@@ -39,6 +40,12 @@ helm install eck-cr eck-custom-resources/eck-custom-resources-operator
 Configuration options are documented in [chart README file](charts/eck-custom-resources-operator/README.md)
 
 ## Upgrade guide
+
+### From 0.6.0 to 0.7.0
+There is a new `ComponentTemplate` CRD present. To apply the CRD, run:
+```
+kubectl apply --server-side -f https://raw.githubusercontent.com/xco-sk/eck-custom-resources/v0.7.0/config/crd/bases/es.eck.github.com_componenttemplates.yaml
+```
 
 ### From 0.5.0 to 0.6.0
 The Elasticsearch API Key support was introduced. To apply the CRD, run:

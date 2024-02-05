@@ -1,0 +1,59 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: componenttemplates.es.eck.github.com
+spec:
+  group: es.eck.github.com
+  names:
+    kind: ComponentTemplate
+    listKind: ComponentTemplateList
+    plural: componenttemplates
+    singular: componenttemplate
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ComponentTemplate is the Schema for the componenttemplates API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ComponentTemplateSpec defines the desired state of ComponentTemplate
+            properties:
+              body:
+                type: string
+              targetInstance:
+                properties:
+                  name:
+                    type: string
+                type: object
+            required:
+            - body
+            type: object
+          status:
+            description: ComponentTemplateStatus defines the observed state of ComponentTemplate
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

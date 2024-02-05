@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1alpha1 contains API Schema definitions for the es.eck v1alpha1 API group
-//+kubebuilder:object:generate=true
-//+groupName=es.eck.github.com
+// +kubebuilder:object:generate=true
+// +groupName=es.eck.github.com
 package v1alpha1
 
 import (

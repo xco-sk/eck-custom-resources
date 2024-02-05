@@ -12,13 +12,14 @@ in official documentation.
 
 ## Fields
 
-| Key                                | Type   | Description                                                                                     |
-|------------------------------------|--------|-------------------------------------------------------------------------------------------------|
-| `metadata.name`                    | string | Name of the Index Template                                                                      |
-| `spec.targetInstance.name`         | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IndexTemplate will be deployed to |
-| `spec.body`                        | string | Index template definition - same you would use when creating index template using ES REST API   |
-| `spec.dependencies.indexTemplates` | list   | List of index templates that have to be present in ES cluster before index is created / updated |
-| `spec.dependencies.indices`        | list   | List of indices that have to be present in ES cluster before index created / updated            |
+| Key                                    | Type   | Description                                                                                                        |
+| -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| `metadata.name`                        | string | Name of the Index Template                                                                                         |
+| `spec.targetInstance.name`             | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IndexTemplate will be deployed to |
+| `spec.body`                            | string | Index template definition - same you would use when creating index template using ES REST API                      |
+| `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before index template is created / updated           |
+| `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before index template is created / updated                   |
+| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before index template is created / updated       |
 
 ## Example
 
@@ -35,6 +36,8 @@ spec:
       - indextemplate-base
     indices:
       - index-base-sample
+    componentTemplates:
+      - componenttemplate
   body: |
     {
       "index_patterns" : ["index-*"],

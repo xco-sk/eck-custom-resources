@@ -1,0 +1,22 @@
+apiVersion: es.eck.github.com/v1alpha1
+kind: ComponentTemplate
+metadata:
+  labels:
+    app.kubernetes.io/name: componenttemplate
+    app.kubernetes.io/instance: componenttemplate-sample
+    app.kubernetes.io/part-of: eck-custom-resources
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: eck-custom-resources
+  name: componenttemplate-sample
+spec:
+    {
+      "index_patterns" : ["index-*"],
+      "priority" : 1,
+      "template": {
+        "settings" : {
+          "number_of_shards" : 2,
+          "number_of_replicas" : 0
+        }
+      }
+    }
+

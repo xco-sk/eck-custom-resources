@@ -25,13 +25,14 @@ are logged into the object events, so running
 
 ## Fields
 
-| Key                                | Type   | Description                                                                                                |
-|------------------------------------|--------|------------------------------------------------------------------------------------------------------------|
-| `metadata.name`                    | string | Name of the Index                                                                                          |
-| `spec.targetInstance.name`         | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this Index will be deployed to |
-| `spec.body`                        | string | Index definition - similar to one you would use when creating index using ES REST API                      |
-| `spec.dependencies.indexTemplates` | list   | List of index templates that have to be present in ES cluster before index is created / updated            |
-| `spec.dependencies.indices`        | list   | List of indices that have to be present in ES cluster before index created / updated                       |
+| Key                                    | Type   | Description                                                                                                |
+| -------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------- |
+| `metadata.name`                        | string | Name of the Index                                                                                          |
+| `spec.targetInstance.name`             | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this Index will be deployed to |
+| `spec.body`                            | string | Index definition - similar to one you would use when creating index using ES REST API                      |
+| `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before index is created / updated            |
+| `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before index created / updated                       |
+| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before index is created / updated        |
 
 ## Example
 ```yaml
@@ -47,6 +48,8 @@ spec:
       - indextemplate-sample
     indices:
       - index-base-sample
+    componentTemplates:
+      - componenttemplate
   body: |
     {
       "settings": {
