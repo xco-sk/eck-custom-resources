@@ -43,6 +43,10 @@ spec:
                 type: string
               dependencies:
                 properties:
+                  conponentTemplates:
+                    items:
+                      type: string
+                    type: array
                   indexTemplates:
                     items:
                       type: string

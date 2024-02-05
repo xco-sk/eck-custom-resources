@@ -31,6 +31,9 @@ jobs:
         with:
           go-version: '1.21'
 
+      - name: Download controler gen
+        run: make controller-gen
+
       - name: Make manifests
         run: make manifests
 

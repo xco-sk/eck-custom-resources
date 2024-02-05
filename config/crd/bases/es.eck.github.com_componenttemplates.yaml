@@ -41,6 +41,21 @@ spec:
             properties:
               body:
                 type: string
+              dependencies:
+                properties:
+                  conponentTemplates:
+                    items:
+                      type: string
+                    type: array
+                  indexTemplates:
+                    items:
+                      type: string
+                    type: array
+                  indices:
+                    items:
+                      type: string
+                    type: array
+                type: object
               targetInstance:
                 properties:
                   name:
