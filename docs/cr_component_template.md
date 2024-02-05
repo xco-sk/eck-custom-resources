@@ -16,29 +16,25 @@ in official documentation.
 | -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
 | `metadata.name`                        | string | Name of the Index Template                                                                                         |
 | `spec.targetInstance.name`             | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this IndexTemplate will be deployed to |
-| `spec.body`                            | string | Index template definition - same you would use when creating index template using ES REST API                      |
-| `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before index template is created / updated           |
-| `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before index template is created / updated                   |
-| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before index template is created / updated       |
+| `spec.body`                            | string | Component template definition - same you would use when creating component template using ES REST API              |
+| `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before component template is created / updated       |
+| `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before component template is created / updated               |
+| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before component template is created / updated   |
 
 ## Example
 
 ```yaml
 apiVersion: es.eck.github.com/v1alpha1
-kind: IndexTemplate
+kind: ComponentTemplate
 metadata:
-  name: indextemplate-sample
+  labels:
+    app.kubernetes.io/name: componenttemplate
+    app.kubernetes.io/instance: componenttemplate-sample
+    app.kubernetes.io/part-of: eck-custom-resources
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: eck-custom-resources
+  name: componenttemplate-sample
 spec:
-  targetInstance:
-    name: elasticsearch-quickstart
-  dependencies:
-    indexTemplates:
-      - indextemplate-base
-    indices:
-      - index-base-sample
-    componentTemplates:
-      - componenttemplate
-  body: |
     {
       "index_patterns" : ["index-*"],
       "priority" : 1,

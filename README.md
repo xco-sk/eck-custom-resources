@@ -17,6 +17,7 @@ Currently supported resources:
   - [User](docs/cr_user.md)
   - [Role](docs/cr_role.md)
   - [API key](docs/cr_apikey.md)
+  - [Component template](docs/cr_component_template.md)
 - For Kibana:
   - [Kibana Instance](docs/cr_kibana_instance.md)
   - [Space](docs/cr_space.md)

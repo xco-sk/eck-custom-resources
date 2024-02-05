@@ -11,6 +11,7 @@
 - [User](cr_user.md)
 - [Role](cr_role.md)
 - [API key](cr_apikey.md)
+- [Component template](cr_component_template.md)
 
 ## Kibana:
 - [Kibana Instance](cr_kibana_instance.md)
