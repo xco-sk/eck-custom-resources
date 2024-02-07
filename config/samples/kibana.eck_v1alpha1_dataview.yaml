@@ -8,7 +8,6 @@ spec:
   space: space-sample
   dependencies:
     - type: lens
-
       name: lens-sample
   defaultView: false
   body: |
