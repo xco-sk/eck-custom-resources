@@ -15,12 +15,13 @@ See [Data Views APIs](https://www.elastic.co/guide/en/kibana/current/data-views-
 ## Fields
 
 | Key                         | Type            | Description                                                                                                                                     | Default                                              |
-|-----------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| `metadata.name`             | string          | Name of the Data View visualization, used also as its ID in Kibana                                                                                   | No default                                           |
-| `spec.space`                | string          | Name of the Kibana namespace to which the Data View is deployed to                                                                                   | No default (will be deployed to "default" namespace) |
-| `spec.targetInstance.name`  | string         | Name of the [Kibana Instance](cr_kibana_instance.md) to which this DataView will be deployed to | The operator configuration |
-| `spec.body`                 | string          | Data View definition (the inner part of the requests) json                                                                                                                            | No default                                           |
-| `spec.dependencies`         | List of objects | List of dependencies - the reconciler will wait for all resources from the list to be present in Kibana before deploying/updating this resource | -                                                    |                                                 |
+| --------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `metadata.name`             | string          | Name of the Data View visualization, used also as its ID in Kibana                                                                              | No default                                           |
+| `spec.space`                | string          | Name of the Kibana namespace to which the Data View is deployed to                                                                              | No default (will be deployed to "default" namespace) |
+| `spec.targetInstance.name`  | string          | Name of the [Kibana Instance](cr_kibana_instance.md) to which this DataView will be deployed to                                                 | The operator configuration                           |
+| `spec.body`                 | string          | Data View definition (the inner part of the requests) json                                                                                      | No default                                           |
+| `spec.defaultView`          | boolean         | Flag if the Data View should be configured as default in target instance Kibana                                                                 | false                                                |
+| `spec.dependencies`         | List of objects | List of dependencies - the reconciler will wait for all resources from the list to be present in Kibana before deploying/updating this resource | -                                                    |  |
 | `spec.dependencies[].space` | string          | Kibana Space where to look for given resource                                                                                                   | -                                                    |
 | `spec.dependencies[].type`  | string          | Type of resource - one of `visualization, dashboard, search, index-pattern, lens`                                                               | -                                                    |
 | `spec.dependencies[].name`  | string          | Name of resource                                                                                                                                | -                                                    |
@@ -39,6 +40,7 @@ spec:
   dependencies:
     - type: lens
       name: lens-sample
+  defaultView: true
   body: |
     {
       "title": "sample-index-*",

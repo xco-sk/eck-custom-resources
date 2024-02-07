@@ -39,7 +39,6 @@ func UpsertDataView(kClient Client, dataView kibanaeckv1alpha1.DataView) (ctrl.R
 	} else {
 		res, err = kClient.DoPost(formatDataViewUrl(dataView.Spec.Space), *modifiedBody)
 	}
-
 	if err != nil {
 		return utils.GetRequeueResult(), err
 	}
@@ -49,6 +48,11 @@ func UpsertDataView(kClient Client, dataView kibanaeckv1alpha1.DataView) (ctrl.R
 			return utils.GetRequeueResult(), err
 		}
 		return utils.GetRequeueResult(), fmt.Errorf("Non-success (%d) response: %s, ", res.StatusCode, string(resBody))
+	}
+
+	err = handleDefaultFlagOnUpsert(dataView, kClient)
+	if err != nil {
+		return utils.GetRequeueResult(), err
 	}
 
 	return ctrl.Result{}, nil
@@ -129,4 +133,36 @@ func removeName(objectJson string, id string) (*string, error) {
 
 	sBody := string(marshalledBody)
 	return &sBody, nil
+}
+
+func handleDefaultFlagOnUpsert(dataview kibanaeckv1alpha1.DataView, kClient Client) error {
+	if dataview.Spec.DefaultView != nil && *dataview.Spec.DefaultView {
+		saveDefaultView(&dataview.Name, dataview.Spec.Space, kClient)
+	}
+	return nil
+}
+
+func saveDefaultView(dataViewName *string, space *string, kClient Client) error {
+	body := make(map[string]interface{})
+	body["data_view_id"] = dataViewName
+	body["force"] = true
+
+	marshalledBody, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	_, err = kClient.DoPost(formatDefaultDataViewUrl(space), string(marshalledBody))
+	return err
+}
+
+func getDefaultDataView(space *string, kClient Client) (*string, error) {
+	_, err = kClient.DoGet(formatDefaultDataViewUrl(space), string(marshalledBody))
+
+}
+
+func formatDefaultDataViewUrl(space *string) string {
+	if space == nil {
+		return "/api/data_views/default"
+	}
+	return fmt.Sprintf("/s/%s/api/data_views/default", *space)
 }
