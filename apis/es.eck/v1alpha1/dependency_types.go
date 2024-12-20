@@ -20,7 +20,7 @@ type Dependencies struct {
 	// +optional
 	IndexTemplates []string `json:"indexTemplates,omitempty"`
 	// +optional
-	ComponentTemplates []string `json:"conponentTemplates,omitempty"`
+	ComponentTemplates []string `json:"componentTemplates,omitempty"`
 	// +optional
 	Indices []string `json:"indices,omitempty"`
 }
