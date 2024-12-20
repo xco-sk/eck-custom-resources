@@ -19,7 +19,7 @@ in official documentation.
 | `spec.body`                            | string | Index template definition - same you would use when creating index template using ES REST API                      |
 | `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before index template is created / updated           |
 | `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before index template is created / updated                   |
-| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before index template is created / updated       |
+| `spec.dependencies.componentTemplates` | list   | List of component templates that have to be present in ES cluster before index template is created / updated       |
 
 ## Example
 
