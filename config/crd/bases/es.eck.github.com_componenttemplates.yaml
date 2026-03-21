@@ -68,6 +68,9 @@ spec:
             required:
             - body
             type: object
+            x-kubernetes-validations:
+            - message: componentTemplateName is immutable
+              rule: self.componentTemplateName == oldSelf.componentTemplateName
           status:
             description: ComponentTemplateStatus defines the observed state of ComponentTemplate
             type: object

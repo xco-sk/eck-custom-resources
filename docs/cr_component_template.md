@@ -14,7 +14,7 @@ in official documentation.
 | Key                                    | Type   | Description                                                                                                            |
 | -------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
 | `metadata.name`                        | string | Kubernetes object name. Used as Elasticsearch component template name when `spec.componentTemplateName` is not set    |
-| `spec.componentTemplateName`           | string | Optional Elasticsearch component template name override (for example `traces-apm@custom`)                 |
+| `spec.componentTemplateName`           | string | Optional Elasticsearch component template name override (for example `traces-apm@custom`). Immutable after creation |
 | `spec.targetInstance.name`             | string | Name of the [Elasticsearch Instance](cr_elasticsearch_instance.md) to which this ComponentTemplate will be deployed to |
 | `spec.body`                            | string | Component template definition - same you would use when creating component template using ES REST API                  |
 | `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before component template is created / updated           |

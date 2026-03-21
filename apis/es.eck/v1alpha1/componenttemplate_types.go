@@ -32,6 +32,7 @@ type ComponentTemplateSpec struct {
 	// +optional
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:MaxLength=255
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="componentTemplateName is immutable"
 	// ComponentTemplateName allows using an Elasticsearch component template name
 	// that differs from Kubernetes metadata.name.
 	ComponentTemplateName string `json:"componentTemplateName,omitempty"`
