@@ -9,6 +9,8 @@ metadata:
     app.kubernetes.io/created-by: eck-custom-resources
   name: componenttemplate-sample
 spec:
+  componentTemplateName: traces-apm@custom
+  body: |
     {
       "index_patterns" : ["index-*"],
       "priority" : 1,

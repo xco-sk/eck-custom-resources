@@ -39,6 +39,10 @@ spec:
           spec:
             description: ComponentTemplateSpec defines the desired state of ComponentTemplate
             properties:
+              componentTemplateName:
+                maxLength: 255
+                minLength: 1
+                type: string
               body:
                 type: string
               dependencies:
@@ -64,6 +68,9 @@ spec:
             required:
             - body
             type: object
+            x-kubernetes-validations:
+            - message: componentTemplateName is immutable
+              rule: self.componentTemplateName == oldSelf.componentTemplateName
           status:
             description: ComponentTemplateStatus defines the observed state of ComponentTemplate
             type: object

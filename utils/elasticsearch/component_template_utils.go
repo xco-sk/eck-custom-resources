@@ -17,9 +17,18 @@ func DeleteComponentTemplate(esClient *elasticsearch.Client, componentTemplateNa
 	return ctrl.Result{}, nil
 }
 
-func UpsertComponentTemplate(esClient *elasticsearch.Client, componentTemplate v1alpha1.ComponentTemplate) (ctrl.Result, error) {
+func GetComponentTemplateName(componentTemplate *v1alpha1.ComponentTemplate) string {
+	if componentTemplate.Spec.ComponentTemplateName != "" {
+		return componentTemplate.Spec.ComponentTemplateName
+	}
 
-	res, err := esClient.Cluster.PutComponentTemplate(componentTemplate.Name, strings.NewReader(componentTemplate.Spec.Body))
+	return componentTemplate.Name
+}
+
+func UpsertComponentTemplate(esClient *elasticsearch.Client, componentTemplate *v1alpha1.ComponentTemplate) (ctrl.Result, error) {
+	componentTemplateName := GetComponentTemplateName(componentTemplate)
+
+	res, err := esClient.Cluster.PutComponentTemplate(componentTemplateName, strings.NewReader(componentTemplate.Spec.Body))
 	if err != nil || res.IsError() {
 		return utils.GetRequeueResult(), GetClientErrorOrResponseError(err, res)
 	}
