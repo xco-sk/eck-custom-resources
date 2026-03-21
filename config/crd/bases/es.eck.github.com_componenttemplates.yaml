@@ -39,12 +39,18 @@ spec:
           spec:
             description: ComponentTemplateSpec defines the desired state of ComponentTemplate
             properties:
+              body:
+                type: string
               componentTemplateName:
+                description: |-
+                  ComponentTemplateName allows using an Elasticsearch component template name
+                  that differs from Kubernetes metadata.name.
                 maxLength: 255
                 minLength: 1
                 type: string
-              body:
-                type: string
+                x-kubernetes-validations:
+                - message: componentTemplateName is immutable
+                  rule: self == oldSelf
               dependencies:
                 properties:
                   componentTemplates:
@@ -68,9 +74,6 @@ spec:
             required:
             - body
             type: object
-            x-kubernetes-validations:
-            - message: componentTemplateName is immutable
-              rule: self.componentTemplateName == oldSelf.componentTemplateName
           status:
             description: ComponentTemplateStatus defines the observed state of ComponentTemplate
             type: object
