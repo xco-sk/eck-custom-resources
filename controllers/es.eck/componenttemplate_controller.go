@@ -69,14 +69,15 @@ func (r *ComponentTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Re
 		return utils.GetRequeueResult(), client.IgnoreNotFound(createClientErr)
 	}
 	if comTem.ObjectMeta.DeletionTimestamp.IsZero() {
-		logger.Info("Creating/Updating component template", "componentTemplate", req.Name)
+		componentTemplateName := esutils.GetComponentTemplateName(comTem)
+		logger.Info("Creating/Updating component template", "componentTemplate", componentTemplateName)
 		res, err := esutils.UpsertComponentTemplate(esClient, comTem)
 		if err == nil {
 			r.Recorder.Event(&comTem, "Normal", "Created",
-				fmt.Sprintf("Created/Updated %s/%s %s", comTem.APIVersion, comTem.Kind, comTem.Name))
+				fmt.Sprintf("Created/Updated %s/%s %s", comTem.APIVersion, comTem.Kind, componentTemplateName))
 		} else {
 			r.Recorder.Event(&comTem, "Warning", "Failed to create/update",
-				fmt.Sprintf("Failed to create/update %s/%s %s: %s", comTem.APIVersion, comTem.Kind, comTem.Name, err.Error()))
+				fmt.Sprintf("Failed to create/update %s/%s %s: %s", comTem.APIVersion, comTem.Kind, componentTemplateName, err.Error()))
 		}
 
 		if err := r.addFinalizer(&comTem, finalizer, ctx); err != nil {
@@ -85,8 +86,9 @@ func (r *ComponentTemplateReconciler) Reconcile(ctx context.Context, req ctrl.Re
 		return res, err
 	} else {
 		if controllerutil.ContainsFinalizer(&comTem, finalizer) {
-			logger.Info("Deleting object", "componentTemplate", comTem.Name)
-			if _, err := esutils.DeleteComponentTemplate(esClient, comTem.Name); err != nil {
+			componentTemplateName := esutils.GetComponentTemplateName(comTem)
+			logger.Info("Deleting object", "componentTemplate", componentTemplateName)
+			if _, err := esutils.DeleteComponentTemplate(esClient, componentTemplateName); err != nil {
 				return ctrl.Result{}, err
 			}
 

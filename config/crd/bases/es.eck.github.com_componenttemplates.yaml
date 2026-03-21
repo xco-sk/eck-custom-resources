@@ -39,6 +39,10 @@ spec:
           spec:
             description: ComponentTemplateSpec defines the desired state of ComponentTemplate
             properties:
+              componentTemplateName:
+                maxLength: 255
+                minLength: 1
+                type: string
               body:
                 type: string
               dependencies:

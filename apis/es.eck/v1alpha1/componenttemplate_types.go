@@ -29,6 +29,12 @@ type ComponentTemplateSpec struct {
 	TargetConfig CommonElasticsearchConfig `json:"targetInstance,omitempty"`
 	// +optional
 	Dependencies Dependencies `json:"dependencies,omitempty"`
+	// +optional
+	// +kubebuilder:validation:MinLength=1
+	// +kubebuilder:validation:MaxLength=255
+	// ComponentTemplateName allows using an Elasticsearch component template name
+	// that differs from Kubernetes metadata.name.
+	ComponentTemplateName string `json:"componentTemplateName,omitempty"`
 
 	Body string `json:"body"`
 }
