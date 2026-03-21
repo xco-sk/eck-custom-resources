@@ -32,7 +32,7 @@ are logged into the object events, so running
 | `spec.body`                            | string | Index definition - similar to one you would use when creating index using ES REST API                      |
 | `spec.dependencies.indexTemplates`     | list   | List of index templates that have to be present in ES cluster before index is created / updated            |
 | `spec.dependencies.indices`            | list   | List of indices that have to be present in ES cluster before index created / updated                       |
-| `spec.dependencies.conponentTemplates` | list   | List of component templates that have to be present in ES cluster before index is created / updated        |
+| `spec.dependencies.componentTemplates` | list   | List of component templates that have to be present in ES cluster before index is created / updated        |
 
 ## Example
 ```yaml

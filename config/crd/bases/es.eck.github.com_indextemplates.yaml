@@ -44,7 +44,7 @@ spec:
                 type: string
               dependencies:
                 properties:
-                  conponentTemplates:
+                  componentTemplates:
                     items:
                       type: string
                     type: array
