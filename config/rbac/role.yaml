@@ -20,239 +20,14 @@ rules:
   - es.eck.github.com
   resources:
   - componenttemplates
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - componenttemplates/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - componenttemplates/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - elasticsearchapikeys
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchapikeys/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchapikeys/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - elasticsearchroles
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchroles/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchroles/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - elasticsearchusers
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchusers/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - elasticsearchusers/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - indexlifecyclepolicies
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indexlifecyclepolicies/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indexlifecyclepolicies/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - indextemplates
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indextemplates/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indextemplates/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - indices
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indices/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - indices/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - ingestpipelines
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - ingestpipelines/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - ingestpipelines/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - snapshotlifecyclepolicies
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - snapshotlifecyclepolicies/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
-  - snapshotlifecyclepolicies/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - es.eck.github.com
-  resources:
   - snapshotrepositories
   verbs:
   - create
@@ -265,12 +40,30 @@ rules:
 - apiGroups:
   - es.eck.github.com
   resources:
+  - componenttemplates/finalizers
+  - elasticsearchapikeys/finalizers
+  - elasticsearchroles/finalizers
+  - elasticsearchusers/finalizers
+  - indexlifecyclepolicies/finalizers
+  - indextemplates/finalizers
+  - indices/finalizers
+  - ingestpipelines/finalizers
+  - snapshotlifecyclepolicies/finalizers
   - snapshotrepositories/finalizers
   verbs:
   - update
 - apiGroups:
   - es.eck.github.com
   resources:
+  - componenttemplates/status
+  - elasticsearchapikeys/status
+  - elasticsearchroles/status
+  - elasticsearchusers/status
+  - indexlifecyclepolicies/status
+  - indextemplates/status
+  - indices/status
+  - ingestpipelines/status
+  - snapshotlifecyclepolicies/status
   - snapshotrepositories/status
   verbs:
   - get
@@ -280,161 +73,11 @@ rules:
   - kibana.eck.github.com
   resources:
   - dashboards
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - dashboards/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - dashboards/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - dataviews
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - dataviews/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - dataviews/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - indexpatterns
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - indexpatterns/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - indexpatterns/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - lens
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - lens/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - lens/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - savedsearches
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - savedsearches/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - savedsearches/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - spaces
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - spaces/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
-  - spaces/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - kibana.eck.github.com
-  resources:
   - visualizations
   verbs:
   - create
@@ -447,12 +90,24 @@ rules:
 - apiGroups:
   - kibana.eck.github.com
   resources:
+  - dashboards/finalizers
+  - dataviews/finalizers
+  - indexpatterns/finalizers
+  - lens/finalizers
+  - savedsearches/finalizers
+  - spaces/finalizers
   - visualizations/finalizers
   verbs:
   - update
 - apiGroups:
   - kibana.eck.github.com
   resources:
+  - dashboards/status
+  - dataviews/status
+  - indexpatterns/status
+  - lens/status
+  - savedsearches/status
+  - spaces/status
   - visualizations/status
   verbs:
   - get
