@@ -19,20 +19,18 @@ package eseck
 import (
 	"path/filepath"
 	"testing"
-	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/onsi/gomega/gexec"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
+	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	ctrl "sigs.k8s.io/controller-runtime"
-
+	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
@@ -42,6 +40,7 @@ import (
 
 var cfg *rest.Config
 var k8sClient client.Client
+var k8sManager ctrl.Manager
 var testEnv *envtest.Environment
 
 func TestAPIs(t *testing.T) {
@@ -52,15 +51,17 @@ func TestAPIs(t *testing.T) {
 		[]Reporter{})
 }
 
-var _ = BeforeSuite(func(done Done) {
+var _ = BeforeSuite(func() {
 	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
-		CRDDirectoryPaths: []string{filepath.Join("..", "..", "config", "crd", "bases")},
+		CRDDirectoryPaths:     []string{filepath.Join("..", "..", "config", "crd", "bases")},
+		ErrorIfCRDPathMissing: true,
 	}
 
-	cfg, err := testEnv.Start()
+	var err error
+	cfg, err = testEnv.Start()
 	Expect(err).NotTo(HaveOccurred())
 	Expect(cfg).NotTo(BeNil())
 
@@ -69,36 +70,83 @@ var _ = BeforeSuite(func(done Done) {
 
 	//+kubebuilder:scaffold:scheme
 
-	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
-	Expect(err).NotTo(HaveOccurred())
-	Expect(k8sClient).NotTo(BeNil())
-
-	k8sManager, err := ctrl.NewManager(cfg, ctrl.Options{
+	k8sManager, err = ctrl.NewManager(cfg, ctrl.Options{
 		Scheme: scheme.Scheme,
 	})
 	Expect(err).ToNot(HaveOccurred())
 
-	err = (&IndexTemplateReconciler{
-		Client: k8sManager.GetClient(),
-		Scheme: k8sManager.GetScheme(),
+	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme.Scheme})
+	Expect(err).NotTo(HaveOccurred())
+	Expect(k8sClient).NotTo(BeNil())
+
+	pc := configv2.ProjectConfig{}
+	mgrClient := k8sManager.GetClient()
+	mgrScheme := k8sManager.GetScheme()
+
+	err = (&ComponentTemplateReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("component-template"),
 	}).SetupWithManager(k8sManager)
 	Expect(err).ToNot(HaveOccurred())
 
-	go func() {
-		err = k8sManager.Start(ctrl.SetupSignalHandler())
-		Expect(err).ToNot(HaveOccurred())
-	}()
+	err = (&ElasticsearchApikeyReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("elasticsearch-apikey"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
 
-	k8sClient = k8sManager.GetClient()
-	Expect(k8sClient).ToNot(BeNil())
+	err = (&ElasticsearchRoleReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("elasticsearch-role"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
 
-	close(done)
+	err = (&ElasticsearchUserReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("elasticsearch-user"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IndexReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("index"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IndexLifecyclePolicyReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("index-lifecycle-policy"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IndexTemplateReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("index-template"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&IngestPipelineReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("ingest-pipeline"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SnapshotLifecyclePolicyReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("snapshot-lifecycle-policy"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
+
+	err = (&SnapshotRepositoryReconciler{
+		Client: mgrClient, Scheme: mgrScheme, ProjectConfig: pc,
+		Recorder: k8sManager.GetEventRecorderFor("snapshot-repository"),
+	}).SetupWithManager(k8sManager)
+	Expect(err).ToNot(HaveOccurred())
 
 }, 60)
 
 var _ = AfterSuite(func() {
-	By("tearing down the test environment")
-	gexec.KillAndWait(5 * time.Second)
+	By("tearing down test environment")
 	err := testEnv.Stop()
 	Expect(err).ToNot(HaveOccurred())
 })
