@@ -44,6 +44,15 @@ spec:
                 description: ElasticsearchAuthentication Definition of Elasticsearch
                   authentication
                 properties:
+                  apiKey:
+                    description: APIKey Definition of APIKey authentication
+                    properties:
+                      apiKey:
+                        minLength: 0
+                        type: string
+                    required:
+                    - apiKey
+                    type: object
                   usernamePasswordSecret:
                     description: UsernamePasswordAuthentication Definition of Username/Password
                       authentication

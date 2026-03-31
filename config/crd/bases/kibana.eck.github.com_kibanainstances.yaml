@@ -42,6 +42,15 @@ spec:
               authentication:
                 description: KibanaAuthentication Definition of Kibana authentication
                 properties:
+                  apiKeySecret:
+                    description: APIKey Definition of APIKey authentication
+                    properties:
+                      apiKey:
+                        minLength: 0
+                        type: string
+                    required:
+                    - apiKey
+                    type: object
                   usernamePasswordSecret:
                     description: UsernamePasswordAuthentication Definition of Username/Password
                       authentication

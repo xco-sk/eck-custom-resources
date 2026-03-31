@@ -95,6 +95,11 @@ func (kClient Client) doRequest(httpRequest *http.Request) (*http.Response, erro
 		httpRequest.SetBasicAuth(kClient.KibanaSpec.Authentication.UsernamePassword.UserName, string(userSecret.Data[kClient.KibanaSpec.Authentication.UsernamePassword.UserName]))
 	}
 
+	if kClient.KibanaSpec.Authentication != nil && kClient.KibanaSpec.Authentication.APIKey != nil {
+		var bearer = "ApiKey " + kClient.KibanaSpec.Authentication.APIKey.APIKey
+		httpRequest.Header.Set("Authorization", bearer)
+	}
+
 	httpClient, err := kClient.getHttpClient()
 	if err != nil {
 		return nil, err

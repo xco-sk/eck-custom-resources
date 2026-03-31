@@ -39,6 +39,10 @@ func GetElasticsearchClient(cli client.Client, ctx context.Context, esSpec confi
 		config.Password = string(userSecret.Data[esSpec.Authentication.UsernamePassword.UserName])
 	}
 
+	if esSpec.Authentication != nil && esSpec.Authentication.APIkey != nil {
+		config.APIKey = esSpec.Authentication.APIkey.APIKey
+	}
+
 	if esSpec.Certificate != nil {
 		var certificateSecret k8sv1.Secret
 		if err := utils.GetCertificateSecret(cli, ctx, req.Namespace, esSpec.Certificate, &certificateSecret); err != nil {
