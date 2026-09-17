@@ -30,6 +30,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+	"sigs.k8s.io/yaml"
 
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
@@ -73,11 +74,16 @@ func main() {
 
 	options := ctrl.Options{Scheme: scheme}
 	if configFile != "" {
-		options, err = options.AndFrom(ctrl.ConfigFile().AtPath(configFile).OfKind(&ctrlConfig))
-		if err != nil {
+		content, readErr := os.ReadFile(configFile)
+		if readErr != nil {
+			setupLog.Error(readErr, "unable to read the config file")
+			os.Exit(1)
+		}
+		if err = yaml.UnmarshalStrict(content, &ctrlConfig); err != nil {
 			setupLog.Error(err, "unable to load the config file")
 			os.Exit(1)
 		}
+		options = applyManagerConfig(options, ctrlConfig.Manager)
 	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), options)

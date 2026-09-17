@@ -20,7 +20,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v9"
 	configv2 "github.com/xco-sk/eck-custom-resources/apis/config/v2"
 	eseckv1alpha1 "github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"

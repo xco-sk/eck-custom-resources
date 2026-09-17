@@ -3,7 +3,7 @@ package elasticsearch
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v9"
 	"github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	"k8s.io/client-go/tools/record"
@@ -39,19 +39,25 @@ func VerifyIndexEmpty(esClient *elasticsearch.Client, indexName string) (bool, e
 	if countErr != nil {
 		return false, countErr
 	}
+	defer countResponse.Body.Close()
 
-	var jsonResponse map[string]interface{}
-	decodeErr := json.NewDecoder(countResponse.Body).Decode(&jsonResponse)
-	if decodeErr != nil {
+	// An error response carries no "count" field; reading it as one panics.
+	if countResponse.IsError() {
+		return false, GetClientErrorOrResponseError(nil, countResponse)
+	}
+
+	// Pointer distinguishes an absent "count" from a legitimate zero.
+	var jsonResponse struct {
+		Count *int64 `json:"count"`
+	}
+	if decodeErr := json.NewDecoder(countResponse.Body).Decode(&jsonResponse); decodeErr != nil {
 		return false, decodeErr
 	}
-
-	responseCloseErr := countResponse.Body.Close()
-	if responseCloseErr != nil {
-		return false, responseCloseErr
+	if jsonResponse.Count == nil {
+		return false, fmt.Errorf("unexpected _count response for index %q: missing \"count\" field", indexName)
 	}
 
-	return int(jsonResponse["count"].(float64)) == 0, nil
+	return *jsonResponse.Count == 0, nil
 }
 
 func DeleteIndexIfEmpty(esClient *elasticsearch.Client, indexName string) (ctrl.Result, error) {

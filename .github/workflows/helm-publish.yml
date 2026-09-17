@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -22,12 +22,12 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v5
         with:
           version: v3.8.1
 
       - name: Setup Go environment
-        uses: actions/setup-go@v3.0.0
+        uses: actions/setup-go@v7
         with:
           go-version: '1.26'
 
@@ -41,7 +41,7 @@ jobs:
         run: cp config/crd/bases/* charts/eck-custom-resources-operator/crds/
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.4.0
+        uses: helm/chart-releaser-action@v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
        

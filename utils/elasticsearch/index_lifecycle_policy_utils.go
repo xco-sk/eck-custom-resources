@@ -1,7 +1,7 @@
 package elasticsearch
 
 import (
-	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v9"
 	"github.com/xco-sk/eck-custom-resources/apis/es.eck/v1alpha1"
 	"github.com/xco-sk/eck-custom-resources/utils"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -18,8 +18,8 @@ func DeleteIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePo
 
 func UpsertIndexLifecyclePolicy(esClient *elasticsearch.Client, indexLifecyclePolicy v1alpha1.IndexLifecyclePolicy) (ctrl.Result, error) {
 	res, err := esClient.ILM.PutLifecycle(
+		strings.NewReader(indexLifecyclePolicy.Spec.Body),
 		indexLifecyclePolicy.Name,
-		esClient.ILM.PutLifecycle.WithBody(strings.NewReader(indexLifecyclePolicy.Spec.Body)),
 	)
 
 	if err != nil || res.IsError() {
